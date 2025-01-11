@@ -6,6 +6,11 @@ const prisma = new PrismaClient()  // สร้าง instance ของ PrismaC
 
 
 
+
+
+
+
+
 const createforme = async (req: Request, res: Response) => {
   const systemInput = req.body;
   console.log('Request body:', systemInput);
@@ -19,6 +24,7 @@ const createforme = async (req: Request, res: Response) => {
       vendorContactNo: Joi.string().required(),
       businessUnit: Joi.string().required(),
       developUnit: Joi.string().required(),
+      computerbackup: Joi.string().required(),
       draftStatus: Joi.string().valid('DRAFT', 'PUBLISH'),
       environmentInfo: Joi.array().items(Joi.object({
         environment: Joi.string().required(),
@@ -68,7 +74,10 @@ const createforme = async (req: Request, res: Response) => {
     });
 
 
-    
+    const { error } = schema.validate(systemInput);
+    if (error) {
+      return res.status(400).json({ errors: error.details.map(detail => detail.message) });
+    }
 
 
 
@@ -83,6 +92,7 @@ const createforme = async (req: Request, res: Response) => {
         vendorContactNo: systemInput.vendorContactNo,
         businessUnit: systemInput.businessUnit,
         developUnit: systemInput.developUnit,
+        computerbackup: systemInput.computerbackup,
         draftStatus: systemInput.draftStatus,
         environmentInfo: {
           create: systemInput.environmentInfo,
@@ -239,6 +249,7 @@ const createDraft = async (req: Request, res: Response) => { // ฟังชั�
     vendorContactNo: Joi.string().optional().empty(""),
     businessUnit: Joi.string().optional().empty(""),
     developUnit: Joi.string().optional().empty(""),
+    computerbackup: Joi.string().optional().empty(""),
     draftStatus: Joi.forbidden(), // ไม่อนุญาตให้ผู้ใช้ส่งค่า
     environmentInfo: Joi.array().items(Joi.object({
       environment: Joi.string().optional().empty(""),
@@ -304,6 +315,7 @@ const createDraft = async (req: Request, res: Response) => { // ฟังชั�
       vendorContactNo: systemInput.vendorContactNo,
       businessUnit: systemInput.businessUnit,
       developUnit: systemInput.developUnit,
+      computerbackup: systemInput.computerbackup,
       draftStatus: systemInput.draftStatus,
       environmentInfo: {
         create: systemInput.environmentInfo,
@@ -842,6 +854,7 @@ const updateforme = async (req: Request, res: Response) => {
     vendorContactNo: Joi.string().required(),
     businessUnit: Joi.string().required(),
     developUnit: Joi.string().required(),
+    computerbackup: Joi.string().required(),
     // draftStatus: Joi.string().valid('DRAFT', 'PUBLISH').required(), // เพิ่ม validation สำหรับ status
     environmentInfo: Joi.array().items(Joi.object({
       environment: Joi.string().required(),
@@ -923,6 +936,7 @@ const updateforme = async (req: Request, res: Response) => {
         vendorContactNo: updateData.vendorContactNo,
         businessUnit: updateData.businessUnit,
         developUnit: updateData.developUnit,
+        computerbackup: updateData.computerbackup,
         environmentInfo: {
           deleteMany: {},
           create: updateData.environmentInfo
@@ -967,6 +981,7 @@ const updateforme_draft = async (req: Request, res: Response) => {
     vendorContactNo: Joi.string().allow("").optional(),
     businessUnit: Joi.string().allow("").optional(),
     developUnit: Joi.string().allow("").optional(),
+    computerbackup: Joi.string().required(),
     // draftStatus: Joi.string().allow("").optional().valid('DRAFT', 'PUBLISH'), // เพิ่ม validation สำหรับ status
     environmentInfo: Joi.array().items(Joi.object({
       environment: Joi.string().allow("").optional(),
@@ -1048,6 +1063,7 @@ const updateforme_draft = async (req: Request, res: Response) => {
         vendorContactNo: updateData.vendorContactNo,
         businessUnit: updateData.businessUnit,
         developUnit: updateData.developUnit,
+        computerbackup: updateData.computerbackup,
         environmentInfo: {
           deleteMany: {},
           create: updateData.environmentInfo

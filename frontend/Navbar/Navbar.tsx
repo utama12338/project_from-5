@@ -5,88 +5,27 @@ import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { BeakerIcon, UserIcon, ArrowRightOnRectangleIcon, ArrowLeftOnRectangleIcon, DocumentIcon, TrashIcon, CogIcon } from '@heroicons/react/24/solid';
 import Sidebar from './Sidebar';
-import axios from 'axios';
-
-interface TrashItem {
-  id: number;
-  name: string;
-  date: string;
-}
+import { useNavbarViewModel } from './NavbarViewModel';
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isUserPanelOpen, setIsUserPanelOpen] = useState(false);
-  const [isTrashModalOpen, setIsTrashModalOpen] = useState(false);
-  const [draftCount, setDraftCount] = useState(0);
-  const [trashCount, setTrashCount] = useState(0);
-  const [trashItems, setTrashItems] = useState<TrashItem[]>([]);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const userPanelRef = useRef<HTMLDivElement>(null);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const toggleUserPanel = async () => {
-    setIsUserPanelOpen(!isUserPanelOpen);
-    if (!isUserPanelOpen) {
-      try {
-        const draftResponse = await axios.get('http://localhost:4000/form/getformedraft_Count');
-        const trashResponse = await axios.get('http://localhost:4000/form/getformesoftdelete_Count');
-        setDraftCount(draftResponse.data.count);
-        setTrashCount(trashResponse.data.count);
-      } catch (error) {
-        console.error('Error fetching counts:', error);
-      }
-    }
-  };
-
-  const closeUserPanel = () => {
-    setIsUserPanelOpen(false);
-  };
-
-  const openTrashModal = async () => {
-    setIsTrashModalOpen(true);
-    try {
-      const response = await axios.get('http://localhost:4000/form/getTrashItems');
-      setTrashItems(response.data);
-    } catch (error) {
-      console.error('Error fetching trash items:', error);
-    }
-  };
-
-  const closeTrashModal = () => {
-    setIsTrashModalOpen(false);
-    setSelectedItems([]);
-  };
-
-  const handleSelectItem = (itemId: number) => {
-    setSelectedItems((prev) =>
-      prev.includes(itemId) ? prev.filter((id) => id !== itemId) : [...prev, itemId]
-    );
-  };
-
-  const handlePermanentDelete = async () => {
-    try {
-      await axios.post('http://localhost:4000/form/permanentDelete', { ids: selectedItems });
-      setTrashItems((prev) => prev.filter((item) => !selectedItems.includes(item.id)));
-      setSelectedItems([]);
-      closeTrashModal();
-    } catch (error) {
-      console.error('Error deleting items:', error);
-    }
-  };
-
-  const handleRestore = async () => {
-    try {
-      await axios.post('http://localhost:4000/form/restore', { ids: selectedItems });
-      setTrashItems((prev) => prev.filter((item) => !selectedItems.includes(item.id)));
-      setSelectedItems([]);
-      closeTrashModal();
-    } catch (error) {
-      console.error('Error restoring items:', error);
-    }
-  };
+  const {
+    isMenuOpen,
+    isUserPanelOpen,
+    isTrashModalOpen,
+    draftCount,
+    trashCount,
+    trashItems,
+    selectedItems,
+    userPanelRef,
+    toggleMenu,
+    toggleUserPanel,
+    closeUserPanel,
+    openTrashModal,
+    closeTrashModal,
+    handleSelectItem,
+    handlePermanentDelete,
+    handleRestore,
+  } = useNavbarViewModel();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -99,7 +38,7 @@ const Navbar = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [closeUserPanel, userPanelRef]);
 
   return (
     <>

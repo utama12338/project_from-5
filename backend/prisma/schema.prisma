@@ -15,6 +15,7 @@ model User {
   username    String    @unique
   email       String    @unique
   password    String
+  role        Role      @default(ADMIN)
   systems     SystemInfo[]  // การเชื่อมโยงกับ SystemInfo
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -28,7 +29,7 @@ model SystemInfo {
   vendorContactNo  String? @db.VarChar(50)
   businessUnit     String? @db.VarChar(100)
   developUnit      String? @db.VarChar(100)
-  conputerbackup   String? @db.VarChar(50)     // 'YES' or 'NO' NEW table
+  computerbackup   String? @db.VarChar(50)     // 'YES' or 'NO' NEW table
   draftStatus      DraftStatus @default(DRAFT)  // ใช้ค่า 'DRAFT' โดยตรง
   isDeleted        Boolean    @default(false)  // ฟิลด์ Soft Delete
   deletedAt        DateTime?  // เวลาที่ถูกลบ (null ถ้ายังไม่ถูกลบ)
@@ -114,7 +115,10 @@ model SecurityInfo {
 }
 
 
-
+enum Role {
+  ADMIN
+  SUPERUSER
+}
 
 enum DraftStatus {
   DRAFT

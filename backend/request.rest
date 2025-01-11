@@ -1,0 +1,27 @@
+@baseUrl = https://postgres-docker-prisma-typescript-day6.onrender.com
+
+# Get all users
+GET {{baseUrl}}/users
+
+###
+
+# Get user by id
+GET {{baseUrl}}/users/1
+
+###
+
+# Create a user
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "email": "somchai@email.com",
+  "firstName": "Somchai",
+  "lastName": "Sudlor",
+  "social": {
+    "facebook":"http://fb.com/somchai",
+    "website": "http://somchai.com"
+  }
+}
+
+

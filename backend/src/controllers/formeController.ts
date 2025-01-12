@@ -1098,9 +1098,38 @@ const updateforme_draft = async (req: Request, res: Response) => {
   }
 };
 
+const checkExistingSystem = async (req: Request, res: Response) => {
+  try {
+    const { systemName } = req.query;
+    
+    const existingSystem = await prisma.systemInfo.findFirst({
+      where: {
+        systemName: systemName as string,
+        isDeleted: false
+      }
+    });
 
+    res.json(existingSystem);
+  } catch (error) {
+    console.error('Error checking system:', error);
+    res.status(500).json({ error: 'Failed to check system' });
+  }
+};
 
-
-
-export { createforme,updateforme_draft,getformedraft,getformesoftdelete_Count,getformedraft_Count,cancelSoftDelete,updateforme, deleteforme, createpublish, getforme, getSystemById, createDraft, softdeleteforme }
+export { 
+  createforme,
+  updateforme_draft,
+  getformedraft,
+  getformesoftdelete_Count,
+  getformedraft_Count,
+  cancelSoftDelete,
+  updateforme,
+  deleteforme,
+  createpublish,
+  getforme,
+  getSystemById,
+  createDraft,
+  softdeleteforme,
+  checkExistingSystem 
+}
 

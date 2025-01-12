@@ -16,6 +16,8 @@ router.get("/getformedraft", formeController_1.getformedraft);
 router.get("/getSystemById/:id", formeController_1.getSystemById);
 router.get("/getformedraft_Count", formeController_1.getformedraft_Count);
 router.get("/getformesoftdelete_Count", formeController_1.getformesoftdelete_Count);
+//  csv check
+router.get('/api/system/check', formeController_1.checkExistingSystem);
 router.delete('/softdeleteforme/:id', formeController_1.softdeleteforme);
 router.delete('/deleteforme/:id', formeController_1.deleteforme);
 router.put('/cancelSoftDelete/:id', formeController_1.cancelSoftDelete);

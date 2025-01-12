@@ -42,7 +42,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.softdeleteforme = exports.createDraft = exports.getSystemById = exports.getforme = exports.createpublish = exports.deleteforme = exports.updateforme = exports.cancelSoftDelete = exports.getformedraft_Count = exports.getformesoftdelete_Count = exports.getformedraft = exports.updateforme_draft = exports.createforme = void 0;
+exports.checkExistingSystem = exports.softdeleteforme = exports.createDraft = exports.getSystemById = exports.getforme = exports.createpublish = exports.deleteforme = exports.updateforme = exports.cancelSoftDelete = exports.getformedraft_Count = exports.getformesoftdelete_Count = exports.getformedraft = exports.updateforme_draft = exports.createforme = void 0;
 const client_1 = require("@prisma/client");
 const Joi = __importStar(require("joi")); // เช็ค ค่าที่ส่งเข้ามายัง api
 const prisma = new client_1.PrismaClient(); // สร้าง instance ของ PrismaClient
@@ -1063,4 +1063,21 @@ const updateforme_draft = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.updateforme_draft = updateforme_draft;
+const checkExistingSystem = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { systemName } = req.query;
+        const existingSystem = yield prisma.systemInfo.findFirst({
+            where: {
+                systemName: systemName,
+                isDeleted: false
+            }
+        });
+        res.json(existingSystem);
+    }
+    catch (error) {
+        console.error('Error checking system:', error);
+        res.status(500).json({ error: 'Failed to check system' });
+    }
+});
+exports.checkExistingSystem = checkExistingSystem;
 //# sourceMappingURL=formeController.js.map

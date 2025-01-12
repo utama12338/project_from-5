@@ -4,11 +4,47 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Papa from 'papaparse';
 import Swal from 'sweetalert2';
+import CSVPreviewModal from './components/CSVPreviewModal';
+import { CSVValidationResult } from './types/csv';
 
 // Add interface for validation errors
 interface ValidationErrors {
   [key: string]: string;
 }
+
+// Add these constants at the top of the file, after imports
+const ENVIRONMENT_OPTIONS = ['DEV', 'SIT', 'UAT', 'PreProd', 'Prod'];
+const SERVER_TYPE_OPTIONS = [
+  'Physics',
+  'Network Device',
+  'WorkStation PC',
+  'Laptop',
+  'Virtualize Environment',
+  'Container'
+];
+const SERVER_ROLE_OPTIONS = [
+  'Database Server',
+  'Application Server',
+  'Web Server'
+];
+const SERVER_DUTY_OPTIONS = [
+  'Web Frontend',
+  'Service Web Backend',
+  'Backup Server',
+  'Database Server',
+  'Server Fileshare',
+  'Log Server',
+  'Gateway Server'
+];
+const PRODUCTION_UNIT_OPTIONS = [
+  'หน่วยโปรแกรมระบบ',
+  'หน่วยระบบงานคอมพิวเตอร์ 1',
+  'หน่วยระบบงานคอมพิวเตอร์ 2',
+  'หน่วยระบบงานคอมพิวเตอร์ 3',
+  'หน่วยระบบฐานข้อมูล',
+  'หน่วยระบบสนับสนุนนโยบายรัฐ',
+  'หน่วยระบบสนับสนุนงานธุรกิจ'
+];
 
 export default function CreateSystem() {
   const router = useRouter();
@@ -46,7 +82,7 @@ export default function CreateSystem() {
       productionUnit: ''
     }],
     connectionInfo: [{
-      ad: 'NO',
+      ad: 'NO', 
       adfs: 'NO',
       dns: 'NO',
       ntp: 'NO',
@@ -75,6 +111,10 @@ export default function CreateSystem() {
   // Add validation errors state
   const [errors, setErrors] = useState<ValidationErrors>({});
 
+  // Add state for CSV preview modal
+  const [showPreview, setShowPreview] = useState(false);
+  const [csvData, setCsvData] = useState<CSVValidationResult[]>([]);
+
   // ฟังก์ชันจัดการการเปลี่ยนแปลงข้อมูล (เหมือนเดิม)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -84,16 +124,117 @@ export default function CreateSystem() {
     }));
   };
 
-  const handleImportCSV = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const validateCSVRow = async (row: any, index: number): Promise<CSVValidationResult> => {
+    const errors: string[] = [];
+    let status: 'invalid' | 'incomplete' | 'update' | 'create' = 'create';
+    
+    // เช็คว่าเป็น empty row หรือไม่
+    const isEmpty = Object.values(row).every(value => !value || value.toString().trim() === '');
+    if (isEmpty) {
+      return {
+        row: index + 1,
+        data: row,
+        status: 'invalid',
+        errors: ['ข้อมูลว่างเปล่า'],
+        systemName: 'N/A'
+      };
+    }
+
+    // Validate required fields
+    const requiredFields = [
+      'systemName',
+      'developType',
+      'contractNo',
+      'vendorContactNo',
+      'businessUnit',
+      'developUnit',
+      'environment',
+      'serverName',
+      'ip'
+    ];
+
+    const missingFields = requiredFields.filter(field => !row[field] || row[field].toString().trim() === '');
+    if (missingFields.length > 0) {
+      status = 'incomplete';
+      errors.push(`ข้อมูลไม่ครบ: ${missingFields.join(', ')}`);
+    }
+
+    // Validate data formats
+    if (row.ip && !/^(\d{1,3}\.){3}\d{1,3}$/.test(row.ip)) {
+      errors.push('รูปแบบ IP Address ไม่ถูกต้อง');
+    }
+    
+    if (row.urlWebsite && !/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/.test(row.urlWebsite)) {
+      errors.push('รูปแบบ URL ไม่ถูกต้อง');
+    }
+
+    // ตรวจสอบว่าระบบมีอยู่แล้วหรือไม่
+    try {
+      const response = await axios.get(`http://localhost:4000/form/api/system/check?systemName=${row.systemName}`);
+      if (response.data) {
+        status = 'update';
+      }
+    } catch (error) {
+      console.error('Error checking system:', error);
+    }
+
+    // ถ้ามี error ให้เปลี่ยนสถานะเป็น invalid
+    if (errors.length > 0 && status !== 'incomplete') {
+      status = 'invalid';
+    }
+
+    return {
+      row: index + 1,
+      data: row,
+      status,
+      errors,
+      systemName: row.systemName || 'N/A'
+    };
+  };
+
+  const handleImportCSV = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      Papa.parse(file, {
-        complete: (results: any) => {
-          // แปลงข้อมูล CSV เป็น format ที่ต้องการ
-          console.log('Imported data:', results.data);
-          // TODO: แปลงข้อมูลและ set formData
-        },
-        header: true
+    if (!file) return;
+
+    Papa.parse(file, {
+      header: true,
+      complete: async (results) => {
+        const validationPromises = results.data.map((row: any, index: number) => 
+          validateCSVRow(row, index)
+        );
+
+        const validatedData = await Promise.all(validationPromises);
+        setCsvData(validatedData);
+        setShowPreview(true);
+      }
+    });
+  };
+
+  const handleConfirmImport = async () => {
+    try {
+      // Process each row based on status
+      for (const row of csvData) { 
+        if (row.status === 'invalid') continue;
+
+        const endpoint = row.status === 'update' ? '/api/system/update' : 
+                        row.status === 'incomplete' ? '/api/system/draft' : 
+                        '/api/system/create';
+
+        await axios.post(endpoint, row.data);
+      }
+
+      setShowPreview(false);
+      // Show success message
+      Swal.fire({
+        title: 'นำเข้าข้อมูลสำเร็จ',
+        icon: 'success'
+      });
+    } catch (error) {
+      console.error('Import error:', error);
+      Swal.fire({
+        title: 'เกิดข้อผิดพลาด',
+        text: 'ไม่สามารถนำเข้าข้อมูลได้',
+        icon: 'error'
       });
     }
   };
@@ -177,7 +318,10 @@ export default function CreateSystem() {
     }
   };
 
-  const handleEnvironmentChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleEnvironmentChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    index: number
+  ) => {
     const { name, value } = e.target;
     setFormData(prev => {
       const newEnvironmentInfo = [...prev.environmentInfo];
@@ -356,6 +500,14 @@ export default function CreateSystem() {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const handleClosePreview = () => {
+    setShowPreview(false);
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   return (
@@ -547,7 +699,7 @@ export default function CreateSystem() {
                       Computer Backup
                     </label>
                     <select
-                      name="computerBackup"
+                      name="computerbackup"
                       value={formData.computerbackup}
                       onChange={handleChange}
                       className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
@@ -559,7 +711,7 @@ export default function CreateSystem() {
                       <option value="YES">YES</option>
                     </select>
                     {errors.computerbackup && (
-                      <p className="mt-1 text-sm text-red-600">{errors.computerBackup}</p>
+                      <p className="mt-1 text-sm text-red-600">{errors.computerbackup}</p>
                     )}
                   </div>
                 </div>
@@ -599,16 +751,19 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-700">
                           Environment
                         </label>
-                        <input
-                          type="text"
+                        <select
                           name="environment"
                           value={env.environment}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
                             ${errors[`environment-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
                           required
-                          autoComplete="off"
-                        />
+                        >
+                          <option value="">Select Environment</option>
+                          {ENVIRONMENT_OPTIONS.map(option => (
+                            <option key={option} value={option}>{option}</option>
+                          ))}
+                        </select>
                         {errors[`environment-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`environment-${index}`]}</p>
                         )}
@@ -656,45 +811,54 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-700">
                           Server Type
                         </label>
-                        <input
-                          type="text"
+                        <select
                           name="serverType"
                           value={env.serverType}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                           required
-                          autoComplete="off"
-                        />
+                        >
+                          <option value="">Select Server Type</option>
+                          {SERVER_TYPE_OPTIONS.map(option => (
+                            <option key={option} value={option}>{option}</option>
+                          ))}
+                        </select>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700">
                           Server Role
                         </label>
-                        <input
-                          type="text"
+                        <select
                           name="serverRole"
                           value={env.serverRole}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                           required
-                          autoComplete="off"
-                        />
+                        >
+                          <option value="">Select Server Role</option>
+                          {SERVER_ROLE_OPTIONS.map(option => (
+                            <option key={option} value={option}>{option}</option>
+                          ))}
+                        </select>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700">
                           Server Duty
                         </label>
-                        <input
-                          type="text"
+                        <select
                           name="serverDuty"
                           value={env.serverDuty}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                           required
-                          autoComplete="off"
-                        />
+                        >
+                          <option value="">Select Server Duty</option>
+                          {SERVER_DUTY_OPTIONS.map(option => (
+                            <option key={option} value={option}>{option}</option>
+                          ))}
+                        </select>
                       </div>
 
                       <div>
@@ -707,6 +871,7 @@ export default function CreateSystem() {
                           value={env.database}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          placeholder="Database management"
                           required
                           autoComplete="off"
                         />
@@ -722,6 +887,7 @@ export default function CreateSystem() {
                           value={env.application}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          placeholder="Supporting software IIS .net framework"
                           required
                           autoComplete="off"
                         />
@@ -821,60 +987,69 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-700">
                           DR
                         </label>
-                        <input
-                          type="text"
+                        <select
                           name="dr"
                           value={env.dr}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                           required
-                          autoComplete="off"
-                        />
+                        >
+                          <option value="">Select DR/DC</option>
+                          <option value="DR">DR</option>
+                          <option value="DC">DC</option>
+                        </select>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700">
                           Join Domain
                         </label>
-                        <input
-                          type="text"
+                        <select
                           name="joinDomain"
                           value={env.joinDomain}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                           required
-                          autoComplete="off"
-                        />
+                        >
+                          <option value="">Select Option</option>
+                          <option value="YES">YES</option>
+                          <option value="NO">NO</option>
+                        </select>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700">
                           Windows Cluster
                         </label>
-                        <input
-                          type="text"
+                        <select
                           name="windowsCluster"
                           value={env.windowsCluster}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                           required
-                          autoComplete="off"
-                        />
+                        >
+                          <option value="">Select Option</option>
+                          <option value="YES">YES</option>
+                          <option value="NO">NO</option>
+                        </select>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700">
                           Production Unit
                         </label>
-                        <input
-                          type="text"
+                        <select
                           name="productionUnit"
                           value={env.productionUnit}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                           required
-                          autoComplete="off"
-                        />
+                        >
+                          <option value="">Select Production Unit</option>
+                          {PRODUCTION_UNIT_OPTIONS.map(option => (
+                            <option key={option} value={option}>{option}</option>
+                          ))}
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -1324,6 +1499,12 @@ export default function CreateSystem() {
           </form>
         </div>
       </div>
+      <CSVPreviewModal 
+        isOpen={showPreview}
+        onClose={handleClosePreview}
+        data={csvData}
+        onConfirm={handleConfirmImport}
+      />
     </div>
   );
 }

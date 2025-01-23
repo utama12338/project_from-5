@@ -5,6 +5,39 @@ import { Share2, Save,Plus } from 'lucide-react';
 import { useParams,useRouter } from 'next/navigation';
 import axios from 'axios';
 
+const ENVIRONMENT_OPTIONS = ['DEV', 'SIT', 'UAT', 'PreProd', 'Prod'];
+const SERVER_TYPE_OPTIONS = [
+  'Physics',
+  'Network Device',
+  'WorkStation PC',
+  'Laptop',
+  'Virtualize Environment',
+  'Container'
+];
+const SERVER_ROLE_OPTIONS = [
+  'Database Server',
+  'Application Server',
+  'Web Server'
+];
+const SERVER_DUTY_OPTIONS = [
+  'Web Frontend',
+  'Service Web Backend',
+  'Backup Server',
+  'Database Server',
+  'Server Fileshare',
+  'Log Server',
+  'Gateway Server'
+];
+const PRODUCTION_UNIT_OPTIONS = [
+  'หน่วยโปรแกรมระบบ',
+  'หน่วยระบบงานคอมพิวเตอร์ 1',
+  'หน่วยระบบฐานข้อมูล',
+  'หน่วยระบบงานคอมพิวเตอร์ 2',
+  'หน่วยระบบงานคอมพิวเตอร์ 3',
+  'หน่วยระบบสนับสนุนนโยบายรัฐ',
+  'หน่วยระบบสนับสนุนงานธุรกิจ'
+];
+
 interface SystemData {
   id: number;
   systemName: string;
@@ -12,7 +45,7 @@ interface SystemData {
   contractNo: string;
   vendorContactNo: string;
   businessUnit: string;
-  developUnit: string;
+  developUnit: string | string[];
   computerbackup: string;
   environmentInfo: EnvironmentInfo[];
   connectionInfo: ConnectionInfo[];
@@ -37,7 +70,7 @@ interface EnvironmentInfo {
   dr: string;
   joinDomain: string;
   windowsCluster: string;
-  productionUnit: string;
+  productionUnit: string | string[]; // เปลี่ยนเป็นรับได้ทั้ง string และ array
 }
 
 interface ConnectionInfo {
@@ -75,7 +108,7 @@ const defaultSystemData: SystemData = {
   vendorContactNo: '',
   businessUnit: '',
   developUnit: '',
-  draftStatus: '',
+  computerbackup: '',
   environmentInfo: [{
     environment: '',
     serverName: '',
@@ -153,41 +186,88 @@ const FormField = ({
   </div>
 );
 // option
+interface FormFieldOptionProps {
+  label: string;
+  value: string | string[];
+  onChange?: (value: string | string[]) => void;
+  options: string[];
+  multiple?: boolean;
+}
+
 const FormFieldOption = ({
   label,
   value,
   onChange,
-  options
-}: {
-  label: string;
-  value: string;
-  onChange?: (value: string) => void;
-  options: string[]; // เพิ่ม props สำหรับตัวเลือก dropdown
-}) => (
+  options,
+  multiple = false
+}: FormFieldOptionProps) => (
   <div className="mb-4">
     <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
-    <select
-      className="w-full rounded-md border border-gray-300 shadow-sm p-2 
-                 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                 hover:border-gray-400 transition-colors"
-      value={value || ''}
-      onChange={(e) => onChange?.(e.target.value)}
-    >
-      {options.map((option, index) => (
-        <option key={index} value={option}>
-          {option}
-        </option>
-      ))}
-    </select>
+    {multiple ? (
+      <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 border rounded-md">
+        {options.map((option) => {
+          const isSelected = Array.isArray(value) 
+            ? value.includes(option)
+            : typeof value === 'string' 
+              ? value.split(',').includes(option)
+              : false;
+
+          return (
+            <div key={option} className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id={`${label}-${option}`}
+                checked={isSelected}
+                onChange={(e) => {
+                  if (onChange) {
+                    const currentValues = Array.isArray(value) 
+                      ? value 
+                      : typeof value === 'string'
+                        ? value.split(',').filter(Boolean)
+                        : [];
+                    
+                    const newValues = e.target.checked
+                      ? [...currentValues, option]
+                      : currentValues.filter(v => v !== option);
+                    
+                    onChange(newValues);
+                  }
+                }}
+                className="h-4 w-4 focus:ring-indigo-500 border-gray-300 rounded text-indigo-600"
+              />
+              <label htmlFor={`${label}-${option}`} className="text-sm text-gray-700">
+                {option}
+              </label>
+            </div>
+          );
+        })}
+      </div>
+    ) : (
+      <select
+        className="w-full rounded-md border border-gray-300 shadow-sm p-2 
+                   focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                   hover:border-gray-400 transition-colors"
+        value={value as string}
+        onChange={(e) => onChange?.(e.target.value)}
+      >
+        <option value="">Select {label}</option>
+        {options.map((option, index) => (
+          <option key={index} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    )}
   </div>
 );
 
 
 // option
-const updateArrayItemField = (array: any[], index: number, field: string, value: string) => {
+const updateArrayItemField = (array: any[], index: number, field: string, value: string | string[]) => {
   return array.map((item, i) => {
     if (i === index) {
-      return { ...item, [field]: value };
+      const finalValue = Array.isArray(value) ? value.join(',') : value;
+      return { ...item, [field]: finalValue };
     }
     return item;
   });
@@ -250,7 +330,7 @@ export default function EditSystem() {
         
         // หลังจากบันทึกสำเร็จให้ทำการนำทาง
         
-        return router.push('/forme');
+        return router.push('/frome');
       } else {
         throw new Error('ไม่สามารถบันทึกข้อมูลได้');
       }
@@ -262,28 +342,39 @@ export default function EditSystem() {
   
   
 
-  const updateSystemField = (field: keyof SystemData, value: string) => {
+  const updateSystemField = (field: keyof SystemData, value: string | string[]) => {
     setSystemData(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
-  const updateEnvironmentInfo = (index: number, field: keyof EnvironmentInfo, value: string) => {
+  const updateEnvironmentInfo = (index: number, field: keyof EnvironmentInfo, value: string | string[]) => {
     setSystemData(prev => ({
       ...prev,
-      environmentInfo: updateArrayItemField(prev.environmentInfo, index, field, value)
+      environmentInfo: prev.environmentInfo.map((item, i) => {
+        if (i === index) {
+          // เก็บค่า array โดยตรงสำหรับ productionUnit
+          if (field === 'productionUnit') {
+            return { ...item, [field]: value };
+          }
+          // สำหรับฟิลด์อื่นๆ ยังคงใช้การแปลงเป็น string
+          const finalValue = Array.isArray(value) ? value.join(',') : value;
+          return { ...item, [field]: finalValue };
+        }
+        return item;
+      })
     }));
   };
 
-  const updateConnectionInfo = (index: number, field: keyof ConnectionInfo, value: string) => {
+  const updateConnectionInfo = (index: number, field: keyof ConnectionInfo, value: string | string[]) => {
     setSystemData(prev => ({
       ...prev,
       connectionInfo: updateArrayItemField(prev.connectionInfo, index, field, value)
     }));
   };
 
-  const updateSecurityInfo = (index: number, field: keyof SecurityInfo, value: string) => {
+  const updateSecurityInfo = (index: number, field: keyof SecurityInfo, value: string | string[]) => {
     setSystemData(prev => ({
       ...prev,
       securityInfo: updateArrayItemField(prev.securityInfo, index, field, value)
@@ -405,9 +496,21 @@ const renderSystemInfo = () => (
       <FormFieldOption
         label="หน่วยพัฒนา" 
         value={systemData.developUnit} 
-        onChange={(value) => updateSystemField('developUnit', value)}
+        onChange={(value) => {
+          const finalValue = Array.isArray(value) ? value.join(',') : value;
+          updateSystemField('developUnit', finalValue);
+        }}
         options={['ฝรล.', 'ส่วนระบบงานสนับสนุน','ระบบสนับสนุนนโยบายรัฐ','ธนรัตน์ เกรอด']}
       />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {/* ...existing fields... */}
+    <FormFieldOption
+      label="Computer Backup"
+      value={systemData.computerbackup}
+      onChange={(value) => updateSystemField('computerbackup', value)}
+      options={['YES', 'NO']}
+    />
+  </div>
       {/* <FormField 
         label="สถานะ" 
         value={systemData.draftStatus} 
@@ -424,35 +527,39 @@ const renderEnvironmentInfo = () => (
             สภาพแวดล้อม {index + 1}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField 
-              label="สภาพแวดล้อม" 
+            <FormFieldOption
+              label="Environment"
               value={env.environment}
               onChange={(value) => updateEnvironmentInfo(index, 'environment', value)}
+              options={ENVIRONMENT_OPTIONS}
             />
             <FormField 
-              label="ชื่อเซิร์ฟเวอร์" 
+              label="Server Name" 
               value={env.serverName}
               onChange={(value) => updateEnvironmentInfo(index, 'serverName', value)}
             />
-             <FormField 
-              label="ไอพี" 
+            <FormField 
+              label="IP" 
               value={env.ip}
               onChange={(value) => updateEnvironmentInfo(index, 'ip', value)}
             />
-            <FormField 
-              label="ประเภทเซิร์ฟเวอร์" 
+            <FormFieldOption
+              label="Server Type"
               value={env.serverType}
               onChange={(value) => updateEnvironmentInfo(index, 'serverType', value)}
+              options={SERVER_TYPE_OPTIONS}
             />
-             <FormField 
-              label="บทบาทเซิร์ฟเวอร์" 
+            <FormFieldOption
+              label="Server Role"
               value={env.serverRole}
               onChange={(value) => updateEnvironmentInfo(index, 'serverRole', value)}
+              options={SERVER_ROLE_OPTIONS}
             />
-            <FormField 
-              label="หน้าที่เซิร์ฟเวอร์" 
+            <FormFieldOption
+              label="Server Duty"
               value={env.serverDuty}
               onChange={(value) => updateEnvironmentInfo(index, 'serverDuty', value)}
+              options={SERVER_DUTY_OPTIONS}
             />
             <FormField 
               label="ฐานข้อมูล" 
@@ -494,25 +601,36 @@ const renderEnvironmentInfo = () => (
               value={env.disk}
               onChange={(value) => updateEnvironmentInfo(index, 'disk', value)}
             />
-               <FormField 
-              label="DR" 
+
+            <FormFieldOption
+              label="DR"
               value={env.dr}
               onChange={(value) => updateEnvironmentInfo(index, 'dr', value)}
+              options={['DR', 'DC']}
             />
-               <FormField 
-              label="Join Domain" 
+            <FormFieldOption
+              label="Join Domain"
               value={env.joinDomain}
               onChange={(value) => updateEnvironmentInfo(index, 'joinDomain', value)}
+              options={['YES', 'NO']}
             />
-             <FormField 
-              label="Windows Cluster" 
+            <FormFieldOption
+              label="Windows Cluster"
               value={env.windowsCluster}
               onChange={(value) => updateEnvironmentInfo(index, 'windowsCluster', value)}
+              options={['YES', 'NO']}
             />
-             <FormField 
-              label="หน่วยงานที่ดูแล" 
-              value={env.productionUnit}
-              onChange={(value) => updateEnvironmentInfo(index, 'productionUnit', value)}
+                        <FormFieldOption
+              label="Production Unit"
+              value={Array.isArray(env.productionUnit) 
+                ? env.productionUnit 
+                : env.productionUnit.split(',').filter(Boolean)}
+              onChange={(value) => {
+                // ส่งค่าเป็น array โดยตรง ไม่ต้องแปลงเป็น string
+                updateEnvironmentInfo(index, 'productionUnit', value);
+              }}
+              options={PRODUCTION_UNIT_OPTIONS}
+              multiple={true}
             />
           </div>
           <div className="flex justify-end mt-4">
@@ -661,39 +779,43 @@ const renderSecurityInfo = () => (
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField 
-              label="URL เว็บไซต์" 
+              label="URL Website" 
               value={security.urlWebsite}
               onChange={(value) => updateSecurityInfo(index, 'urlWebsite', value)}
             />
-            <FormField 
-              label="วันหมดอายุใบรับรอง" 
+            <input
+              type="date"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
               value={security.certificateExpireDate}
-              onChange={(value) => updateSecurityInfo(index, 'certificateExpireDate', value)}
+              onChange={(e) => updateSecurityInfo(index, 'certificateExpireDate', e.target.value)}
             />
-             <FormField 
-              label="นโยบายสำรองข้อมูล" 
+            <FormField 
+              label="Backup Policy" 
               value={security.backupPolicy}
               onChange={(value) => updateSecurityInfo(index, 'backupPolicy', value)}
             />
-             <FormField 
-              label="ช่วงเวลา Downtime ที่ยอมรับได้" 
+            <FormField 
+              label="Downtime Allowed" 
               value={security.downtimeAllowed}
               onChange={(value) => updateSecurityInfo(index, 'downtimeAllowed', value)}
             />
-             <FormField 
-              label="Centralize Log" 
+            <FormFieldOption
+              label="Centralize Log"
               value={security.centralizeLog}
               onChange={(value) => updateSecurityInfo(index, 'centralizeLog', value)}
+              options={['YES', 'NO']}
             />
-              <FormField 
-              label="Setup Agent Patch" 
+            <FormFieldOption
+              label="Setup Agent Patch"
               value={security.setupAgentPatch}
               onChange={(value) => updateSecurityInfo(index, 'setupAgentPatch', value)}
+              options={['YES', 'NO']}
             />
-               <FormField 
-              label="Internet Facing" 
+            <FormFieldOption
+              label="Internet Facing"
               value={security.internetFacing}
               onChange={(value) => updateSecurityInfo(index, 'internetFacing', value)}
+              options={['YES', 'NO']}
             />
           </div>
           <div className="flex justify-end mt-4">

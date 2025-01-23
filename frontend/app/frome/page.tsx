@@ -54,28 +54,30 @@ export default function SystemList() {
         </Link>
         <h1 className="text-2xl font-bold text-gray-900">ระบบทั้งหมด</h1>
         <div className="flex space-x-3">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setShowSearchModal(true)}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg flex items-center"
-          >
-            <i className="fas fa-search mr-2"></i>
-            ค้นหา
-          </motion.button>
-          {isFiltering && (
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={clearSearch}
-              className="px-4 py-2 bg-gray-500 text-white rounded-lg"
-            >
-              ล้างการค้นหา
-            </motion.button>
-          )}
-          {selectedItems.length > 0 && (
+          {selectedItems.length === 0 ? (
             <>
-
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowSearchModal(true)}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg flex items-center"
+              >
+                <i className="fas fa-search mr-2"></i>
+                ค้นหา
+              </motion.button>
+              {isFiltering && (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={clearSearch}
+                  className="px-4 py-2 bg-gray-500 text-white rounded-lg"
+                >
+                  ล้างการค้นหา
+                </motion.button>
+              )}
+            </>
+          ) : (
+            <>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

@@ -42,71 +42,70 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkExistingSystem = exports.softdeleteforme = exports.createDraft = exports.getSystemById = exports.getforme = exports.createpublish = exports.deleteforme = exports.updateforme = exports.cancelSoftDelete = exports.getformedraft_Count = exports.getformesoftdelete_Count = exports.getformedraft = exports.updateforme_draft = exports.createforme = void 0;
+exports.searchSystems = exports.checkExistingSystem = exports.deletefrome = exports.updateforme = exports.getSystemById = exports.getforme = exports.createfrome = void 0;
 const client_1 = require("@prisma/client");
-const Joi = __importStar(require("joi")); // เช็ค ค่าที่ส่งเข้ามายัง api
-const prisma = new client_1.PrismaClient(); // สร้าง instance ของ PrismaClient
-const createforme = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const Joi = __importStar(require("joi"));
+const prisma = new client_1.PrismaClient();
+const systemSchema = Joi.object({
+    // userId: Joi.number().optional(),
+    id: Joi.number().optional(),
+    systemName: Joi.string().required(),
+    developType: Joi.string().valid('OUTSOURCE', 'IN HOUSE').required(),
+    contractNo: Joi.string().required(),
+    vendorContactNo: Joi.string().required(),
+    businessUnit: Joi.string().required(),
+    developUnit: Joi.string().required(),
+    computerbackup: Joi.string().required(),
+    environmentInfo: Joi.array().items(Joi.object({
+        environment: Joi.string().optional(),
+        serverName: Joi.string().optional(),
+        ip: Joi.string().optional(),
+        serverType: Joi.string().optional(),
+        serverRole: Joi.string().optional(),
+        serverDuty: Joi.string().optional(),
+        database: Joi.string().optional(),
+        application: Joi.string().optional(),
+        operatingSystem: Joi.string().optional(),
+        servicePack: Joi.string().optional(),
+        build: Joi.string().optional(),
+        cpu: Joi.string().optional(),
+        ram: Joi.string().optional(),
+        disk: Joi.string().optional(),
+        dr: Joi.string().optional(),
+        joinDomain: Joi.string().optional(),
+        windowsCluster: Joi.string().optional(),
+        productionUnit: Joi.array().items(Joi.string()).optional(),
+    })).optional(),
+    connectionInfo: Joi.array().items(Joi.object({
+        ad: Joi.string().optional(),
+        adfs: Joi.string().optional(),
+        dns: Joi.string().optional(),
+        ntp: Joi.string().optional(),
+        tpam: Joi.string().optional(),
+        netka: Joi.string().optional(),
+        fim: Joi.string().optional(),
+        ftpServer: Joi.string().optional(),
+        ftpGoAnywhereMFTServer: Joi.string().optional(),
+        emailSmtp: Joi.string().optional(),
+        sms: Joi.string().optional(),
+        apiManagement: Joi.string().optional(),
+        dv: Joi.string().optional(),
+        snmp: Joi.string().optional(),
+    })).optional(),
+    securityInfo: Joi.array().items(Joi.object({
+        urlWebsite: Joi.string().optional(),
+        certificateExpireDate: Joi.string().optional(),
+        backupPolicy: Joi.string().optional(),
+        downtimeAllowed: Joi.string().optional(),
+        centralizeLog: Joi.string().optional(),
+        setupAgentPatch: Joi.string().optional(),
+        internetFacing: Joi.string().optional(),
+    })).optional(),
+});
+// Create system (เดิมคือ createforme)
+const createfrome = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const systemInput = req.body;
-    console.log('Request body:', systemInput);
-    // Validation schema
-    const schema = Joi.object({
-        userId: Joi.number().optional(),
-        systemName: Joi.string().required(),
-        developType: Joi.string().valid('OUTSOURCE', 'IN HOUSE').required(),
-        contractNo: Joi.string().required(),
-        vendorContactNo: Joi.string().required(),
-        businessUnit: Joi.string().required(),
-        developUnit: Joi.string().required(),
-        computerbackup: Joi.string().required(),
-        draftStatus: Joi.string().valid('DRAFT', 'PUBLISH'),
-        environmentInfo: Joi.array().items(Joi.object({
-            environment: Joi.string().required(),
-            serverName: Joi.string().required(),
-            ip: Joi.string().required(),
-            serverType: Joi.string().required(),
-            serverRole: Joi.string().required(),
-            serverDuty: Joi.string().required(),
-            database: Joi.string().required(),
-            application: Joi.string().required(),
-            operatingSystem: Joi.string().required(),
-            servicePack: Joi.string().required(),
-            build: Joi.string().required(),
-            cpu: Joi.string().required(),
-            ram: Joi.string().required(),
-            disk: Joi.string().required(),
-            dr: Joi.string().required(),
-            joinDomain: Joi.string().required(),
-            windowsCluster: Joi.string().required(),
-            productionUnit: Joi.string().required(),
-        })).required(),
-        connectionInfo: Joi.array().items(Joi.object({
-            ad: Joi.string().required(),
-            adfs: Joi.string().required(),
-            dns: Joi.string().required(),
-            ntp: Joi.string().required(),
-            tpam: Joi.string().required(),
-            netka: Joi.string().required(),
-            fim: Joi.string().required(),
-            ftpServer: Joi.string().required(),
-            ftpGoAnywhereMFTServer: Joi.string().required(),
-            emailSmtp: Joi.string().required(),
-            sms: Joi.string().required(),
-            apiManagement: Joi.string().required(),
-            dv: Joi.string().required(),
-            snmp: Joi.string().required(),
-        })).required(),
-        securityInfo: Joi.array().items(Joi.object({
-            urlWebsite: Joi.string().required(),
-            certificateExpireDate: Joi.string().required(),
-            backupPolicy: Joi.string().required(),
-            downtimeAllowed: Joi.string().required(),
-            centralizeLog: Joi.string().required(),
-            setupAgentPatch: Joi.string().required(),
-            internetFacing: Joi.string().required(),
-        })).required(),
-    });
-    const { error } = schema.validate(systemInput);
+    const { error } = systemSchema.validate(systemInput);
     if (error) {
         return res.status(400).json({ errors: error.details.map(detail => detail.message) });
     }
@@ -121,7 +120,6 @@ const createforme = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 businessUnit: systemInput.businessUnit,
                 developUnit: systemInput.developUnit,
                 computerbackup: systemInput.computerbackup,
-                draftStatus: systemInput.draftStatus,
                 environmentInfo: {
                     create: systemInput.environmentInfo,
                 },
@@ -132,213 +130,25 @@ const createforme = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                     create: systemInput.securityInfo,
                 },
             },
-        });
-        res.status(201).json(system);
-    }
-    catch (err) {
-        console.error('Error creating system:', err);
-        return res.status(500).json({ error: 'เกิดข้อผิดพลาดในการสร้างข้อมูลระบบ' });
-    }
-});
-exports.createforme = createforme;
-const createpublish = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const systemInput = req.body; // ใช้ประเภทข้อมูลพื้นฐาน
-    console.log(req.body);
-    // validation schema
-    const schema = Joi.object({
-        userId: Joi.number().optional(),
-        systemName: Joi.string(),
-        developType: Joi.string().valid('OUTSOURCE', 'IN HOUSE').required(),
-        contractNo: Joi.string().required(),
-        vendorContactNo: Joi.string().required(),
-        businessUnit: Joi.string().required(),
-        developUnit: Joi.string().required(),
-        // draftStatus: Joi.string().valid('DRAFT', 'PUBLISH').required(), // เพิ่ม validation สำหรับ status
-        environmentInfo: Joi.array().items(Joi.object({
-            environment: Joi.string().required(),
-            serverName: Joi.string().required(),
-            ip: Joi.string().required(),
-            serverType: Joi.string().required(),
-            serverRole: Joi.string().required(),
-            serverDuty: Joi.string().required(),
-            database: Joi.string().required(),
-            application: Joi.string().required(),
-            operatingSystem: Joi.string().required(),
-            servicePack: Joi.string().required(),
-            build: Joi.string().required(),
-            cpu: Joi.string().required(),
-            ram: Joi.string().required(),
-            disk: Joi.string().required(),
-            dr: Joi.string().required(),
-            joinDomain: Joi.string().required(),
-            windowsCluster: Joi.string().required(),
-            productionUnit: Joi.string().required(),
-        })).required(),
-        connectionInfo: Joi.array().items(Joi.object({
-            ad: Joi.string().required(),
-            adfs: Joi.string().required(),
-            dns: Joi.string().required(),
-            ntp: Joi.string().required(),
-            tpam: Joi.string().required(),
-            netka: Joi.string().required(),
-            fim: Joi.string().required(),
-            ftpServer: Joi.string().required(),
-            ftpGoAnywhereMFTServer: Joi.string().required(),
-            emailSmtp: Joi.string().required(),
-            sms: Joi.string().required(),
-            apiManagement: Joi.string().required(),
-            dv: Joi.string().required(),
-            snmp: Joi.string().required(),
-        })).required(),
-        securityInfo: Joi.array().items(Joi.object({
-            urlWebsite: Joi.string().required(),
-            certificateExpireDate: Joi.string().required(),
-            backupPolicy: Joi.string().required(),
-            downtimeAllowed: Joi.string().required(),
-            centralizeLog: Joi.string().required(),
-            setupAgentPatch: Joi.string().required(),
-            internetFacing: Joi.string().required(),
-        })).required(),
-    });
-    const { error } = schema.validate(systemInput);
-    if (error) {
-        return res.status(400).json({ errors: error.details.map(detail => detail.message) });
-    }
-    try {
-        // Find the existing draft system
-        const existingSystem = yield prisma.systemInfo.findUnique({
-            where: {
-                id: parseInt(id),
-                draftStatus: "DRAFT",
-                isDeleted: false, // Only find records that were not soft deleted
-            },
-        });
-        if (!existingSystem) {
-            return res.status(404).json({ message: 'ไม่พบ Form Draft หรือ draft นั้นถูก Publish ไปแล้ว' });
-        }
-        // Create a new system based on the draft
-        const system = yield prisma.systemInfo.create({
-            data: {
-                draftStatus: "PUBLISH",
-                environmentInfo: {
-                    create: systemInput.environmentInfo,
-                },
-                connectionInfo: {
-                    create: systemInput.connectionInfo,
-                },
-                securityInfo: {
-                    create: systemInput.securityInfo,
-                },
-            },
-        });
-        //update status of draft to publish
-        const restoredSystem = yield prisma.systemInfo.update({
-            where: {
-                id: parseInt(id)
-            },
-            data: {
-                draftStatus: "PUBLISH"
+            include: {
+                environmentInfo: true,
+                connectionInfo: true,
+                securityInfo: true,
             }
         });
         res.status(201).json(system);
     }
-    catch (err) {
-        console.error(err.message);
-        res.status(500).json({ error: 'เกิดข้อผิดพลาดในการสร้างข้อมูลระบบ' });
+    catch (error) {
+        console.error('Error creating system:', error);
+        res.status(500).json({ error: 'Failed to create system' });
     }
 });
-exports.createpublish = createpublish;
-const createDraft = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const systemInput = req.body;
-    const schema = Joi.object({
-        userId: Joi.number().optional(),
-        systemName: Joi.string().optional().empty(""),
-        developType: Joi.string().optional().empty(""),
-        contractNo: Joi.string().optional().empty(""),
-        vendorContactNo: Joi.string().optional().empty(""),
-        businessUnit: Joi.string().optional().empty(""),
-        developUnit: Joi.string().optional().empty(""),
-        computerbackup: Joi.string().optional().empty(""),
-        draftStatus: Joi.forbidden(), // ไม่อนุญาตให้ผู้ใช้ส่งค่า
-        environmentInfo: Joi.array().items(Joi.object({
-            environment: Joi.string().optional().empty(""),
-            serverName: Joi.string().optional().empty(""),
-            ip: Joi.string().optional().empty(""),
-            serverType: Joi.string().optional().empty(""),
-            serverRole: Joi.string().optional().empty(""),
-            serverDuty: Joi.string().optional().empty(""),
-            database: Joi.string().optional().empty(""),
-            application: Joi.string().optional().empty(""),
-            operatingSystem: Joi.string().optional().empty(""),
-            servicePack: Joi.string().optional().empty(""),
-            build: Joi.string().optional().empty(""),
-            cpu: Joi.string().optional().empty(""),
-            ram: Joi.string().optional().empty(""),
-            disk: Joi.string().optional().empty(""),
-            dr: Joi.string().optional().empty(""),
-            joinDomain: Joi.string().optional().empty(""),
-            windowsCluster: Joi.string().optional().empty(""),
-            productionUnit: Joi.string().optional().empty(""),
-        })).optional(),
-        connectionInfo: Joi.array().items(Joi.object({
-            ad: Joi.string().optional().empty(""),
-            adfs: Joi.string().optional().empty(""),
-            dns: Joi.string().optional().empty(""),
-            ntp: Joi.string().optional().empty(""),
-            tpam: Joi.string().optional().empty(""),
-            netka: Joi.string().optional().empty(""),
-            fim: Joi.string().optional().empty(""),
-            ftpServer: Joi.string().optional().empty(""),
-            ftpGoAnywhereMFTServer: Joi.string().optional().empty(""),
-            emailSmtp: Joi.string().optional().empty(""),
-            sms: Joi.string().optional().empty(""),
-            apiManagement: Joi.string().optional().empty(""),
-            dv: Joi.string().optional().empty(""),
-            snmp: Joi.string().optional().empty(""),
-        })).optional(),
-        securityInfo: Joi.array().items(Joi.object({
-            urlWebsite: Joi.string().optional().empty(""),
-            certificateExpireDate: Joi.string().optional().empty(""),
-            backupPolicy: Joi.string().optional().empty(""),
-            downtimeAllowed: Joi.string().optional().empty(""),
-            centralizeLog: Joi.string().optional().empty(""),
-            setupAgentPatch: Joi.string().optional().empty(""),
-            internetFacing: Joi.string().optional().empty(""),
-        })).optional(),
-    });
-    const { error } = schema.validate(systemInput);
-    if (error) {
-        return res.status(400).json({ errors: error.details.map(detail => detail.message) });
-    }
-    const system = yield prisma.systemInfo.create({
-        data: { userId: systemInput.userId,
-            systemName: systemInput.systemName,
-            developType: systemInput.developType,
-            contractNo: systemInput.contractNo,
-            vendorContactNo: systemInput.vendorContactNo,
-            businessUnit: systemInput.businessUnit,
-            developUnit: systemInput.developUnit,
-            computerbackup: systemInput.computerbackup,
-            draftStatus: systemInput.draftStatus,
-            environmentInfo: {
-                create: systemInput.environmentInfo,
-            },
-            connectionInfo: {
-                create: systemInput.connectionInfo,
-            },
-            securityInfo: {
-                create: systemInput.securityInfo,
-            }, }
-    });
-    res.status(201).json(system);
-});
-exports.createDraft = createDraft;
+exports.createfrome = createfrome;
+// Get all systems (เดิมคือ getforme)
 const getforme = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const systems = yield prisma.systemInfo.findMany({
             include: {
-                // ดึงข้อมูลจากตารางที่เกี่ยวข้องทั้งหมด
                 environmentInfo: true,
                 connectionInfo: true,
                 securityInfo: true,
@@ -350,76 +160,11 @@ const getforme = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     }
                 }
             },
-            where: {
-                // เพิ่มเงื่อนไขสำหรับ soft delete
-                isDeleted: false,
-                draftStatus: 'PUBLISH'
-            },
             orderBy: {
-                // เรียงตามวันที่สร้างล่าสุด
                 createdAt: 'desc'
             }
         });
-        // จัดรูปแบบข้อมูลให้ตรงกับ formData structure
-        const formattedSystems = systems.map(system => ({
-            id: system.id,
-            systemName: system.systemName,
-            developType: system.developType,
-            contractNo: system.contractNo,
-            vendorContactNo: system.vendorContactNo,
-            businessUnit: system.businessUnit,
-            developUnit: system.developUnit,
-            draftStatus: system.draftStatus,
-            environmentInfo: system.environmentInfo.map(env => ({
-                environment: env.environment,
-                serverName: env.serverName,
-                ip: env.ip,
-                serverType: env.serverType,
-                serverRole: env.serverRole,
-                serverDuty: env.serverDuty,
-                database: env.database,
-                application: env.application,
-                operatingSystem: env.operatingSystem,
-                servicePack: env.servicePack,
-                build: env.build,
-                cpu: env.cpu,
-                ram: env.ram,
-                disk: env.disk,
-                dr: env.dr,
-                joinDomain: env.joinDomain,
-                windowsCluster: env.windowsCluster,
-                productionUnit: env.productionUnit
-            })),
-            connectionInfo: system.connectionInfo.map(conn => ({
-                ad: conn.ad,
-                adfs: conn.adfs,
-                dns: conn.dns,
-                ntp: conn.ntp,
-                tpam: conn.tpam,
-                netka: conn.netka,
-                fim: conn.fim,
-                ftpServer: conn.ftpServer,
-                ftpGoAnywhereMFTServer: conn.ftpGoAnywhereMFTServer,
-                emailSmtp: conn.emailSmtp,
-                sms: conn.sms,
-                apiManagement: conn.apiManagement,
-                dv: conn.dv,
-                snmp: conn.snmp
-            })),
-            securityInfo: system.securityInfo.map(security => ({
-                urlWebsite: security.urlWebsite,
-                certificateExpireDate: security.certificateExpireDate,
-                backupPolicy: security.backupPolicy,
-                downtimeAllowed: security.downtimeAllowed,
-                centralizeLog: security.centralizeLog,
-                setupAgentPatch: security.setupAgentPatch,
-                internetFacing: security.internetFacing
-            })),
-            user: system.user,
-            createdAt: system.createdAt,
-            updatedAt: system.updatedAt
-        }));
-        res.json(formattedSystems);
+        res.json(systems);
     }
     catch (error) {
         console.error('Error fetching systems:', error);
@@ -427,271 +172,20 @@ const getforme = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getforme = getforme;
-const getformedraft = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const systems = yield prisma.systemInfo.findMany({
-            include: {
-                // ดึงข้อมูลจากตารางที่เกี่ยวข้องทั้งหมด
-                environmentInfo: true,
-                connectionInfo: true,
-                securityInfo: true,
-                user: {
-                    select: {
-                        id: true,
-                        username: true,
-                        email: true
-                    }
-                }
-            },
-            where: {
-                // เพิ่มเงื่อนไขสำหรับ soft delete
-                isDeleted: false,
-                draftStatus: 'DRAFT'
-            },
-            orderBy: {
-                // เรียงตามวันที่สร้างล่าสุด
-                createdAt: 'desc'
-            }
-        });
-        // จัดรูปแบบข้อมูลให้ตรงกับ formData structure
-        const formattedSystems = systems.map(system => ({
-            id: system.id,
-            systemName: system.systemName,
-            developType: system.developType,
-            contractNo: system.contractNo,
-            vendorContactNo: system.vendorContactNo,
-            businessUnit: system.businessUnit,
-            developUnit: system.developUnit,
-            draftStatus: system.draftStatus,
-            environmentInfo: system.environmentInfo.map(env => ({
-                environment: env.environment,
-                serverName: env.serverName,
-                ip: env.ip,
-                serverType: env.serverType,
-                serverRole: env.serverRole,
-                serverDuty: env.serverDuty,
-                database: env.database,
-                application: env.application,
-                operatingSystem: env.operatingSystem,
-                servicePack: env.servicePack,
-                build: env.build,
-                cpu: env.cpu,
-                ram: env.ram,
-                disk: env.disk,
-                dr: env.dr,
-                joinDomain: env.joinDomain,
-                windowsCluster: env.windowsCluster,
-                productionUnit: env.productionUnit
-            })),
-            connectionInfo: system.connectionInfo.map(conn => ({
-                ad: conn.ad,
-                adfs: conn.adfs,
-                dns: conn.dns,
-                ntp: conn.ntp,
-                tpam: conn.tpam,
-                netka: conn.netka,
-                fim: conn.fim,
-                ftpServer: conn.ftpServer,
-                ftpGoAnywhereMFTServer: conn.ftpGoAnywhereMFTServer,
-                emailSmtp: conn.emailSmtp,
-                sms: conn.sms,
-                apiManagement: conn.apiManagement,
-                dv: conn.dv,
-                snmp: conn.snmp
-            })),
-            securityInfo: system.securityInfo.map(security => ({
-                urlWebsite: security.urlWebsite,
-                certificateExpireDate: security.certificateExpireDate,
-                backupPolicy: security.backupPolicy,
-                downtimeAllowed: security.downtimeAllowed,
-                centralizeLog: security.centralizeLog,
-                setupAgentPatch: security.setupAgentPatch,
-                internetFacing: security.internetFacing
-            })),
-            user: system.user,
-            createdAt: system.createdAt,
-            updatedAt: system.updatedAt
-        }));
-        res.json(formattedSystems);
-    }
-    catch (error) {
-        console.error('Error fetching systems:', error);
-        res.status(500).json({ error: 'Failed to fetch systems' });
-    }
-});
-exports.getformedraft = getformedraft;
-const getformedraft_Count = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const systems = yield prisma.systemInfo.findMany({
-            include: {
-                // ดึงข้อมูลจากตารางที่เกี่ยวข้องทั้งหมด
-                environmentInfo: true,
-                connectionInfo: true,
-                securityInfo: true,
-                user: {
-                    select: {
-                        id: true,
-                        username: true,
-                        email: true
-                    }
-                }
-            },
-            where: {
-                // เพิ่มเงื่อนไขสำหรับ soft delete
-                isDeleted: false,
-                draftStatus: 'DRAFT'
-            },
-            orderBy: {
-                // เรียงตามวันที่สร้างล่าสุด
-                createdAt: 'desc'
-            }
-        });
-        const draftCount = systems.filter((system) => system.draftStatus === 'DRAFT').length;
-        res.json({ count: draftCount });
-    }
-    catch (error) {
-        console.error('Error fetching systems:', error);
-        res.status(500).json({ error: 'Failed to fetch systems' });
-    }
-});
-exports.getformedraft_Count = getformedraft_Count;
-const getformesoftdelete_Count = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const systems = yield prisma.systemInfo.findMany({
-            include: {
-                // ดึงข้อมูลจากตารางที่เกี่ยวข้องทั้งหมด
-                environmentInfo: true,
-                connectionInfo: true,
-                securityInfo: true,
-                user: {
-                    select: {
-                        id: true,
-                        username: true,
-                        email: true
-                    }
-                }
-            },
-            where: {
-                // เพิ่มเงื่อนไขสำหรับ soft delete
-                isDeleted: true
-            },
-            orderBy: {
-                // เรียงตามวันที่สร้างล่าสุด
-                createdAt: 'desc'
-            }
-        });
-        const trashCount = systems.filter((system) => system.draftStatus === 'DRAFT' || system.draftStatus === 'PUBLISH').length;
-        res.json({ count: trashCount });
-    }
-    catch (error) {
-        console.error('Error fetching systems:', error);
-        res.status(500).json({ error: 'Failed to fetch systems' });
-    }
-});
-exports.getformesoftdelete_Count = getformesoftdelete_Count;
+// Get system by ID
 const getSystemById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id } = req.params; // รับ id จาก URL parameter
+        const { id } = req.params;
         const system = yield prisma.systemInfo.findUnique({
             where: {
-                id: parseInt(id),
-                // isDeleted: false,
-                // draftStatus: 'PUBLISH',
+                id: parseInt(id)
             },
-            select: {
-                id: false, // ซ่อน id ของระบบ
-                systemName: true,
-                developType: true,
-                contractNo: true,
-                vendorContactNo: true,
-                businessUnit: true,
-                developUnit: true,
-                // draftStatus: true,
-                // isDeleted: true,
-                // deletedAt: true,
-                // createdAt: true,
-                // updatedAt: true,
-                environmentInfo: {
-                    select: {
-                        id: false, // ซ่อน id ของ environment
-                        environment: true,
-                        serverName: true,
-                        ip: true,
-                        serverType: true,
-                        serverRole: true,
-                        serverDuty: true,
-                        database: true,
-                        application: true,
-                        operatingSystem: true,
-                        servicePack: true,
-                        build: true,
-                        cpu: true,
-                        ram: true,
-                        disk: true,
-                        dr: true,
-                        joinDomain: true,
-                        windowsCluster: true,
-                        productionUnit: true,
-                        // createdAt: true,
-                        // updatedAt: true,
-                    },
-                },
-                connectionInfo: {
-                    select: {
-                        id: false, // ซ่อน id ของ connection
-                        ad: true,
-                        adfs: true,
-                        dns: true,
-                        ntp: true,
-                        tpam: true,
-                        netka: true,
-                        fim: true,
-                        ftpServer: true,
-                        ftpGoAnywhereMFTServer: true,
-                        emailSmtp: true,
-                        sms: true,
-                        apiManagement: true,
-                        dv: true,
-                        snmp: true,
-                        // createdAt: true,
-                        // updatedAt: true,
-                    },
-                },
-                securityInfo: {
-                    select: {
-                        id: false, // ซ่อน id ของ security
-                        urlWebsite: true,
-                        certificateExpireDate: true,
-                        backupPolicy: true,
-                        downtimeAllowed: true,
-                        centralizeLog: true,
-                        setupAgentPatch: true,
-                        internetFacing: true,
-                        // createdAt: true,
-                        // updatedAt: true,
-                    },
-                },
-            },
+            include: {
+                environmentInfo: true,
+                connectionInfo: true,
+                securityInfo: true
+            }
         });
-        // const system = await prisma.systemInfo.findUnique({
-        //   where: {
-        //     id: parseInt(id),
-        //     isDeleted: false, // ตรวจสอบว่าไม่ได้ถูกลบ (soft delete)
-        //     draftStatus: 'PUBLISH'
-        //   },
-        //   include: {
-        //     environmentInfo: true,
-        //     connectionInfo: true,
-        //     securityInfo: true,
-        //     user: {
-        //       select: {
-        //         id: true,
-        //         email: true,
-        //         username: true
-        //       }
-        //     }
-        //   }
-        // });
         if (!system) {
             return res.status(404).json({ error: 'ไม่พบข้อมูลระบบที่ต้องการ' });
         }
@@ -699,204 +193,110 @@ const getSystemById = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     catch (error) {
         console.error('Error fetching system:', error);
-        res.status(500).json({
-            error: 'เกิดข้อผิดพลาดในการดึงข้อมูล',
-            details: error instanceof Error ? error.message : 'Unknown error'
-        });
+        res.status(500).json({ error: 'เกิดข้อผิดพลาดในการดึงข้อมูล' });
     }
 });
 exports.getSystemById = getSystemById;
-const softdeleteforme = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// Delete system
+const deletefrome = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        // ตรวจสอบว่ามีข้อมูลที่จะลบหรือไม่
-        const existingSystem = yield prisma.systemInfo.findUnique({
-            where: {
-                id: parseInt(id),
-                isDeleted: false
-            }
-        });
-        if (!existingSystem) {
-            return res.status(404).json({ error: 'ไม่พบข้อมูลระบบที่ต้องทิ้งลงถังขยะ' });
-        }
-        // ทำ soft delete โดยอัพเดท isDeleted เป็น true
-        const deletedSystem = yield prisma.systemInfo.update({
+        yield prisma.systemInfo.delete({
             where: {
                 id: parseInt(id)
-            },
-            data: {
-                isDeleted: true,
-                deletedAt: new Date(new Date().setDate(new Date().getDate() + 7))
             }
         });
-        res.json({
-            message: 'ย้ายลงถังขยะเรียบร้อย',
-            deletedSystem
-        });
+        res.json({ message: 'ลบข้อมูลระบบเรียบร้อยแล้ว' });
     }
     catch (error) {
         console.error('Error deleting system:', error);
-        res.status(500).json({
-            error: 'ย้ายลงถังขยะเรียบร้อย',
-            details: error instanceof Error ? error.message : 'Unknown error'
-        });
+        res.status(500).json({ error: 'เกิดข้อผิดพลาดในการลบข้อมูล' });
     }
 });
-exports.softdeleteforme = softdeleteforme;
-const cancelSoftDelete = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { id } = req.params;
-        // Check if the record exists and is currently soft-deleted
-        const existingSystem = yield prisma.systemInfo.findUnique({
-            where: {
-                id: parseInt(id),
-                isDeleted: true // Only find records that were soft-deleted
-            }
-        });
-        if (!existingSystem) {
-            return res.status(404).json({ error: 'ไม่พบข้อมูลระบบที่ถูกทิ้งลงถังขยะ' });
-        }
-        // Remove isDeleted flag and deletedAt timestamp to revert soft delete
-        const restoredSystem = yield prisma.systemInfo.update({
-            where: {
-                id: parseInt(id)
-            },
-            data: {
-                deletedAt: null
-            },
-        });
-        // Remove null values for better query
-        const cleanUpRestoredSystem = yield prisma.systemInfo.update({
-            where: {
-                id: parseInt(id)
-            },
-            data: {
-                isDeleted: false,
-            },
-        });
-        res.json({
-            message: 'กู้คืนข้อมูลจากถังขยะสำเร็จ',
-            restoredSystem: cleanUpRestoredSystem // Respond with updated record
-        });
-    }
-    catch (error) {
-        console.error('Error restoring system:', error);
-        res.status(500).json({
-            error: 'เกิดข้อผิดพลาดในการกู้คืนข้อมูล',
-            details: error instanceof Error ? error.message : 'Unknown error'
-        });
-    }
-});
-exports.cancelSoftDelete = cancelSoftDelete;
-const deleteforme = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { id } = req.params;
-        // ตรวจสอบว่ามีข้อมูลที่จะลบหรือไม่
-        const existingSystem = yield prisma.systemInfo.findUnique({
-            where: {
-                id: parseInt(id),
-                isDeleted: true
-            }
-        });
-        if (!existingSystem) {
-            return res.status(404).json({ error: 'ไม่พบข้อมูลระบบที่ต้องการลบ' });
-        }
-        // ทำ delete เลย
-        const deletedSystem = yield prisma.systemInfo.deleteMany({
-            where: {
-                id: parseInt(id)
-            },
-        });
-        res.json({
-            message: 'ลบข้อมูลระบบเรียบร้อยแล้ว',
-            deletedSystem
-        });
-    }
-    catch (error) {
-        console.error('Error deleting system:', error);
-        res.status(500).json({
-            error: 'เกิดข้อผิดพลาดในการลบข้อมูล',
-            details: error instanceof Error ? error.message : 'Unknown error'
-        });
-    }
-});
-exports.deleteforme = deleteforme;
+exports.deletefrome = deletefrome;
+// Modified update function using Prisma's generated types
 const updateforme = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const systemInput = req.body;
-    const schema = Joi.object({
-        userId: Joi.number(),
-        systemName: Joi.string(),
+    const { id } = req.params;
+    const updateData = req.body;
+    // Separate validation schema for updates
+    const updateSystemValidationSchema = Joi.object({
+        id: Joi.number().required(),
+        systemName: Joi.string().required(),
         developType: Joi.string().valid('OUTSOURCE', 'IN HOUSE').required(),
         contractNo: Joi.string().required(),
         vendorContactNo: Joi.string().required(),
         businessUnit: Joi.string().required(),
         developUnit: Joi.string().required(),
         computerbackup: Joi.string().required(),
-        // draftStatus: Joi.string().valid('DRAFT', 'PUBLISH').required(), // เพิ่ม validation สำหรับ status
+        userId: Joi.number().allow(null),
+        createdAt: Joi.date().iso(),
+        updatedAt: Joi.date().iso(),
         environmentInfo: Joi.array().items(Joi.object({
+            id: Joi.number().optional(),
             environment: Joi.string().required(),
             serverName: Joi.string().required(),
             ip: Joi.string().required(),
             serverType: Joi.string().required(),
             serverRole: Joi.string().required(),
             serverDuty: Joi.string().required(),
-            database: Joi.string().required(),
-            application: Joi.string().required(),
-            operatingSystem: Joi.string().required(),
-            servicePack: Joi.string().required(),
-            build: Joi.string().required(),
-            cpu: Joi.string().required(),
-            ram: Joi.string().required(),
-            disk: Joi.string().required(),
-            dr: Joi.string().required(),
-            joinDomain: Joi.string().required(),
-            windowsCluster: Joi.string().required(),
-            productionUnit: Joi.string().required(),
-        })).required(),
+            database: Joi.string().allow(''),
+            application: Joi.string().allow(''),
+            operatingSystem: Joi.string().allow(''),
+            servicePack: Joi.string().allow(''),
+            build: Joi.string().allow(''),
+            cpu: Joi.string().allow(''),
+            ram: Joi.string().allow(''),
+            disk: Joi.string().allow(''),
+            dr: Joi.string().allow(''),
+            joinDomain: Joi.string().valid('YES', 'NO').required(),
+            windowsCluster: Joi.string().valid('YES', 'NO').required(),
+            productionUnit: Joi.array().items(Joi.string()),
+            systemInfoId: Joi.number(),
+            createdAt: Joi.date().iso(),
+            updatedAt: Joi.date().iso()
+        })),
         connectionInfo: Joi.array().items(Joi.object({
-            ad: Joi.string().required(),
-            adfs: Joi.string().required(),
-            dns: Joi.string().required(),
-            ntp: Joi.string().required(),
-            tpam: Joi.string().required(),
-            netka: Joi.string().required(),
-            fim: Joi.string().required(),
-            ftpServer: Joi.string().required(),
-            ftpGoAnywhereMFTServer: Joi.string().required(),
-            emailSmtp: Joi.string().required(),
-            sms: Joi.string().required(),
-            apiManagement: Joi.string().required(),
-            dv: Joi.string().required(),
-            snmp: Joi.string().required(),
-        })).required(),
+            id: Joi.number().optional(),
+            ad: Joi.string().valid('YES', 'NO').required(),
+            adfs: Joi.string().valid('YES', 'NO').required(),
+            dns: Joi.string().valid('YES', 'NO').required(),
+            ntp: Joi.string().valid('YES', 'NO').required(),
+            tpam: Joi.string().valid('YES', 'NO').required(),
+            netka: Joi.string().valid('YES', 'NO').required(),
+            fim: Joi.string().valid('YES', 'NO').required(),
+            ftpServer: Joi.string().valid('YES', 'NO').required(),
+            ftpGoAnywhereMFTServer: Joi.string().valid('YES', 'NO').required(),
+            emailSmtp: Joi.string().valid('YES', 'NO').required(),
+            sms: Joi.string().valid('YES', 'NO').required(),
+            apiManagement: Joi.string().valid('YES', 'NO').required(),
+            dv: Joi.string().valid('YES', 'NO').required(),
+            snmp: Joi.string().valid('YES', 'NO').required(),
+            systemInfoId: Joi.number(),
+            createdAt: Joi.date().iso(),
+            updatedAt: Joi.date().iso()
+        })),
         securityInfo: Joi.array().items(Joi.object({
-            urlWebsite: Joi.string().required(),
-            certificateExpireDate: Joi.string().required(),
-            backupPolicy: Joi.string().required(),
-            downtimeAllowed: Joi.string().required(),
-            centralizeLog: Joi.string().required(),
-            setupAgentPatch: Joi.string().required(),
-            internetFacing: Joi.string().required(),
-        })).required(),
+            id: Joi.number().optional(),
+            urlWebsite: Joi.string().uri().allow(''),
+            certificateExpireDate: Joi.string().allow(''),
+            backupPolicy: Joi.string().allow(''),
+            downtimeAllowed: Joi.string().allow(''),
+            centralizeLog: Joi.string().valid('YES', 'NO').required(),
+            setupAgentPatch: Joi.string().valid('YES', 'NO').required(),
+            internetFacing: Joi.string().valid('YES', 'NO').required(),
+            systemInfoId: Joi.number(),
+            createdAt: Joi.date().iso(),
+            updatedAt: Joi.date().iso()
+        }))
     });
-    const { error } = schema.validate(systemInput);
-    if (error) {
-        return res.status(400).json({ errors: error.details.map(detail => detail.message) });
-    }
     try {
-        const { id } = req.params;
-        const updateData = req.body;
-        // ตรวจสอบว่ามีข้อมูลที่จะแก้ไขหรือไม่
-        const existingSystem = yield prisma.systemInfo.findUnique({
-            where: {
-                id: parseInt(id),
-                isDeleted: false
-            }
-        });
-        // if (!existingSystem) {
-        //   return res.status(404).json({ error: 'สามารถมารถอัพเดทได้ เพิ่มข้อมูลไม่ครบ' });
-        // }
-        // อัพเดทข้อมูล
+        // Validate update data
+        const { error } = updateSystemValidationSchema.validate(updateData);
+        if (error) {
+            return res.status(400).json({ errors: error.details.map(detail => detail.message) });
+        }
+        const now = new Date();
+        // Update main system info with new timestamp
         const updatedSystem = yield prisma.systemInfo.update({
             where: {
                 id: parseInt(id)
@@ -909,17 +309,24 @@ const updateforme = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 businessUnit: updateData.businessUnit,
                 developUnit: updateData.developUnit,
                 computerbackup: updateData.computerbackup,
+                updatedAt: now,
                 environmentInfo: {
-                    deleteMany: {},
-                    create: updateData.environmentInfo
+                    deleteMany: {}, // First delete existing records
+                    create: updateData.environmentInfo.map((env) => (Object.assign(Object.assign({}, env), { id: undefined, systemInfoId: undefined, 
+                        // createdAt: now,
+                        updatedAt: now })))
                 },
                 connectionInfo: {
                     deleteMany: {},
-                    create: updateData.connectionInfo
+                    create: updateData.connectionInfo.map((conn) => (Object.assign(Object.assign({}, conn), { id: undefined, systemInfoId: undefined, 
+                        // createdAt: now,
+                        updatedAt: now })))
                 },
                 securityInfo: {
                     deleteMany: {},
-                    create: updateData.securityInfo
+                    create: updateData.securityInfo.map((sec) => (Object.assign(Object.assign({}, sec), { id: undefined, systemInfoId: undefined, 
+                        // createdAt: now,
+                        updatedAt: now })))
                 }
             },
             include: {
@@ -928,148 +335,21 @@ const updateforme = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 securityInfo: true
             }
         });
-        res.json({
-            message: 'อัพเดทข้อมูลเรียบร้อยแล้ว',
-            updatedSystem
-        });
+        res.json(updatedSystem);
     }
     catch (error) {
         console.error('Error updating system:', error);
-        res.status(500).json({
-            error: 'เกิดข้อผิดพลาดในการอัพเดทข้อมูล',
-            details: error instanceof Error ? error.message : 'Unknown error'
-        });
+        res.status(500).json({ error: 'เกิดข้อผิดพลาดในการอัพเดทข้อมูล' });
     }
 });
 exports.updateforme = updateforme;
-const updateforme_draft = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const systemInput = req.body;
-    const schema = Joi.object({
-        userId: Joi.number().allow("").optional(),
-        systemName: Joi.string().allow("").optional(),
-        developType: Joi.string().allow("").optional(),
-        contractNo: Joi.string().allow("").optional(),
-        vendorContactNo: Joi.string().allow("").optional(),
-        businessUnit: Joi.string().allow("").optional(),
-        developUnit: Joi.string().allow("").optional(),
-        computerbackup: Joi.string().required(),
-        // draftStatus: Joi.string().allow("").optional().valid('DRAFT', 'PUBLISH'), // เพิ่ม validation สำหรับ status
-        environmentInfo: Joi.array().items(Joi.object({
-            environment: Joi.string().allow("").optional(),
-            serverName: Joi.string().allow("").optional(),
-            ip: Joi.string().allow("").optional(),
-            serverType: Joi.string().allow("").optional(),
-            serverRole: Joi.string().allow("").optional(),
-            serverDuty: Joi.string().allow("").optional(),
-            database: Joi.string().allow("").optional(),
-            application: Joi.string().allow("").optional(),
-            operatingSystem: Joi.string().allow("").optional(),
-            servicePack: Joi.string().allow("").optional(),
-            build: Joi.string().allow("").optional(),
-            cpu: Joi.string().allow("").optional(),
-            ram: Joi.string().allow("").optional(),
-            disk: Joi.string().allow("").optional(),
-            dr: Joi.string().allow("").optional(),
-            joinDomain: Joi.string().allow("").optional(),
-            windowsCluster: Joi.string().allow("").optional(),
-            productionUnit: Joi.string().allow("").optional(),
-        })),
-        connectionInfo: Joi.array().items(Joi.object({
-            ad: Joi.string().allow("").optional(),
-            adfs: Joi.string().allow("").optional(),
-            dns: Joi.string().allow("").optional(),
-            ntp: Joi.string().allow("").optional(),
-            tpam: Joi.string().allow("").optional(),
-            netka: Joi.string().allow("").optional(),
-            fim: Joi.string().allow("").optional(),
-            ftpServer: Joi.string().allow("").optional(),
-            ftpGoAnywhereMFTServer: Joi.string().allow("").optional(),
-            emailSmtp: Joi.string().allow("").optional(),
-            sms: Joi.string().allow("").optional(),
-            apiManagement: Joi.string().allow("").optional(),
-            dv: Joi.string().allow("").optional(),
-            snmp: Joi.string().allow("").optional(),
-        })),
-        securityInfo: Joi.array().items(Joi.object({
-            urlWebsite: Joi.string().allow("").optional(),
-            certificateExpireDate: Joi.string().allow("").optional(),
-            backupPolicy: Joi.string().allow("").optional(),
-            downtimeAllowed: Joi.string().allow("").optional(),
-            centralizeLog: Joi.string().allow("").optional(),
-            setupAgentPatch: Joi.string().allow("").optional(),
-            internetFacing: Joi.string().allow("").optional(),
-        })),
-    });
-    const { error } = schema.validate(systemInput);
-    if (error) {
-        return res.status(400).json({ errors: error.details.map(detail => detail.message) });
-    }
-    try {
-        const { id } = req.params;
-        const updateData = req.body;
-        // ตรวจสอบว่ามีข้อมูลที่จะแก้ไขหรือไม่
-        const existingSystem = yield prisma.systemInfo.findUnique({
-            where: {
-                id: parseInt(id),
-                isDeleted: false
-            }
-        });
-        if (!existingSystem) {
-            return res.status(404).json({ error: 'สามารถมารถอัพเดทได้ เพิ่มข้อมูลไม่ครบ' });
-        }
-        // อัพเดทข้อมูล
-        const updatedSystem = yield prisma.systemInfo.update({
-            where: {
-                id: parseInt(id)
-            },
-            data: {
-                systemName: updateData.systemName,
-                developType: updateData.developType,
-                contractNo: updateData.contractNo,
-                vendorContactNo: updateData.vendorContactNo,
-                businessUnit: updateData.businessUnit,
-                developUnit: updateData.developUnit,
-                computerbackup: updateData.computerbackup,
-                environmentInfo: {
-                    deleteMany: {},
-                    create: updateData.environmentInfo
-                },
-                connectionInfo: {
-                    deleteMany: {},
-                    create: updateData.connectionInfo
-                },
-                securityInfo: {
-                    deleteMany: {},
-                    create: updateData.securityInfo
-                }
-            },
-            include: {
-                environmentInfo: true,
-                connectionInfo: true,
-                securityInfo: true
-            }
-        });
-        res.json({
-            message: 'อัพเดทข้อมูลเรียบร้อยแล้ว',
-            updatedSystem
-        });
-    }
-    catch (error) {
-        console.error('Error updating system:', error);
-        res.status(500).json({
-            error: 'เกิดข้อผิดพลาดในการอัพเดทข้อมูล',
-            details: error instanceof Error ? error.message : 'Unknown error'
-        });
-    }
-});
-exports.updateforme_draft = updateforme_draft;
+// Check existing system
 const checkExistingSystem = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { systemName } = req.query;
         const existingSystem = yield prisma.systemInfo.findFirst({
             where: {
-                systemName: systemName,
-                isDeleted: false
+                systemName: systemName
             }
         });
         res.json(existingSystem);
@@ -1080,4 +360,46 @@ const checkExistingSystem = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.checkExistingSystem = checkExistingSystem;
+const searchSystems = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { systemName, serverName, environment, ip, developType, businessUnit } = req.query;
+        const systems = yield prisma.systemInfo.findMany({
+            where: {
+                AND: [
+                    systemName ? {
+                        systemName: { contains: systemName, mode: 'insensitive' }
+                    } : {},
+                    developType ? { developType: developType } : {},
+                    businessUnit ? {
+                        businessUnit: { contains: businessUnit, mode: 'insensitive' }
+                    } : {},
+                    environment || serverName || ip ? {
+                        environmentInfo: {
+                            some: {
+                                AND: [
+                                    environment ? { environment: environment } : {},
+                                    serverName ? {
+                                        serverName: { contains: serverName, mode: 'insensitive' }
+                                    } : {},
+                                    ip ? { ip: { contains: ip } } : {},
+                                ]
+                            }
+                        }
+                    } : {}
+                ]
+            },
+            include: {
+                environmentInfo: true,
+                connectionInfo: true,
+                securityInfo: true,
+            }
+        });
+        res.json(systems);
+    }
+    catch (error) {
+        console.error('Error searching systems:', error);
+        res.status(500).json({ error: 'Failed to search systems' });
+    }
+});
+exports.searchSystems = searchSystems;
 //# sourceMappingURL=formeController.js.map

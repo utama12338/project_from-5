@@ -13,7 +13,7 @@ interface SystemData {
   vendorContactNo: string;
   businessUnit: string;
   developUnit: string;
-  draftStatus: string;
+  computerbackup: string;
   environmentInfo: EnvironmentInfo[];
   connectionInfo: ConnectionInfo[];
   securityInfo: SecurityInfo[];
@@ -201,23 +201,27 @@ export default function EditSystem() {
   const { id } = useParams(); 
   const router = useRouter();
   
+
+  
   const fetchSystemData = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:4000/form/getSystemById/${id}`);
-      if (!response.ok) {
-        throw new Error('ไม่สามารถดึงข้อมูลได้');
-      }
-      const data = await response.json();
-      console.log('Fetched data:', data); // Log fetched data
-      setSystemData(data);
+      const response = await axios.get(`http://localhost:4000/from/getSystemById/${id}`);
+      console.log('Fetched data:', response.data);
+      setSystemData(response.data);
       setError(null);
     } catch (error) {
       console.error('เกิดข้อผิดพลาด:', error);
-      setError('ไม่สามารถโหลดข้อมูลได้');
+      setError(
+        axios.isAxiosError(error) && error.response 
+          ? error.response.data.message 
+          : 'ไม่สามารถโหลดข้อมูลได้'
+      );
     } finally {
       setLoading(false);
     }
   }, [id]);
+  
+  // ...existing code...
 
   useEffect(() => {
     fetchSystemData();
@@ -233,7 +237,7 @@ export default function EditSystem() {
     try {
       console.log('ข้อมูลที่ส่งไป:', systemData);
       
-      const response = await axios.put(`http://localhost:4000/form/updateforme/${id}`, systemData, {
+      const response = await axios.put(`http://localhost:4000/from/updateforme/${id}`, systemData, {
         headers: {
           'Content-Type': 'application/json',
         },

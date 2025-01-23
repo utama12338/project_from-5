@@ -39,9 +39,9 @@ const SERVER_DUTY_OPTIONS = [
 const PRODUCTION_UNIT_OPTIONS = [
   'หน่วยโปรแกรมระบบ',
   'หน่วยระบบงานคอมพิวเตอร์ 1',
+  'หน่วยระบบฐานข้อมูล',
   'หน่วยระบบงานคอมพิวเตอร์ 2',
   'หน่วยระบบงานคอมพิวเตอร์ 3',
-  'หน่วยระบบฐานข้อมูล',
   'หน่วยระบบสนับสนุนนโยบายรัฐ',
   'หน่วยระบบสนับสนุนงานธุรกิจ'
 ];
@@ -170,7 +170,7 @@ export default function CreateSystem() {
 
     // ตรวจสอบว่าระบบมีอยู่แล้วหรือไม่
     try {
-      const response = await axios.get(`http://localhost:4000/form/api/system/check?systemName=${row.systemName}`);
+      const response = await axios.get(`http://localhost:4000/from/api/system/check?systemName=${row.systemName}`);
       if (response.data) {
         status = 'update';
       }
@@ -264,12 +264,11 @@ export default function CreateSystem() {
     console.log(formData)
     if (validateForm(currentStep)) {
       try {
-        const response = await axios.post('http://localhost:4000/form/createforme', {
-          ...formData,
-          draftStatus: 'PUBLISH'  // เพิ่ม status PUBLISH
+        const response = await axios.post('http://localhost:4000/from/createforme', {
+          ...formData,  
         });
         console.log('Success:', response.data);
-        router.push('/forme');
+        router.push('/frome');
         Swal.fire({
           title: 'บันทึกสำเร็จ!',
           text: 'ข้อมูลของคุณถูกบันทึกเรียบร้อยแล้ว',
@@ -290,29 +289,6 @@ export default function CreateSystem() {
         title: 'ข้อมูลไม่ครบถ้วน!',
         text: 'กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง',
         icon: 'warning',
-        confirmButtonText: 'ตกลง'
-      });
-    }
-  };
-
-  const handleDraft = async () => {
-    console.log('Draft data:', formData);
-    try {
-      const response = await axios.post('http://localhost:4000/form/createDraft', formData);
-      console.log('Draft saved:', response.data);
-      router.push('/forme');
-      Swal.fire({
-        title: 'บันทึกฉบับร่างสำเร็จ!',
-        text: 'ข้อมูลของคุณถูกบันทึกเป็นฉบับร่างเรียบร้อยแล้ว',
-        icon: 'success',
-        confirmButtonText: 'ตกลง'
-      });
-    } catch (error) {
-      console.error('Error saving draft:', error);
-      Swal.fire({
-        title: 'เกิดข้อผิดพลาด!',
-        text: 'ไม่สามารถบันทึกฉบับร่างได้',
-        icon: 'error',
         confirmButtonText: 'ตกลง'
       });
     }
@@ -469,6 +445,12 @@ export default function CreateSystem() {
         if (!env.serverName.trim()) {
           newErrors[`serverName-${index}`] = 'กรุณากรอก Server Name';
         }
+
+        if (!env.productionUnit || env.productionUnit.length === 0) {
+          newErrors[`productionUnit-${index}`] = 'กรุณาเลือก Production Unit อย่างน้อย 1 รายการ';
+        }
+
+
         if (!env.ip.trim()) {
           newErrors[`ip-${index}`] = 'กรุณากรอก IP Address';
         } else if (!/^(\d{1,3}\.){3}\d{1,3}$/.test(env.ip)) {
@@ -529,12 +511,6 @@ export default function CreateSystem() {
               className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
             >
               Import CSV
-            </button>
-            <button
-              onClick={handleDraft}
-              className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
-            >
-              Save Draft
             </button>
           </div>
         </div>
@@ -1034,23 +1010,52 @@ export default function CreateSystem() {
                         </select>
                       </div>
 
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                          Production Unit
-                        </label>
-                        <select
-                          name="productionUnit"
-                          value={env.productionUnit}
-                          onChange={(e) => handleEnvironmentChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                          required
-                        >
-                          <option value="">Select Production Unit</option>
-                          {PRODUCTION_UNIT_OPTIONS.map(option => (
-                            <option key={option} value={option}>{option}</option>
-                          ))}
-                        </select>
-                      </div>
+<div>
+  <label className="block text-sm font-medium text-gray-700 mb-2">
+    Production Unit
+  </label>
+  <div className={`grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 border rounded-md ${
+    errors[`productionUnit-${index}`] ? 'border-red-500' : 'border-gray-300'
+  }`}>
+    {PRODUCTION_UNIT_OPTIONS.map((option) => (
+      <div key={option} className="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          id={`productionUnit-${index}-${option}`}
+          checked={env.productionUnit.includes(option)}
+          onChange={(e) => {
+            const updatedUnits = e.target.checked
+              ? [...env.productionUnit, option]
+              : env.productionUnit.filter(unit => unit !== option);
+            
+            handleEnvironmentChange({
+              target: {
+                name: 'productionUnit',
+                value: updatedUnits
+              }
+            }, index);
+          }}
+          className={`h-4 w-4 focus:ring-indigo-500 rounded ${
+            errors[`productionUnit-${index}`] 
+              ? 'border-red-500 text-red-600' 
+              : 'border-gray-300 text-indigo-600'
+          }`}
+        />
+        <label 
+          htmlFor={`productionUnit-${index}-${option}`}
+          className="text-sm text-gray-700"
+        >
+          {option}
+        </label>
+      </div>
+    ))}
+  </div>
+  {errors[`productionUnit-${index}`] && (
+    <p className="mt-1 text-sm text-red-600">
+      {errors[`productionUnit-${index}`]}
+    </p>
+  )}
+</div>
                     </div>
                   </div>
                 ))}
@@ -1064,13 +1069,6 @@ export default function CreateSystem() {
                   <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
                     ข้อมูลการเชื่อมต่อ
                   </h3>
-                  <button
-                    type="button"
-                    onClick={addNewEntries}
-                    className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-                  >
-                    เพิ่มข้อมูล
-                  </button>
                 </div>
                 {formData.connectionInfo.map((conn, index) => (
                   <div key={index} className="space-y-4 border p-4 rounded-lg">
@@ -1309,13 +1307,6 @@ export default function CreateSystem() {
                   <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
                     ข้อมูลความปลอดภัย
                   </h3>
-                  <button
-                    type="button"
-                    onClick={addNewEntries}
-                    className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-                  >
-                    เพิ่มข้อมูล
-                  </button>
                 </div>
                 {formData.securityInfo.map((security, index) => (
                   <div key={index} className="space-y-4 border p-4 rounded-lg">
@@ -1469,14 +1460,7 @@ export default function CreateSystem() {
                   ย้อนกลับ
                 </button>
               )}
-              <div className="flex space-x-3">
-                <button
-                  type="button"
-                  onClick={handleDraft}
-                  className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-                >
-                  บันทึกแบบร่าง
-                </button>
+              <div>
                 {currentStep < 4 ? (
                   <button
                     type="button"

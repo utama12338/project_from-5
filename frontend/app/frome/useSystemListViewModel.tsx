@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import { fetchSystems, deleteSystem, bulkDeleteSystems } from './api/systemApi';
+import { fetchSystems, deleteSystem, bulkDeleteSystems, searchSystems } from './api/systemApi';
 import { transformDataForCSV } from './utils/dataTransformers';
 import { downloadCSV } from './utils/fileOperations';
 import { SystemInfo } from './types';
+import { SearchCriteria } from './components/SearchModal';
 
 export const useSystemListViewModel = () => {
   const [systems, setSystems] = useState<SystemInfo[]>([]);
@@ -11,6 +12,25 @@ export const useSystemListViewModel = () => {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [showAlert, setShowAlert] = useState(false);
   const [alertType, setAlertType] = useState<'warning' | 'success' | 'error'>('warning');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(8); // Show 8 items per page
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [filteredSystems, setFilteredSystems] = useState<SystemInfo[]>([]);
+  const [isFiltering, setIsFiltering] = useState(false);
+  const [lastSearchCriteria, setLastSearchCriteria] = useState<SearchCriteria>({
+    systemName: '',
+    serverName: '',
+    environment: '',
+    ip: '',
+    developType: '',
+    businessUnit: '',
+  });
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const displayedSystems = isFiltering ? filteredSystems : systems;
+  const currentSystems = displayedSystems.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(displayedSystems.length / itemsPerPage);
 
   useEffect(() => {
     loadSystems();
@@ -53,7 +73,8 @@ export const useSystemListViewModel = () => {
       try {
         await bulkDeleteSystems(selectedItems);
         await showSuccessMessage('สำเร็จ!', 'ลบข้อมูลเรียบร้อยแล้ว');
-        window.location.reload();
+        await loadSystems(); // Replace window.location.reload() with loadSystems
+        setSelectedItems([]); // Clear selections after deletion
       } catch (error) {
         showErrorMessage();
       }
@@ -91,14 +112,13 @@ export const useSystemListViewModel = () => {
     if (result.isConfirmed) {
       try {
         await deleteSystem(id);
-        Swal.fire({
+        await Swal.fire({
           title: 'ลบข้อมูลสำเร็จ!',
           text: 'ข้อมูลถูกลบเรียบร้อยแล้ว.',
           icon: 'success',
           confirmButtonColor: '#3085d6',
-        }).then(() => {
-          window.location.reload();
         });
+        await loadSystems(); // Replace window.location.reload() with loadSystems
       } catch (error) {
         console.error('Error deleting system:', error);
         Swal.fire({
@@ -109,6 +129,47 @@ export const useSystemListViewModel = () => {
         });
       }
     }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleSearch = async (criteria: SearchCriteria) => {
+    try {
+      setLoading(true);
+      const results = await searchSystems(criteria);
+      setFilteredSystems(results);
+      setIsFiltering(true);
+      setCurrentPage(1);
+      setLastSearchCriteria(criteria); // Save the last search criteria
+    } catch (error) {
+      console.error('Error searching systems:', error);
+      // Optionally show error message to user
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const clearSearch = () => {
+    setFilteredSystems([]);
+    setIsFiltering(false);
+    setLastSearchCriteria({
+      systemName: '',
+      serverName: '',
+      environment: '',
+      ip: '',
+      developType: '',
+      businessUnit: '',
+    });
   };
 
   return {
@@ -125,6 +186,18 @@ export const useSystemListViewModel = () => {
     handleDownloadCSV,
     setShowAlert,
     setAlertType,
+    fetchSystems: loadSystems, // Expose loadSystems as fetchSystems
+    currentSystems,
+    currentPage,
+    totalPages,
+    handleNextPage,
+    handlePrevPage,
+    showSearchModal,
+    setShowSearchModal,
+    handleSearch,
+    clearSearch,
+    isFiltering,
+    lastSearchCriteria,
   };
 };
 

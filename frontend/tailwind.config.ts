@@ -10,6 +10,7 @@ export default {
   theme: {
     extend: {
       colors: {
+        primary: '#5161ce',
         gsb: {
           50: '#fdf2fa',
           100: '#fbe5f5',
@@ -26,5 +27,7 @@ export default {
     },
     
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+  ],
 } satisfies Config;

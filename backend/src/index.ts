@@ -5,7 +5,7 @@ app.use(express.json())
 
 import userRoutes from "./routes/formeRoutes.js"
 
-app.use("/form", userRoutes)
+app.use("/from", userRoutes)
 
 const port = process.env.port|| 4000
 app.listen(port,()=>{

@@ -1,10 +1,11 @@
 import { useState, useRef } from 'react';
-import {fetchDraftCount,fetchTrashCount,fetchTrashItems,permanentDeleteItems,restoreItems,} from '../app/forme/api';
-
+import {fetchDraftCount,fetchTrashCount,getTrash,permanentDeleteItems,restoreItems,} from '../app/forme/api';
+import axios from 'axios'
 interface TrashItem {
   id: number;
-  name: string;
-  date: string;
+  systemName: string;  // Changed from name
+  deletedAt: string;   // Changed from date
+  timeRemaining: string; // Added new field
 }
 
 export const useNavbarViewModel = () => {
@@ -13,7 +14,7 @@ export const useNavbarViewModel = () => {
   const [isTrashModalOpen, setIsTrashModalOpen] = useState(false);
   const [draftCount, setDraftCount] = useState(0);
   const [trashCount, setTrashCount] = useState(0);
-  const [trashItems, setTrashItems] = useState<TrashItem[]>([]);
+  const [trashItems, setTrashItems] = useState<TrashItem[]>([]); // Ensure it's initialized as an empty array
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const userPanelRef = useRef<HTMLDivElement>(null);
 
@@ -42,10 +43,16 @@ export const useNavbarViewModel = () => {
   const openTrashModal = async () => {
     setIsTrashModalOpen(true);
     try {
-      const trashItems = await fetchTrashItems();
-      setTrashItems(trashItems);
+      const items = await getTrash();
+      if (Array.isArray(items)) {
+        setTrashItems(items);
+      } else {
+        console.error('Received invalid trash items format:', items);
+        setTrashItems([]);
+      }
     } catch (error) {
       console.error('Error fetching trash items:', error);
+      setTrashItems([]);
     }
   };
 
@@ -82,6 +89,11 @@ export const useNavbarViewModel = () => {
     }
   };
 
+  const handleSelectAll = (checked: boolean) => {
+    const allIds = trashItems.map(item => item.id);
+    setSelectedItems(checked ? allIds : []);
+  };
+
   return {
     isMenuOpen,
     isUserPanelOpen,
@@ -99,5 +111,7 @@ export const useNavbarViewModel = () => {
     handleSelectItem,
     handlePermanentDelete,
     handleRestore,
+    setSelectedItems, // Add this line
+    handleSelectAll,  // Add this line
   };
 };

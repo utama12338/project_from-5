@@ -28,9 +28,35 @@ export const fetchTrashCount = async () => {
 };
 
 // Trash Management APIs
-export const fetchTrashItems = async () => {
-  const response = await axios.get(`${BASE_URL}/getTrashItems`);
-  return response.data;
+export const getTrash = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}/getSoftDeleted`);
+    
+    if (!Array.isArray(response.data.systems)) {
+      console.error('Unexpected response format:', response.data);
+      return [];
+    }
+
+    return response.data.systems.map((item: any) => {
+      const deletedDate = new Date(item.deletedAt);
+      
+      const now = new Date();
+      const remainingTime = deletedDate.getTime() - now.getTime();
+      
+      const days = Math.floor(remainingTime / (24 * 60 * 60 * 1000));
+      const hours = Math.floor((remainingTime % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+
+      return {
+        id: item.id,
+        systemName: item.systemName,
+        deletedAt: new Date(item.deletedAt).toLocaleDateString(),
+        timeRemaining: `${days}d ${hours}h remaining`
+      };
+    });
+  } catch (error) {
+    console.error('Error fetching trash items:', error);
+    return [];
+  }
 };
 
 export const permanentDeleteItems = async (ids: number[]) => {

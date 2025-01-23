@@ -30,9 +30,9 @@ model SystemInfo {
   businessUnit     String? @db.VarChar(100)
   developUnit      String? @db.VarChar(100)
   computerbackup   String? @db.VarChar(50)     // 'YES' or 'NO' NEW table
-  draftStatus      DraftStatus @default(DRAFT)  // ใช้ค่า 'DRAFT' โดยตรง
-  isDeleted        Boolean    @default(false)  // ฟิลด์ Soft Delete
-  deletedAt        DateTime?  // เวลาที่ถูกลบ (null ถ้ายังไม่ถูกลบ)
+  // draftStatus      DraftStatus @default(DRAFT)  // ใช้ค่า 'DRAFT' โดยตรง
+  // isDeleted        Boolean    @default(false)  // ฟิลด์ Soft Delete
+  // deletedAt        DateTime?  // เวลาที่ถูกลบ (null ถ้ายังไม่ถูกลบ)
   userId           Int?
   user             User?       @relation(fields: [userId], references: [id])
 
@@ -63,7 +63,7 @@ model EnvironmentInfo {
   dr              String? @db.VarChar(50) 
   joinDomain      String? @db.VarChar(50)
   windowsCluster  String? @db.VarChar(50)
-  productionUnit  String? @db.VarChar(50)    // 'หน่วยโปรแกรมระบบ', 'หน่วยระบบงานคอมพิวเตอร์ 1', etc.
+  productionUnit  String[] @db.VarChar(50)    // 'หน่วยโปรแกรมระบบ', 'หน่วยระบบงานคอมพิวเตอร์ 1', etc.
 
   systemInfoId    Int
   systemInfo      SystemInfo @relation("SystemToEnvironment", fields: [systemInfoId], references: [id], onDelete: Cascade)

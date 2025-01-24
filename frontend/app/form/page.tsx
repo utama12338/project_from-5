@@ -8,6 +8,11 @@ import axios from 'axios'
 import SearchModal from './components/SearchModal';
 import DetailViewModal from '../components/DetailViewModal';
 
+
+
+
+
+
 export default function SystemList() {
   const {
     systems,
@@ -38,6 +43,10 @@ export default function SystemList() {
 
   const [selectedSystems, setSelectedSystems] = useState<any[]>([]);
   const [showDetailModal, setShowDetailModal] = useState(false);
+
+
+
+
 
   // Add helper function to get selected systems
   const getSelectedSystems = () => {
@@ -178,19 +187,24 @@ export default function SystemList() {
                 {system.systemName}
               </h3>
               
-              {system.environmentInfo && system.environmentInfo.map((env, index) => (
-                <div key={index} className="mb-4 last:mb-0">
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium">Servername:</span> {env.serverName}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium">Environment:</span> {env.environment}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium">IP server:</span> {env.ip}
-                  </p>
-                </div>
-              ))}
+              {Array.isArray((system as { environmentInfo?: { serverName: string; environment: string; ip: string }[] }).environmentInfo) &&
+  (system as { environmentInfo?: { serverName: string; environment: string; ip: string }[] }).environmentInfo!.map(
+    (env, index) => (
+      <div key={index} className="mb-4 last:mb-0">
+        <p className="text-sm text-gray-600">
+          <span className="font-medium">Servername:</span> {env.serverName}
+        </p>
+        <p className="text-sm text-gray-600">
+          <span className="font-medium">Environment:</span> {env.environment}
+        </p>
+        <p className="text-sm text-gray-600">
+          <span className="font-medium">IP server:</span> {env.ip}
+        </p>
+      </div>
+    )
+  )}
+
+
             </div>
 
             {/* Updated Card Footer with Edit and View Details buttons */}

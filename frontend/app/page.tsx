@@ -6,12 +6,84 @@ import Papa from 'papaparse';
 import Swal from 'sweetalert2';
 import CSVPreviewModal from './components/CSVPreviewModal';
 import { CSVValidationResult } from './types/csv';
+import { motion, type Variants } from 'framer-motion';
+import { FiServer, FiShield, FiDatabase, FiLink,FiArrowLeft } from 'react-icons/fi';
 
 // Add interface for validation errors
 interface ValidationErrors {
   [key: string]: string;
 }
+// animation 
+const buttonVariants = {
+  hover: {
+    scale: 1.02,
+    transition: {
+      duration: 0.2
+    }
+  },
+  tap: {
+    scale: 0.95
+  }
+};
 
+const iconVariants = {
+  hover: {
+    scale: [1, 0.1, 1.2],
+    rotate: [0, 0, 0],
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+      ease: "linear"
+    }
+  }
+};
+
+
+const deleteButtonVariants = { // ของปุ่มลบ
+  hover: {
+    scale: 1.02,
+    transition: {
+      duration: 0.2
+    }
+  },
+  tap: {
+    scale: 0.95
+  }
+};
+
+const deleteIconVariants = {// ของปุ่มลบ
+  hover: {
+    scale: [1, 1.2, 1],
+    rotate: [0, 10, -10, 0],
+    transition: {
+      duration: 1.5,
+      repeat: Infinity,
+      ease: "easeInOut"
+    }
+  }
+};
+
+
+
+
+// 
+
+const backIconVariants: Variants = {
+  hover: {
+    x: [-5, 0, -5], // Sliding left and right
+    transition: {
+      duration: 1,
+      repeat: Infinity,
+      ease: "easeInOut",
+      repeatType: "mirror"
+    }
+  },
+  initial: {
+    x: 0
+  }
+};
+
+// animation 
 // Add these constants at the top of the file, after imports
 const ENVIRONMENT_OPTIONS = ['DEV', 'SIT', 'UAT', 'PreProd', 'Prod'];
 const SERVER_TYPE_OPTIONS = [
@@ -300,7 +372,7 @@ export default function CreateSystem() {
         console.log('Success:', response.data);
         
         setIsSubmitted(true);
-        router.push('/forme');
+        router.push('/form');
         
         Swal.fire({
           title: 'บันทึกสำเร็จ!',
@@ -565,13 +637,56 @@ export default function CreateSystem() {
     }
   };
 
+  // Animation variants
+  const fadeInUp = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.5 }
+  };
+
+  const buttonHover = {
+    scale: 1.05,
+    transition: { duration: 0.2 }
+  };
+
+  const buttonTap = {
+    scale: 0.95
+  };
+
+  // Get step icon based on current step
+  const getStepIcon = (step: number) => {
+    switch(step) {
+      case 1: return <FiDatabase className="w-6 h-6" />;
+      case 2: return <FiServer className="w-6 h-6" />;
+      case 3: return <FiLink className="w-6 h-6" />;
+      case 4: return <FiShield className="w-6 h-6" />;
+      default: return null;
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100 py-6">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header with import and draft buttons */}
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white py-8">
+      <motion.div 
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        {/* Header */}
         <div className="mb-8 flex justify-between items-center">
-          <h2 className="text-2xl font-bold">เพิ่มข้อมูลระบบ</h2>
-          <div className="space-x-4">
+          <motion.h2 
+            className="text-3xl font-bold text-gray-900"
+            initial={{ x: -20 }}
+            animate={{ x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            เพิ่มข้อมูลระบบ
+          </motion.h2>
+          <motion.div 
+            className="space-x-4"
+            whileHover={buttonHover}
+            whileTap={buttonTap}
+          >
             <input
               type="file"
               ref={fileInputRef}
@@ -581,42 +696,63 @@ export default function CreateSystem() {
             />
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+              className="px-6 py-3 bg-emerald-600 text-white rounded-lg shadow-lg
+                hover:bg-emerald-700 transform transition-all duration-200
+                hover:shadow-xl active:scale-95 flex items-center space-x-2"
             >
-              Import CSV
+              <FiDatabase className="w-5 h-5" />
+              <span>Import CSV</span>
             </button>
-          </div>
+          </motion.div>
         </div>
 
-        {/* Progress bar */}
-        <div className="mb-8">
-          <div className="flex justify-between mb-2">
+        {/* Progress Steps */}
+        <motion.div 
+          className="mb-12"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <div className="flex justify-between mb-4">
             {['ข้อมูลระบบ', 'สภาพแวดล้อม', 'การเชื่อมต่อ', 'ความปลอดภัย'].map((step, index) => (
-              <div
+              <motion.div
                 key={index}
-                className={`text-sm font-medium ${
+                className={`flex flex-col items-center space-y-2 ${
                   currentStep > index + 1 ? 'text-indigo-600' :
                   currentStep === index + 1 ? 'text-indigo-600' : 'text-gray-400'
                 }`}
+                whileHover={{ scale: 1.05 }}
               >
-                {step}
-              </div>
+                <div className={`p-3 rounded-full ${
+                  currentStep >= index + 1 ? 'bg-indigo-100' : 'bg-gray-100'
+                }`}>
+                  {getStepIcon(index + 1)}
+                </div>
+                <span className="text-sm font-medium">{step}</span>
+              </motion.div>
             ))}
           </div>
-          <div className="h-2 bg-gray-200 rounded-full">
-            <div
-              className="h-2 bg-indigo-600 rounded-full transition-all duration-500"
-              style={{ width: `${(currentStep / 4) * 100}%` }}
+          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-indigo-600"
+              initial={{ width: 0 }}
+              animate={{ width: `${(currentStep / 4) * 100}%` }}
+              transition={{ duration: 0.3 }}
             />
           </div>
-        </div>
+        </motion.div>
 
-        {/* Form content */}
-        <div className="bg-white shadow rounded-lg p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Form Content */}
+        <motion.div 
+          className="bg-white shadow-2xl rounded-2xl p-8"
+          variants={fadeInUp}
+          initial="initial"
+          animate="animate"
+        >
+          <form onSubmit={handleSubmit} className="space-y-8">
             {/* Step 1: ข้อมูลระบบพื้นฐาน */}
             {currentStep === 1 && (
-              <div className="space-y-4">
+              <motion.div className="space-y-4" variants={fadeInUp}>
                 <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
                   ข้อมูลระบบพื้นฐาน
                 </h3>
@@ -764,36 +900,81 @@ export default function CreateSystem() {
                     )}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             )}
 
             {/* Step 2: Environment Info */}
             {currentStep === 2 && (
-              <div className="space-y-4">
+              <motion.div className="space-y-4" variants={fadeInUp}>
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
                     ข้อมูลสภาพแวดล้อม - {formData.systemName || 'ไม่ระบุชื่อระบบ'}
                   </h3>
                   
-                  <button
-                    type="button"
-                    onClick={addNewEntries}
-                    className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-                  >
-                    เพิ่มข้อมูล
-                  </button>
+                 
+
+<motion.button
+  type="button"
+  onClick={addNewEntries}
+  className="group px-4 py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 
+    text-white rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700
+    transform transition-all duration-200 hover:shadow-xl
+    flex items-center space-x-2 font-medium"
+  variants={buttonVariants}
+  whileHover="hover"
+  whileTap="tap"
+>
+  <motion.svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    className="h-5 w-5"
+    fill="none" 
+    viewBox="0 0 24 24" 
+    stroke="currentColor"
+    variants={iconVariants}
+  >
+    <path 
+      strokeLinecap="round" 
+      strokeLinejoin="round" 
+      strokeWidth={2} 
+      d="M12 4v16m8-8H4" 
+    />
+  </motion.svg>
+  <span>เพิ่มข้อมูล</span>
+</motion.button>
                 </div>
                 {formData.environmentInfo.map((env, index) => (
                   <div key={index} className="space-y-4 border p-4 rounded-lg">
                     <div className="flex justify-between items-center">
                       <h4 className="font-medium">ข้อมูลชุดที่ {index + 1}</h4>
-                      <button
-                        type="button"
-                        onClick={() => removeEntries(index)}
-                        className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700"
-                      >
-                        ลบ
-                      </button>
+                    
+<motion.button
+  type="button"
+  onClick={() => removeEntries(index)}
+  className="group px-3 py-2 bg-gradient-to-r from-red-500 to-rose-600 
+    text-white rounded-lg shadow-md hover:from-red-600 hover:to-rose-700
+    transform transition-all duration-200 hover:shadow-lg 
+    flex items-center space-x-2"
+  variants={deleteButtonVariants}
+  whileHover="hover"
+  whileTap="tap"
+>
+  <motion.svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    className="h-5 w-5" 
+    fill="none" 
+    viewBox="0 0 24 24" 
+    stroke="currentColor"
+    variants={deleteIconVariants}
+  >
+    <path 
+      strokeLinecap="round" 
+      strokeLinejoin="round" 
+      strokeWidth={2} 
+      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m4-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" 
+    />
+  </motion.svg>
+  <span>ลบ</span>
+</motion.button>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
@@ -1188,12 +1369,12 @@ export default function CreateSystem() {
                     </div>
                   </div>
                 ))}
-              </div>
+              </motion.div>
             )}
 
             {/* Step 3: Connection Info */}
             {currentStep === 3 && (
-              <div className="space-y-4">
+              <motion.div className="space-y-4" variants={fadeInUp}>
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
                     ข้อมูลการเชื่อมต่อ
@@ -1205,13 +1386,34 @@ export default function CreateSystem() {
                       <h4 className="font-medium">
                         Server Name: {formData.environmentInfo[index]?.serverName || 'N/A'}
                       </h4>
-                      <button
-                        type="button"
-                        onClick={() => removeEntries(index)}
-                        className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700"
-                      >
-                        ลบ
-                      </button>
+<motion.button
+  type="button"
+  onClick={() => removeEntries(index)}
+  className="group px-3 py-2 bg-gradient-to-r from-red-500 to-rose-600 
+    text-white rounded-lg shadow-md hover:from-red-600 hover:to-rose-700
+    transform transition-all duration-200 hover:shadow-lg 
+    flex items-center space-x-2"
+  variants={deleteButtonVariants}
+  whileHover="hover"
+  whileTap="tap"
+>
+  <motion.svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    className="h-5 w-5" 
+    fill="none" 
+    viewBox="0 0 24 24" 
+    stroke="currentColor"
+    variants={deleteIconVariants}
+  >
+    <path 
+      strokeLinecap="round" 
+      strokeLinejoin="round" 
+      strokeWidth={2} 
+      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m4-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" 
+    />
+  </motion.svg>
+  <span>ลบ</span>
+</motion.button>
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                       <div>
@@ -1426,12 +1628,12 @@ export default function CreateSystem() {
                     </div>
                   </div>
                 ))}
-              </div>
+              </motion.div>
             )}
 
             {/* Step 4: Security Info */}
             {currentStep === 4 && (
-              <div className="space-y-4">
+              <motion.div className="space-y-4" variants={fadeInUp}>
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
                     ข้อมูลความปลอดภัย
@@ -1443,13 +1645,34 @@ export default function CreateSystem() {
                       <h4 className="font-medium">
                         Server Name: {formData.environmentInfo[index]?.serverName || 'N/A'}
                       </h4>
-                      <button
-                        type="button"
-                        onClick={() => removeEntries(index)}
-                        className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700"
-                      >
-                        ลบ
-                      </button>
+                     <motion.button
+  type="button"
+  onClick={() => removeEntries(index)}
+  className="group px-3 py-2 bg-gradient-to-r from-red-500 to-rose-600 
+    text-white rounded-lg shadow-md hover:from-red-600 hover:to-rose-700
+    transform transition-all duration-200 hover:shadow-lg 
+    flex items-center space-x-2"
+  variants={deleteButtonVariants}
+  whileHover="hover"
+  whileTap="tap"
+>
+  <motion.svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    className="h-5 w-5" 
+    fill="none" 
+    viewBox="0 0 24 24" 
+    stroke="currentColor"
+    variants={deleteIconVariants}
+  >
+    <path 
+      strokeLinecap="round" 
+      strokeLinejoin="round" 
+      strokeWidth={2} 
+      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m4-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" 
+    />
+  </motion.svg>
+  <span>ลบ</span>
+</motion.button>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
@@ -1575,48 +1798,63 @@ export default function CreateSystem() {
                     </div>
                   </div>
                 ))}
-              </div>
+              </motion.div>
             )}
 
             {/* Navigation buttons */}
-            <div className="flex justify-between pt-5">
+            <motion.div 
+              className="flex justify-between pt-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
               {currentStep > 1 && (
-                <button
-                  type="button"
-                  onClick={prevStep}
-                  className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-                >
-                  ย้อนกลับ
-                </button>
+<motion.button
+  type="button"
+  onClick={prevStep}
+  className="px-6 py-3 border-2 border-indigo-600 rounded-lg shadow-md
+    text-indigo-600 font-medium hover:bg-indigo-50 transform transition-all
+    duration-200 hover:shadow-lg active:scale-95 flex items-center space-x-2"
+  whileHover={buttonHover}
+  whileTap={buttonTap}
+>
+  <motion.div
+    initial="initial"
+    whileHover="hover"
+    variants={backIconVariants}
+  >
+    <FiArrowLeft className="h-5 w-5" />
+  </motion.div>
+  <span>ย้อนกลับ</span>
+</motion.button>
               )}
-              <div>
-                {currentStep < 4 ? (
-                  <button
-                    type="button"
-                    onClick={nextStep}
-                    className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-                  >
-                    ถัดไป
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    onClick={handleSubmit}
-                    disabled={isSubmitting || isSubmitted}
-                    className={`px-4 py-2 text-white rounded-md ${
-                      isSubmitting || isSubmitted 
-                        ? 'bg-gray-400 cursor-not-allowed' 
-                        : 'bg-indigo-600 hover:bg-indigo-700'
-                    }`}
-                  >
-                    {isSubmitting ? 'กำลังบันทึก...' : isSubmitted ? 'บันทึกเรียบร้อย' : 'บันทึกข้อมูล'}
-                  </button>
-                )}
-              </div>
-            </div>
+              
+              <motion.button
+                type={currentStep === 4 ? 'submit' : 'button'}
+                onClick={currentStep < 4 ? nextStep : handleSubmit}
+                disabled={isSubmitting || isSubmitted}
+                className={`px-6 py-3 rounded-lg shadow-lg font-medium
+                  transform transition-all duration-200 flex items-center space-x-2
+                  ${currentStep === 4 
+                    ? 'bg-green-600 hover:bg-green-700' 
+                    : 'bg-indigo-600 hover:bg-indigo-700'
+                  } text-white hover:shadow-xl active:scale-95
+                  ${(isSubmitting || isSubmitted) && 'opacity-50 cursor-not-allowed'}`}
+                whileHover={buttonHover}
+                whileTap={buttonTap}
+              >
+                <span>
+                  {currentStep === 4 
+                    ? (isSubmitting ? 'กำลังบันทึก...' : isSubmitted ? 'บันทึกเรียบร้อย' : 'บันทึกข้อมูล')
+                    : 'ถัดไป'
+                  }
+                </span>
+              </motion.button>
+            </motion.div>
           </form>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
+
       <CSVPreviewModal 
         isOpen={showPreview}
         onClose={handleClosePreview}

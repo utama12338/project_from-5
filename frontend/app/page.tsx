@@ -67,15 +67,23 @@ const deleteIconVariants = {// ของปุ่มลบ
 
 
 // 
+const backButtonVariants = {
+  initial: {
+    backgroundColor: "transparent"
+  },
+  hover: {
+    backgroundColor: "rgba(99, 102, 241, 0.05)"
+  }
+};
 
 const backIconVariants: Variants = {
   hover: {
-    x: [-5, 0, -5], // Sliding left and right
+    x: [0, 0, -5], // Sliding left and right
     transition: {
       duration: 1,
       repeat: Infinity,
       ease: "easeInOut",
-      repeatType: "mirror"
+      repeatType: "reverse"
     }
   },
   initial: {
@@ -1809,20 +1817,18 @@ export default function CreateSystem() {
               transition={{ delay: 0.3 }}
             >
               {currentStep > 1 && (
-<motion.button
+                <motion.button
   type="button"
   onClick={prevStep}
   className="px-6 py-3 border-2 border-indigo-600 rounded-lg shadow-md
-    text-indigo-600 font-medium hover:bg-indigo-50 transform transition-all
+    text-indigo-600 font-medium transform transition-all
     duration-200 hover:shadow-lg active:scale-95 flex items-center space-x-2"
-  whileHover={buttonHover}
-  whileTap={buttonTap}
+  variants={backButtonVariants}
+  initial="initial"
+  whileHover="hover"
+  whileTap="tap"
 >
-  <motion.div
-    initial="initial"
-    whileHover="hover"
-    variants={backIconVariants}
-  >
+  <motion.div variants={backIconVariants}>
     <FiArrowLeft className="h-5 w-5" />
   </motion.div>
   <span>ย้อนกลับ</span>

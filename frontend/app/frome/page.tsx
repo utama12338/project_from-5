@@ -1,11 +1,12 @@
 'use client'
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from "framer-motion";
 import Link from 'next/link';
 import CustomAlert from './select';
 import { useSystemListViewModel } from './useSystemListViewModel';
 import axios from 'axios'
 import SearchModal from './components/SearchModal';
+import DetailViewModal from '../components/DetailViewModal';
 
 export default function SystemList() {
   const {
@@ -34,6 +35,9 @@ export default function SystemList() {
     isFiltering,
     lastSearchCriteria,
   } = useSystemListViewModel();
+
+  const [selectedSystem, setSelectedSystem] = useState(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
 
   if (loading) {
     return (
@@ -172,13 +176,16 @@ export default function SystemList() {
                 แก้ไขข้อมูล
                 <i className="fas fa-edit ml-2"></i>
               </Link>
-              <Link
-                href={`/systems/${system.id}`}
+              <button
+                onClick={() => {
+                  setSelectedSystem(system);
+                  setShowDetailModal(true);
+                }}
                 className="w-full inline-flex justify-center items-center px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors"
               >
                 ดูรายละเอียด
                 <i className="fas fa-arrow-right ml-2"></i>
-              </Link>
+              </button>
             </div>
           </motion.div>
         ))}
@@ -235,6 +242,14 @@ export default function SystemList() {
         }}
         type={alertType}
       />
+
+      {selectedSystem && (
+        <DetailViewModal
+          isOpen={showDetailModal}
+          onClose={() => setShowDetailModal(false)}
+          system={selectedSystem}
+        />
+      )}
     </div>
   );
 }

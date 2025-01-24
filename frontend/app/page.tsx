@@ -46,6 +46,27 @@ const PRODUCTION_UNIT_OPTIONS = [
   'หน่วยระบบสนับสนุนงานธุรกิจ'
 ];
 
+interface EnvironmentInfo {
+  environment: string;
+  serverName: string;
+  ip: string;
+  serverType: string;
+  serverRole: string;
+  serverDuty: string;
+  database: string;
+  application: string;
+  operatingSystem: string;
+  servicePack: string;
+  build: string;
+  cpu: string;
+  ram: string;
+  disk: string;
+  dr: string;
+  joinDomain: string;
+  windowsCluster: string;
+  productionUnit: string[];
+}
+
 export default function CreateSystem() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -79,7 +100,7 @@ export default function CreateSystem() {
       dr: '',
       joinDomain: '',
       windowsCluster: '',
-      productionUnit: ''
+      productionUnit: [] as string[]
     }],
     connectionInfo: [{
       ad: 'NO', 
@@ -114,6 +135,10 @@ export default function CreateSystem() {
   // Add state for CSV preview modal
   const [showPreview, setShowPreview] = useState(false);
   const [csvData, setCsvData] = useState<CSVValidationResult[]>([]);
+
+  // Add new state for submission status
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   // ฟังก์ชันจัดการการเปลี่ยนแปลงข้อมูล (เหมือนเดิม)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -261,14 +286,22 @@ export default function CreateSystem() {
   // ฟังก์ชันสำหรับส่งข้อมูล
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData)
+    
+    if (isSubmitting || isSubmitted) {
+      return;
+    }
+
     if (validateForm(currentStep)) {
       try {
+        setIsSubmitting(true);
         const response = await axios.post('http://localhost:4000/from/createforme', {
           ...formData,  
         });
         console.log('Success:', response.data);
+        
+        setIsSubmitted(true);
         router.push('/frome');
+        
         Swal.fire({
           title: 'บันทึกสำเร็จ!',
           text: 'ข้อมูลของคุณถูกบันทึกเรียบร้อยแล้ว',
@@ -283,6 +316,8 @@ export default function CreateSystem() {
           icon: 'error',
           confirmButtonText: 'ตกลง'
         });
+      } finally {
+        setIsSubmitting(false);
       }
     } else {
       Swal.fire({
@@ -295,7 +330,7 @@ export default function CreateSystem() {
   };
 
   const handleEnvironmentChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | { target: { name: string; value: string | string[] } },
     index: number
   ) => {
     const { name, value } = e.target;
@@ -367,7 +402,7 @@ export default function CreateSystem() {
         dr: '',
         joinDomain: '',
         windowsCluster: '',
-        productionUnit: ''
+        productionUnit: [] as string[]
       }],
       connectionInfo: [...prev.connectionInfo, {
         ad: 'NO',
@@ -445,18 +480,56 @@ export default function CreateSystem() {
         if (!env.serverName.trim()) {
           newErrors[`serverName-${index}`] = 'กรุณากรอก Server Name';
         }
-
+        if (!env.serverType.trim()) {
+          newErrors[`serverType-${index}`] = 'กรุณาเลือก Server Type';
+        }
+        if (!env.serverRole.trim()) {
+          newErrors[`serverRole-${index}`] = 'กรุณาเลือก Server Role';
+        }
+        if (!env.serverDuty.trim()) {
+          newErrors[`serverDuty-${index}`] = 'กรุณาเลือก Server Duty';
+        }
+        if (!env.database.trim()) {
+          newErrors[`database-${index}`] = 'กรุณากรอก Database';
+        }
+        if (!env.application.trim()) {
+          newErrors[`application-${index}`] = 'กรุณากรอก Application';
+        }
+        if (!env.operatingSystem.trim()) {
+          newErrors[`operatingSystem-${index}`] = 'กรุณากรอก Operating System';
+        }
+        if (!env.servicePack.trim()) {
+          newErrors[`servicePack-${index}`] = 'กรุณากรอก Service Pack';
+        }
+        if (!env.build.trim()) {
+          newErrors[`build-${index}`] = 'กรุณากรอก Build';
+        }
+        if (!env.cpu.trim()) {
+          newErrors[`cpu-${index}`] = 'กรุณากรอก CPU';
+        }
+        if (!env.ram.trim()) {
+          newErrors[`ram-${index}`] = 'กรุณากรอก RAM';
+        }
+        if (!env.disk.trim()) {
+          newErrors[`disk-${index}`] = 'กรุณากรอก Disk';
+        }
+        if (!env.dr.trim()) {
+          newErrors[`dr-${index}`] = 'กรุณาเลือก DR';
+        }
+        if (!env.joinDomain.trim()) {
+          newErrors[`joinDomain-${index}`] = 'กรุณาเลือก Join Domain';
+        }
+        if (!env.windowsCluster.trim()) {
+          newErrors[`windowsCluster-${index}`] = 'กรุณาเลือก Windows Cluster';
+        }
         if (!env.productionUnit || env.productionUnit.length === 0) {
           newErrors[`productionUnit-${index}`] = 'กรุณาเลือก Production Unit อย่างน้อย 1 รายการ';
         }
-
-
         if (!env.ip.trim()) {
           newErrors[`ip-${index}`] = 'กรุณากรอก IP Address';
         } else if (!/^(\d{1,3}\.){3}\d{1,3}$/.test(env.ip)) {
           newErrors[`ip-${index}`] = 'รูปแบบ IP Address ไม่ถูกต้อง';
         }
-        // Add more environment validations as needed
       });
     }
 
@@ -609,7 +682,7 @@ export default function CreateSystem() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block teBusiness Unitxt-sm font-medium text-gray-700">
                     บริษัทคู่สัญญา  / ติดต่อ   Vendor / Contact NO.
                     </label>  
                     <input
@@ -699,7 +772,7 @@ export default function CreateSystem() {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
-                    ข้อมูลสภาพแวดล้อม
+                    ข้อมูลสภาพแวดล้อม - {formData.systemName || 'ไม่ระบุชื่อระบบ'}
                   </h3>
                   
                   <button
@@ -791,7 +864,8 @@ export default function CreateSystem() {
                           name="serverType"
                           value={env.serverType}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
+                            ${errors[`serverType-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
                           required
                         >
                           <option value="">Select Server Type</option>
@@ -799,6 +873,9 @@ export default function CreateSystem() {
                             <option key={option} value={option}>{option}</option>
                           ))}
                         </select>
+                        {errors[`serverType-${index}`] && (
+                          <p className="mt-1 text-sm text-red-600">{errors[`serverType-${index}`]}</p>
+                        )}
                       </div>
 
                       <div>
@@ -809,7 +886,8 @@ export default function CreateSystem() {
                           name="serverRole"
                           value={env.serverRole}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
+                            ${errors[`serverRole-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
                           required
                         >
                           <option value="">Select Server Role</option>
@@ -817,6 +895,9 @@ export default function CreateSystem() {
                             <option key={option} value={option}>{option}</option>
                           ))}
                         </select>
+                        {errors[`serverRole-${index}`] && (
+                          <p className="mt-1 text-sm text-red-600">{errors[`serverRole-${index}`]}</p>
+                        )}
                       </div>
 
                       <div>
@@ -827,7 +908,8 @@ export default function CreateSystem() {
                           name="serverDuty"
                           value={env.serverDuty}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
+                            ${errors[`serverDuty-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
                           required
                         >
                           <option value="">Select Server Duty</option>
@@ -835,6 +917,9 @@ export default function CreateSystem() {
                             <option key={option} value={option}>{option}</option>
                           ))}
                         </select>
+                        {errors[`serverDuty-${index}`] && (
+                          <p className="mt-1 text-sm text-red-600">{errors[`serverDuty-${index}`]}</p>
+                        )}
                       </div>
 
                       <div>
@@ -846,11 +931,15 @@ export default function CreateSystem() {
                           name="database"
                           value={env.database}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
+                            ${errors[`database-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
                           placeholder="Database management"
                           required
                           autoComplete="off"
                         />
+                        {errors[`database-${index}`] && (
+                          <p className="mt-1 text-sm text-red-600">{errors[`database-${index}`]}</p>
+                        )}
                       </div>
 
                       <div>
@@ -862,11 +951,15 @@ export default function CreateSystem() {
                           name="application"
                           value={env.application}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
+                            ${errors[`application-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
                           placeholder="Supporting software IIS .net framework"
                           required
                           autoComplete="off"
                         />
+                        {errors[`application-${index}`] && (
+                          <p className="mt-1 text-sm text-red-600">{errors[`application-${index}`]}</p>
+                        )}
                       </div>
 
                       <div>
@@ -878,10 +971,14 @@ export default function CreateSystem() {
                           name="operatingSystem"
                           value={env.operatingSystem}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
+                            ${errors[`operatingSystem-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
                           required
                           autoComplete="off"
                         />
+                        {errors[`operatingSystem-${index}`] && (
+                          <p className="mt-1 text-sm text-red-600">{errors[`operatingSystem-${index}`]}</p>
+                        )}
                       </div>
 
                       <div>
@@ -893,10 +990,14 @@ export default function CreateSystem() {
                           name="servicePack"
                           value={env.servicePack}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
+                            ${errors[`servicePack-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
                           required
                           autoComplete="off"
                         />
+                        {errors[`servicePack-${index}`] && (
+                          <p className="mt-1 text-sm text-red-600">{errors[`servicePack-${index}`]}</p>
+                        )}
                       </div>
 
                       <div>
@@ -908,10 +1009,14 @@ export default function CreateSystem() {
                           name="build"
                           value={env.build}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
+                            ${errors[`build-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
                           required
                           autoComplete="off"
                         />
+                        {errors[`build-${index}`] && (
+                          <p className="mt-1 text-sm text-red-600">{errors[`build-${index}`]}</p>
+                        )}
                       </div>
 
                       <div>
@@ -923,10 +1028,14 @@ export default function CreateSystem() {
                           name="cpu"
                           value={env.cpu}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
+                            ${errors[`cpu-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
                           required
                           autoComplete="off"
                         />
+                        {errors[`cpu-${index}`] && (
+                          <p className="mt-1 text-sm text-red-600">{errors[`cpu-${index}`]}</p>
+                        )}
                       </div>
 
                       <div>
@@ -938,10 +1047,14 @@ export default function CreateSystem() {
                           name="ram"
                           value={env.ram}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
+                            ${errors[`ram-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
                           required
                           autoComplete="off"
                         />
+                        {errors[`ram-${index}`] && (
+                          <p className="mt-1 text-sm text-red-600">{errors[`ram-${index}`]}</p>
+                        )}
                       </div>
 
                       <div>
@@ -953,10 +1066,14 @@ export default function CreateSystem() {
                           name="disk"
                           value={env.disk}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
+                            ${errors[`disk-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
                           required
                           autoComplete="off"
                         />
+                        {errors[`disk-${index}`] && (
+                          <p className="mt-1 text-sm text-red-600">{errors[`disk-${index}`]}</p>
+                        )}
                       </div>
 
                       <div>
@@ -967,13 +1084,17 @@ export default function CreateSystem() {
                           name="dr"
                           value={env.dr}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
+                            ${errors[`dr-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
                           required
                         >
                           <option value="">Select DR/DC</option>
                           <option value="DR">DR</option>
                           <option value="DC">DC</option>
                         </select>
+                        {errors[`dr-${index}`] && (
+                          <p className="mt-1 text-sm text-red-600">{errors[`dr-${index}`]}</p>
+                        )}
                       </div>
 
                       <div>
@@ -984,13 +1105,17 @@ export default function CreateSystem() {
                           name="joinDomain"
                           value={env.joinDomain}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
+                            ${errors[`joinDomain-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
                           required
                         >
                           <option value="">Select Option</option>
                           <option value="YES">YES</option>
                           <option value="NO">NO</option>
                         </select>
+                        {errors[`joinDomain-${index}`] && (
+                          <p className="mt-1 text-sm text-red-600">{errors[`joinDomain-${index}`]}</p>
+                        )}
                       </div>
 
                       <div>
@@ -1001,61 +1126,65 @@ export default function CreateSystem() {
                           name="windowsCluster"
                           value={env.windowsCluster}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
+                            ${errors[`windowsCluster-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
                           required
                         >
                           <option value="">Select Option</option>
                           <option value="YES">YES</option>
                           <option value="NO">NO</option>
                         </select>
+                        {errors[`windowsCluster-${index}`] && (
+                          <p className="mt-1 text-sm text-red-600">{errors[`windowsCluster-${index}`]}</p>
+                        )}
                       </div>
 
-<div>
-  <label className="block text-sm font-medium text-gray-700 mb-2">
-    Production Unit
-  </label>
-  <div className={`grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 border rounded-md ${
-    errors[`productionUnit-${index}`] ? 'border-red-500' : 'border-gray-300'
-  }`}>
-    {PRODUCTION_UNIT_OPTIONS.map((option) => (
-      <div key={option} className="flex items-center space-x-2">
-        <input
-          type="checkbox"
-          id={`productionUnit-${index}-${option}`}
-          checked={env.productionUnit.includes(option)}
-          onChange={(e) => {
-            const updatedUnits = e.target.checked
-              ? [...env.productionUnit, option]
-              : env.productionUnit.filter(unit => unit !== option);
-            
-            handleEnvironmentChange({
-              target: {
-                name: 'productionUnit',
-                value: updatedUnits
-              }
-            }, index);
-          }}
-          className={`h-4 w-4 focus:ring-indigo-500 rounded ${
-            errors[`productionUnit-${index}`] 
-              ? 'border-red-500 text-red-600' 
-              : 'border-gray-300 text-indigo-600'
-          }`}
-        />
-        <label 
-          htmlFor={`productionUnit-${index}-${option}`}
-          className="text-sm text-gray-700"
-        >
-          {option}
-        </label>
-      </div>
-    ))}
-  </div>
-  {errors[`productionUnit-${index}`] && (
-    <p className="mt-1 text-sm text-red-600">
-      {errors[`productionUnit-${index}`]}
-    </p>
-  )}
-</div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Production Unit
+                        </label>
+                        <div className={`grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 border rounded-md ${
+                          errors[`productionUnit-${index}`] ? 'border-red-500' : 'border-gray-300'
+                        }`}>
+                          {PRODUCTION_UNIT_OPTIONS.map((option) => (
+                            <div key={option} className="flex items-center space-x-2">
+                              <input
+                                type="checkbox"
+                                id={`productionUnit-${index}-${option}`}
+                                checked={env.productionUnit.includes(option)}
+                                onChange={(e) => {
+                                  const updatedUnits = e.target.checked
+                                    ? [...env.productionUnit, option]
+                                    : env.productionUnit.filter(unit => unit !== option);
+                                  
+                                  handleEnvironmentChange({
+                                    target: {
+                                      name: 'productionUnit',
+                                      value: updatedUnits
+                                    }
+                                  }, index);
+                                }}
+                                className={`h-4 w-4 focus:ring-indigo-500 rounded ${
+                                  errors[`productionUnit-${index}`] 
+                                    ? 'border-red-500 text-red-600' 
+                                    : 'border-gray-300 text-indigo-600'
+                                }`}
+                              />
+                              <label 
+                                htmlFor={`productionUnit-${index}-${option}`}
+                                className="text-sm text-gray-700"
+                              >
+                                {option}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                        {errors[`productionUnit-${index}`] && (
+                          <p className="mt-1 text-sm text-red-600">
+                            {errors[`productionUnit-${index}`]}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -1473,9 +1602,14 @@ export default function CreateSystem() {
                   <button
                     type="submit"
                     onClick={handleSubmit}
-                    className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+                    disabled={isSubmitting || isSubmitted}
+                    className={`px-4 py-2 text-white rounded-md ${
+                      isSubmitting || isSubmitted 
+                        ? 'bg-gray-400 cursor-not-allowed' 
+                        : 'bg-indigo-600 hover:bg-indigo-700'
+                    }`}
                   >
-                    บันทึกข้อมูล
+                    {isSubmitting ? 'กำลังบันทึก...' : isSubmitted ? 'บันทึกเรียบร้อย' : 'บันทึกข้อมูล'}
                   </button>
                 )}
               </div>

@@ -381,89 +381,69 @@ export default function EditSystem() {
     }));
   };
 
-  const addEnvironmentInfo = () => {
-    setSystemData(prev => ({
-      ...prev,
-      environmentInfo: [...prev.environmentInfo, {
-        environment: '',
-        serverName: '',
-        ip: '',
-        serverType: '',
-        serverRole: '',
-        serverDuty: '',
-        database: '',
-        application: '',
-        operatingSystem: '',
-        servicePack: '',
-        build: '',
-        cpu: '',
-        ram: '',
-        disk: '',
-        dr: '',
-        joinDomain: '',
-        windowsCluster: '',
-        productionUnit: ''
-      }]
-    }));
-  };
+  // แก้ไขฟังก์ชัน addEnvironmentInfo ให้เพิ่มข้อมูลทั้งหมดพร้อมกัน
+const addEnvironmentInfo = () => {
+  setSystemData(prev => ({
+    ...prev,
+    environmentInfo: [...prev.environmentInfo, {
+      environment: '',
+      serverName: '',
+      ip: '',
+      serverType: '',
+      serverRole: '',
+      serverDuty: '',
+      database: '',
+      application: '',
+      operatingSystem: '',
+      servicePack: '',
+      build: '',
+      cpu: '',
+      ram: '',
+      disk: '',
+      dr: '',
+      joinDomain: '',
+      windowsCluster: '',
+      productionUnit: ''
+    }],
+    // เพิ่ม connectionInfo พร้อมกัน
+    connectionInfo: [...prev.connectionInfo, {
+      ad: '',
+      adfs: '',
+      dns: '',
+      ntp: '',
+      tpam: '',
+      netka: '',
+      fim: '',
+      ftpServer: '',
+      ftpGoAnywhereMFTServer: '',
+      emailSmtp: '',
+      sms: '',
+      apiManagement: '',
+      dv: '',
+      snmp: ''
+    }],
+    // เพิ่ม securityInfo พร้อมกัน
+    securityInfo: [...prev.securityInfo, {
+      urlWebsite: '',
+      certificateExpireDate: '',
+      backupPolicy: '',
+      downtimeAllowed: '',
+      centralizeLog: '',
+      setupAgentPatch: '',
+      internetFacing: ''
+    }]
+  }));
+};
 
-  const removeEnvironmentInfo = (index: number) => {
-    setSystemData(prev => ({
-      ...prev,
-      environmentInfo: prev.environmentInfo.filter((_, i) => i !== index)
-    }));
-  };
-
-  const addConnectionInfo = () => {
-    setSystemData(prev => ({
-      ...prev,
-      connectionInfo: [...prev.connectionInfo, {
-        ad: '',
-        adfs: '',
-        dns: '',
-        ntp: '',
-        tpam: '',
-        netka: '',
-        fim: '',
-        ftpServer: '',
-        ftpGoAnywhereMFTServer: '',
-        emailSmtp: '',
-        sms: '',
-        apiManagement: '',
-        dv: '',
-        snmp: ''
-      }]
-    }));
-  };
-
-  const removeConnectionInfo = (index: number) => {
-    setSystemData(prev => ({
-      ...prev,
-      connectionInfo: prev.connectionInfo.filter((_, i) => i !== index)
-    }));
-  };
-
-  const addSecurityInfo = () => {
-    setSystemData(prev => ({
-      ...prev,
-      securityInfo: [...prev.securityInfo, {
-        urlWebsite: '',
-        certificateExpireDate: '',
-        backupPolicy: '',
-        downtimeAllowed: '',
-        centralizeLog: '',
-        setupAgentPatch: '',
-        internetFacing: ''
-      }]
-    }));
-  };
-
-  const removeSecurityInfo = (index: number) => {
-    setSystemData(prev => ({
-      ...prev,
-      securityInfo: prev.securityInfo.filter((_, i) => i !== index)
-    }));
-  };
+// แก้ไขฟังก์ชัน removeEnvironmentInfo ให้ลบข้อมูลทั้งหมดพร้อมกัน
+const removeEnvironmentInfo = (index: number) => {
+  setSystemData(prev => ({
+    ...prev,
+    environmentInfo: prev.environmentInfo.filter((_, i) => i !== index),
+    connectionInfo: prev.connectionInfo.filter((_, i) => i !== index),
+    securityInfo: prev.securityInfo.filter((_, i) => i !== index)
+  }));
+};
 
 const renderSystemInfo = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -524,7 +504,7 @@ const renderEnvironmentInfo = () => (
       {systemData.environmentInfo.map((env, index) => (
         <div key={index} className="bg-gray-50 p-6 rounded-lg shadow-sm">
           <h3 className="text-lg font-medium mb-6 text-center text-gray-800">
-            สภาพแวดล้อม {index + 1}
+            สภาพแวดล้อม {index + 1} : {systemData.systemName}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormFieldOption
@@ -656,188 +636,161 @@ const renderEnvironmentInfo = () => (
 );
 
 const renderConnectionInfo = () => (
-    <div className="space-y-8">
-      {systemData.connectionInfo.map((conn, index) => (
-        <div key={index} className="bg-gray-50 p-6 rounded-lg shadow-sm">
-          <h3 className="text-lg font-medium mb-6 text-center text-gray-800">
-            ข้อมูลการเชื่อมต่อ
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormFieldOption
-              label="AD" 
-              value={conn.ad}
-              onChange={(value) => updateConnectionInfo(index, 'ad', value)}
-              options={['YES', 'NO']}
-            />
-            <FormFieldOption 
-              label="DNS" 
-              value={conn.dns}
-              onChange={(value) => updateConnectionInfo(index, 'dns', value)}
-              options={['YES', 'NO']}
-            />
-            <FormFieldOption 
-              label="TPAM" 
-              value={conn.tpam}
-              onChange={(value) => updateConnectionInfo(index, 'tpam', value)}
-              options={['YES', 'NO']}
-            />
-            <FormFieldOption 
-              label="FIM" 
-              value={conn.fim}
-              onChange={(value) => updateConnectionInfo(index, 'fim', value)}
-              options={['YES', 'NO']}
-            />
-            <FormFieldOption 
-              label="FTP Server" 
-              value={conn.ftpServer}
-              onChange={(value) => updateConnectionInfo(index, 'ftpServer', value)}
-              options={['YES', 'NO']}
-            />
-            <FormFieldOption 
-              label="Email SMTP" 
-              value={conn.emailSmtp}
-              onChange={(value) => updateConnectionInfo(index, 'emailSmtp', value)}
-              options={['YES', 'NO']}
-            />
-            <FormFieldOption 
-              label="API Management" 
-              value={conn.apiManagement}
-              onChange={(value) => updateConnectionInfo(index, 'apiManagement', value)}
-              options={['YES', 'NO']}
-            />
-            <FormFieldOption 
-              label="SNMP" 
-              value={conn.snmp}
-              onChange={(value) => updateConnectionInfo(index, 'snmp', value)}
-              options={['YES', 'NO']}
-            />
-            <FormFieldOption 
-              label="ADFS" 
-              value={conn.adfs}
-              onChange={(value) => updateConnectionInfo(index, 'adfs', value)}
-              options={['YES', 'NO']}
-            />
-            <FormFieldOption 
-              label="NTP" 
-              value={conn.ntp}
-              onChange={(value) => updateConnectionInfo(index, 'ntp', value)}
-              options={['YES', 'NO']}
-            />
-            <FormFieldOption 
-              label="Netka" 
-              value={conn.netka}
-              onChange={(value) => updateConnectionInfo(index, 'netka', value)}
-              options={['YES', 'NO']}
-            />
-            <FormFieldOption 
-              label="FTP GoAnywhere MFT Server" 
-              value={conn.ftpGoAnywhereMFTServer}
-              onChange={(value) => updateConnectionInfo(index, 'ftpGoAnywhereMFTServer', value)}
-              options={['YES', 'NO']}
-            />
-            <FormFieldOption 
-              label="SMS" 
-              value={conn.sms}
-              onChange={(value) => updateConnectionInfo(index, 'sms', value)}
-              options={['YES', 'NO']}
-            />
-            <FormFieldOption 
-              label="DV" 
-              value={conn.dv}
-              onChange={(value) => updateConnectionInfo(index, 'dv', value)}
-              options={['YES', 'NO']}
-            />
-          </div>
-          <div className="flex justify-end mt-4">
-            <button
-              onClick={() => removeConnectionInfo(index)}
-              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
-            >
-              ลบ
-            </button>
-          </div>
+  <div className="space-y-8">
+    {systemData.connectionInfo.map((conn, index) => (
+      <div key={index} className="bg-gray-50 p-6 rounded-lg shadow-sm">
+        <h3 className="text-lg font-medium mb-6 text-center text-gray-800">
+          ข้อมูลการเชื่อมต่อ {index + 1} : {systemData.environmentInfo[index]?.serverName || 'ไม่มีชื่อ'}
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormFieldOption
+            label="AD" 
+            value={conn.ad}
+            onChange={(value) => updateConnectionInfo(index, 'ad', value)}
+            options={['YES', 'NO']}
+          />
+          <FormFieldOption 
+            label="DNS" 
+            value={conn.dns}
+            onChange={(value) => updateConnectionInfo(index, 'dns', value)}
+            options={['YES', 'NO']}
+          />
+          <FormFieldOption 
+            label="TPAM" 
+            value={conn.tpam}
+            onChange={(value) => updateConnectionInfo(index, 'tpam', value)}
+            options={['YES', 'NO']}
+          />
+          <FormFieldOption 
+            label="FIM" 
+            value={conn.fim}
+            onChange={(value) => updateConnectionInfo(index, 'fim', value)}
+            options={['YES', 'NO']}
+          />
+          <FormFieldOption 
+            label="FTP Server" 
+            value={conn.ftpServer}
+            onChange={(value) => updateConnectionInfo(index, 'ftpServer', value)}
+            options={['YES', 'NO']}
+          />
+          <FormFieldOption 
+            label="Email SMTP" 
+            value={conn.emailSmtp}
+            onChange={(value) => updateConnectionInfo(index, 'emailSmtp', value)}
+            options={['YES', 'NO']}
+          />
+          <FormFieldOption 
+            label="API Management" 
+            value={conn.apiManagement}
+            onChange={(value) => updateConnectionInfo(index, 'apiManagement', value)}
+            options={['YES', 'NO']}
+          />
+          <FormFieldOption 
+            label="SNMP" 
+            value={conn.snmp}
+            onChange={(value) => updateConnectionInfo(index, 'snmp', value)}
+            options={['YES', 'NO']}
+          />
+          <FormFieldOption 
+            label="ADFS" 
+            value={conn.adfs}
+            onChange={(value) => updateConnectionInfo(index, 'adfs', value)}
+            options={['YES', 'NO']}
+          />
+          <FormFieldOption 
+            label="NTP" 
+            value={conn.ntp}
+            onChange={(value) => updateConnectionInfo(index, 'ntp', value)}
+            options={['YES', 'NO']}
+          />
+          <FormFieldOption 
+            label="Netka" 
+            value={conn.netka}
+            onChange={(value) => updateConnectionInfo(index, 'netka', value)}
+            options={['YES', 'NO']}
+          />
+          <FormFieldOption 
+            label="FTP GoAnywhere MFT Server" 
+            value={conn.ftpGoAnywhereMFTServer}
+            onChange={(value) => updateConnectionInfo(index, 'ftpGoAnywhereMFTServer', value)}
+            options={['YES', 'NO']}
+          />
+          <FormFieldOption 
+            label="SMS" 
+            value={conn.sms}
+            onChange={(value) => updateConnectionInfo(index, 'sms', value)}
+            options={['YES', 'NO']}
+          />
+          <FormFieldOption 
+            label="DV" 
+            value={conn.dv}
+            onChange={(value) => updateConnectionInfo(index, 'dv', value)}
+            options={['YES', 'NO']}
+          />
         </div>
-      ))}
-      <div className="flex justify-end mt-4">
-      <button
-        onClick={addConnectionInfo}
-         className="flex items-center justify-center w-full py-2 mb-4 bg-blue-100
-            hover:bg-blue-200 rounded-md focus:outline-none"
-        >
-          <Plus className="w-5 h-5 text-blue-600" />
-        </button>
       </div>
-    </div>
+    ))}
+  </div>
 );
 
 const renderSecurityInfo = () => (
-    <div className="space-y-6">
-      {systemData.securityInfo.map((security, index) => (
-        <div key={index} className="bg-gray-50 p-6 rounded-lg shadow-sm">
-          <h3 className="text-lg font-medium mb-6 text-center text-gray-800">
-            ข้อมูลความปลอดภัย
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField 
-              label="URL Website" 
-              value={security.urlWebsite}
-              onChange={(value) => updateSecurityInfo(index, 'urlWebsite', value)}
-            />
+  <div className="space-y-6">
+    {systemData.securityInfo.map((security, index) => (
+      <div key={index} className="bg-gray-50 p-6 rounded-lg shadow-sm">
+        <h3 className="text-lg font-medium mb-6 text-center text-gray-800">
+          ข้อมูลความปลอดภัย {index + 1} : {systemData.environmentInfo[index]?.serverName || 'ไม่มีชื่อ'}
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField 
+            label="URL Website" 
+            value={security.urlWebsite}
+            onChange={(value) => updateSecurityInfo(index, 'urlWebsite', value)}
+          />
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Certificate Expire Date
+            </label>
             <input
               type="date"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+              className="w-full rounded-md border border-gray-300 shadow-sm p-2 
+                        focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                        hover:border-gray-400 transition-colors"
               value={security.certificateExpireDate}
               onChange={(e) => updateSecurityInfo(index, 'certificateExpireDate', e.target.value)}
             />
-            <FormField 
-              label="Backup Policy" 
-              value={security.backupPolicy}
-              onChange={(value) => updateSecurityInfo(index, 'backupPolicy', value)}
-            />
-            <FormField 
-              label="Downtime Allowed" 
-              value={security.downtimeAllowed}
-              onChange={(value) => updateSecurityInfo(index, 'downtimeAllowed', value)}
-            />
-            <FormFieldOption
-              label="Centralize Log"
-              value={security.centralizeLog}
-              onChange={(value) => updateSecurityInfo(index, 'centralizeLog', value)}
-              options={['YES', 'NO']}
-            />
-            <FormFieldOption
-              label="Setup Agent Patch"
-              value={security.setupAgentPatch}
-              onChange={(value) => updateSecurityInfo(index, 'setupAgentPatch', value)}
-              options={['YES', 'NO']}
-            />
-            <FormFieldOption
-              label="Internet Facing"
-              value={security.internetFacing}
-              onChange={(value) => updateSecurityInfo(index, 'internetFacing', value)}
-              options={['YES', 'NO']}
-            />
           </div>
-          <div className="flex justify-end mt-4">
-            <button
-              onClick={() => removeSecurityInfo(index)}
-              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
-            >
-              ลบ
-            </button>
-          </div>
+          <FormField 
+            label="Backup Policy" 
+            value={security.backupPolicy}
+            onChange={(value) => updateSecurityInfo(index, 'backupPolicy', value)}
+          />
+          <FormField 
+            label="Downtime Allowed" 
+            value={security.downtimeAllowed}
+            onChange={(value) => updateSecurityInfo(index, 'downtimeAllowed', value)}
+          />
+          <FormFieldOption
+            label="Centralize Log"
+            value={security.centralizeLog}
+            onChange={(value) => updateSecurityInfo(index, 'centralizeLog', value)}
+            options={['YES', 'NO']}
+          />
+          <FormFieldOption
+            label="Setup Agent Patch"
+            value={security.setupAgentPatch}
+            onChange={(value) => updateSecurityInfo(index, 'setupAgentPatch', value)}
+            options={['YES', 'NO']}
+          />
+          <FormFieldOption
+            label="Internet Facing"
+            value={security.internetFacing}
+            onChange={(value) => updateSecurityInfo(index, 'internetFacing', value)}
+            options={['YES', 'NO']}
+          />
         </div>
-      ))}
-      <div className="flex justify-end mt-4">
-      <button
-        onClick={addSecurityInfo}
-         className="flex items-center justify-center w-full py-2 mb-4 bg-blue-100
-            hover:bg-blue-200 rounded-md focus:outline-none"
-        >
-          <Plus className="w-5 h-5 text-blue-600" />
-        </button>
       </div>
-    </div>
+    ))}
+  </div>
 );
 
   return (

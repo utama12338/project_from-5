@@ -1,12 +1,11 @@
 'use client'
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { motion } from "framer-motion";
 import Link from 'next/link';
 import CustomAlert from './select';
 import { useSystemListViewModel } from './useSystemListViewModel';
 import axios from 'axios'
 import SearchModal from './components/SearchModal';
-import DetailViewModal from '../components/DetailViewModal';
 
 export default function SystemList() {
   const {
@@ -35,27 +34,6 @@ export default function SystemList() {
     isFiltering,
     lastSearchCriteria,
   } = useSystemListViewModel();
-
-  const [selectedSystems, setSelectedSystems] = useState<any[]>([]);
-  const [showDetailModal, setShowDetailModal] = useState(false);
-
-  // Add helper function to get selected systems
-  const getSelectedSystems = () => {
-    return systems.filter(system => selectedItems.includes(system.id));
-  };
-
-  // Update the bulk view button click handler
-  const handleBulkViewClick = () => {
-    const systemsToView = getSelectedSystems();
-    setSelectedSystems(systemsToView);
-    setShowDetailModal(true);
-  };
-
-  // Add handler for single system view
-  const handleSingleSystemView = (system: any) => {
-    setSelectedSystems([system]); // Put single system in array
-    setShowDetailModal(true);
-  };
 
   if (loading) {
     return (
@@ -115,14 +93,6 @@ export default function SystemList() {
                 className="px-4 py-2 bg-green-500 text-white rounded-lg"
               >
                 ดาวน์โหลด CSV ({selectedItems.length})
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleBulkViewClick}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-              >
-                ดูรายละเอียด ({selectedItems.length})
               </motion.button>
             </>
           )}
@@ -202,13 +172,13 @@ export default function SystemList() {
                 แก้ไขข้อมูล
                 <i className="fas fa-edit ml-2"></i>
               </Link>
-              <button
-                onClick={() => handleSingleSystemView(system)}
+              <Link
+                href={`/systems/${system.id}`}
                 className="w-full inline-flex justify-center items-center px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors"
               >
                 ดูรายละเอียด
                 <i className="fas fa-arrow-right ml-2"></i>
-              </button>
+              </Link>
             </div>
           </motion.div>
         ))}
@@ -265,14 +235,26 @@ export default function SystemList() {
         }}
         type={alertType}
       />
-
-      {showDetailModal && (
-        <DetailViewModal
-          isOpen={showDetailModal}
-          onClose={() => setShowDetailModal(false)}
-          systems={selectedSystems}
-        />
-      )}
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

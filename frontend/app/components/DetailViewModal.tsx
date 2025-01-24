@@ -5,11 +5,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface DetailViewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  system: any;
+  systems: any[]; // Changed from single system to array of systems
 }
 
-export default function DetailViewModal({ isOpen, onClose, system }: DetailViewModalProps) {
+export default function DetailViewModal({ isOpen, onClose, systems }: DetailViewModalProps) {
   const [activeSection, setActiveSection] = useState('basic');
+  const [activeSystemIndex, setActiveSystemIndex] = useState(0);
   const modalContentRef = useRef<HTMLDivElement>(null);
   const sectionRefs = {
     basic: useRef<HTMLDivElement>(null),
@@ -61,6 +62,8 @@ export default function DetailViewModal({ isOpen, onClose, system }: DetailViewM
 
   if (!isOpen) return null;
 
+  const currentSystem = systems[activeSystemIndex];
+
   return (
     <AnimatePresence>
       <motion.div
@@ -77,43 +80,62 @@ export default function DetailViewModal({ isOpen, onClose, system }: DetailViewM
           className="bg-white rounded-lg w-full max-w-6xl mx-4 h-[80vh] flex"
           onClick={e => e.stopPropagation()}
         >
-          {/* Side Navigation */}
-          <div className="w-64 border-r p-4 space-y-2">
-            <div 
-              className={`cursor-pointer p-2 rounded ${
-                activeSection === 'basic' ? 'bg-indigo-100 text-indigo-700' : 'hover:bg-gray-100'
-              }`}
-              onClick={() => scrollToSection('basic')}
-            >
-              ข้อมูลพื้นฐาน
+          {/* System Selection Tabs */}
+          <div className="w-64 border-r flex flex-col">
+            <div className="p-4 border-b">
+              <h3 className="font-semibold">ระบบที่เลือก ({systems.length})</h3>
             </div>
-            <div 
-              className={`cursor-pointer p-2 rounded ${
-                activeSection === 'environment' ? 'bg-indigo-100 text-indigo-700' : 'hover:bg-gray-100'
-              }`}
-              onClick={() => scrollToSection('environment')}
-            >
-              สภาพแวดล้อม
+            <div className="overflow-y-auto">
+              {systems.map((sys, index) => (
+                <div
+                  key={sys.id}
+                  onClick={() => setActiveSystemIndex(index)}
+                  className={`p-4 cursor-pointer hover:bg-gray-50 ${
+                    index === activeSystemIndex ? 'bg-indigo-50 text-indigo-600' : ''
+                  }`}
+                >
+                  {sys.systemName}
+                </div>
+              ))}
             </div>
-            <div 
-              className={`cursor-pointer p-2 rounded ${
-                activeSection === 'connection' ? 'bg-indigo-100 text-indigo-700' : 'hover:bg-gray-100'
-              }`}
-              onClick={() => scrollToSection('connection')}
-            >
-              การเชื่อมต่อ
-            </div>
-            <div 
-              className={`cursor-pointer p-2 rounded ${
-                activeSection === 'security' ? 'bg-indigo-100 text-indigo-700' : 'hover:bg-gray-100'
-              }`}
-              onClick={() => scrollToSection('security')}
-            >
-              ความปลอดภัย
+            {/* Existing navigation */}
+            <div className="border-t p-4 space-y-2">
+              <div 
+                className={`cursor-pointer p-2 rounded ${
+                  activeSection === 'basic' ? 'bg-indigo-100 text-indigo-700' : 'hover:bg-gray-100'
+                }`}
+                onClick={() => scrollToSection('basic')}
+              >
+                ข้อมูลพื้นฐาน
+              </div>
+              <div 
+                className={`cursor-pointer p-2 rounded ${
+                  activeSection === 'environment' ? 'bg-indigo-100 text-indigo-700' : 'hover:bg-gray-100'
+                }`}
+                onClick={() => scrollToSection('environment')}
+              >
+                สภาพแวดล้อม
+              </div>
+              <div 
+                className={`cursor-pointer p-2 rounded ${
+                  activeSection === 'connection' ? 'bg-indigo-100 text-indigo-700' : 'hover:bg-gray-100'
+                }`}
+                onClick={() => scrollToSection('connection')}
+              >
+                การเชื่อมต่อ
+              </div>
+              <div 
+                className={`cursor-pointer p-2 rounded ${
+                  activeSection === 'security' ? 'bg-indigo-100 text-indigo-700' : 'hover:bg-gray-100'
+                }`}
+                onClick={() => scrollToSection('security')}
+              >
+                ความปลอดภัย
+              </div>
             </div>
           </div>
 
-          {/* Content Area */}
+          {/* Content Area - Use currentSystem instead of system */}
           <div 
             id="modal-content" 
             ref={modalContentRef}
@@ -125,42 +147,42 @@ export default function DetailViewModal({ isOpen, onClose, system }: DetailViewM
               <div className="grid grid-cols-2 gap-x-8 gap-y-4">
                 <div className="p-4 bg-gray-50 rounded-lg">
                   <p className="font-semibold text-indigo-600 mb-1">ชื่อระบบ</p>
-                  <p className="text-gray-900">{system.systemName || '-'}</p>
+                  <p className="text-gray-900">{currentSystem.systemName || '-'}</p>
                 </div>
 
                 <div className="p-4 bg-gray-50 rounded-lg">
                   <p className="font-semibold text-indigo-600 mb-1">ประเภทการพัฒนา</p>
-                  <p className="text-gray-900">{system.developType || '-'}</p>
+                  <p className="text-gray-900">{currentSystem.developType || '-'}</p>
                 </div>
 
                 <div className="p-4 bg-gray-50 rounded-lg">
                   <p className="font-semibold text-indigo-600 mb-1">เลขที่สัญญา</p>
-                  <p className="text-gray-900">{system.contractNo || '-'}</p>
+                  <p className="text-gray-900">{currentSystem.contractNo || '-'}</p>
                 </div>
 
                 <div className="p-4 bg-gray-50 rounded-lg">
                   <p className="font-semibold text-indigo-600 mb-1">บริษัทคู่สัญญา/ติดต่อ</p>
-                  <p className="text-gray-900">{system.vendorContactNo || '-'}</p>
+                  <p className="text-gray-900">{currentSystem.vendorContactNo || '-'}</p>
                 </div>
 
                 <div className="p-4 bg-gray-50 rounded-lg">
                   <p className="font-semibold text-indigo-600 mb-1">หน่วยงานเจ้าของระบบงาน</p>
-                  <p className="text-gray-900">{system.businessUnit || '-'}</p>
+                  <p className="text-gray-900">{currentSystem.businessUnit || '-'}</p>
                 </div>
 
                 <div className="p-4 bg-gray-50 rounded-lg">
                   <p className="font-semibold text-indigo-600 mb-1">ผู้รับผิดชอบของทีมพัฒนา</p>
-                  <p className="text-gray-900">{system.developUnit || '-'}</p>
+                  <p className="text-gray-900">{currentSystem.developUnit || '-'}</p>
                 </div>
 
                 <div className="p-4 bg-gray-50 rounded-lg">
                   <p className="font-semibold text-indigo-600 mb-1">Computer Backup</p>
                   <span className={`px-3 py-1 rounded-full text-sm ${
-                    system.computerbackup === 'YES' 
+                    currentSystem.computerbackup === 'YES' 
                       ? 'bg-green-100 text-green-800' 
                       : 'bg-red-100 text-red-800'
                   }`}>
-                    {system.computerbackup || 'NO'}
+                    {currentSystem.computerbackup || 'NO'}
                   </span>
                 </div>
               </div>
@@ -169,7 +191,7 @@ export default function DetailViewModal({ isOpen, onClose, system }: DetailViewM
             {/* Environment Info Section */}
             <div ref={sectionRefs.environment} className="mb-8">
               <h2 className="text-2xl font-bold mb-4 border-b pb-2">สภาพแวดล้อม</h2>
-              {system.environmentInfo?.map((env: any, index: number) => (
+              {currentSystem.environmentInfo?.map((env: any, index: number) => (
                 <div key={index} className="mb-6">
                   <h3 className="text-lg font-semibold mb-4 text-indigo-600">Environment {index + 1}</h3>
                   <div className="grid grid-cols-2 gap-x-8 gap-y-4">
@@ -259,10 +281,10 @@ export default function DetailViewModal({ isOpen, onClose, system }: DetailViewM
             {/* Connection Info Section */}
             <div ref={sectionRefs.connection} className="mb-8">
               <h2 className="text-2xl font-bold mb-4 border-b pb-2">การเชื่อมต่อ</h2>
-              {system.connectionInfo?.map((conn: any, index: number) => (
+              {currentSystem.connectionInfo?.map((conn: any, index: number) => (
                 <div key={index} className="mb-6">
                   <h3 className="text-lg font-semibold mb-4 text-indigo-600">
-                    Server: {system.environmentInfo[index]?.serverName || `Server ${index + 1}`}
+                    Server: {currentSystem.environmentInfo[index]?.serverName || `Server ${index + 1}`}
                   </h3>
                   <div className="grid grid-cols-3 gap-x-8 gap-y-4">
                     {Object.entries(conn)
@@ -285,10 +307,10 @@ export default function DetailViewModal({ isOpen, onClose, system }: DetailViewM
             {/* Security Info Section */}
             <div ref={sectionRefs.security} className="mb-8">
               <h2 className="text-2xl font-bold mb-4 border-b pb-2">ความปลอดภัย</h2>
-              {system.securityInfo?.map((security: any, index: number) => (
+              {currentSystem.securityInfo?.map((security: any, index: number) => (
                 <div key={index} className="mb-6">
                   <h3 className="text-lg font-semibold mb-4 text-indigo-600">
-                    Server: {system.environmentInfo[index]?.serverName || `Server ${index + 1}`}
+                    Server: {currentSystem.environmentInfo[index]?.serverName || `Server ${index + 1}`}
                   </h3>
                   <div className="grid grid-cols-2 gap-x-8 gap-y-4">
                     <div className="p-4 bg-gray-50 rounded-lg">

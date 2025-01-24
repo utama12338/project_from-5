@@ -300,7 +300,7 @@ export default function CreateSystem() {
         console.log('Success:', response.data);
         
         setIsSubmitted(true);
-        router.push('/frome');
+        router.push('/forme');
         
         Swal.fire({
           title: 'บันทึกสำเร็จ!',

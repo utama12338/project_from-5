@@ -330,7 +330,7 @@ export default function EditSystem() {
         
         // หลังจากบันทึกสำเร็จให้ทำการนำทาง
         
-        return router.push('/frome');
+        return router.push('/forme');
       } else {
         throw new Error('ไม่สามารถบันทึกข้อมูลได้');
       }

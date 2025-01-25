@@ -11,6 +11,10 @@ import { FiServer, FiShield, FiDatabase, FiLink,FiArrowLeft } from 'react-icons/
 // 
 import StyledWrapper  from './components/neoninput';
 // 
+import Checkbox3d from './components/checkbox3d'
+// 
+import ModernDropdown from './components/ModernDropdown'
+// 
 // steper
 import Stack from '@mui/material/Stack';
 import Stepper from '@mui/material/Stepper';
@@ -24,6 +28,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import StorageIcon from '@mui/icons-material/Storage';
 import LinkIcon from '@mui/icons-material/Link';
 import SecurityIcon from '@mui/icons-material/Security';
+
 // steper
 
 
@@ -870,24 +875,16 @@ export default function CreateSystem() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-100">
-                      ประเภทการพัฒนา Develop Type
-                    </label>
-                    <StyledWrapper>
-                    <select
-                      name="developType"
+                    <ModernDropdown
+                      options={['OUTSOURCE', 'IN HOUSE']}
                       value={formData.developType}
-                      onChange={handleChange}
-                      className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                        ${errors.developType ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                      onChange={(value) => handleChange({
+                        target: { name: 'developType', value }
+                      } as any)}
+                      label="ประเภทการพัฒนา Develop Type"
                       required
-                      autoComplete="off"
-                    >
-                      <option value="">เลือกประเภทการพัฒนา</option>
-                      <option value="OUTSOURCE">OUTSOURCE</option>
-                      <option value="IN HOUSE">IN HOUSE</option>
-                    </select>
-                    </StyledWrapper>
+                      placeholder="เลือกประเภทการพัฒนา"
+                    />
                     {errors.developType && (
                       <p className="mt-1 text-sm text-red-600">{errors.developType}</p>
                     )}
@@ -957,49 +954,37 @@ export default function CreateSystem() {
                   </div>
 
                     <div>
-                    <label className="block text-sm font-medium text-gray-100">
-                      ผู้รับผิดชอบของทีมพัฒนา Develop Unit
-                    </label>
-                    <StyledWrapper>
-                    <select
-                      name="developUnit"
+                    <ModernDropdown
+                      options={[
+                        'ฝรล.',
+                        'ส่วนระบบงานสนับสนุน',
+                        'ระบบสนับสนุนนโยบายรัฐ',
+                        'ธนรัตน์ เกรอด'
+                      ]}
                       value={formData.developUnit}
-                      onChange={handleChange}
-                      className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                        ${errors.developUnit ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                      onChange={(value) => handleChange({
+                        target: { name: 'developUnit', value }
+                      } as any)}
+                      label="ผู้รับผิดชอบของทีมพัฒนา Develop Unit"
                       required
-                      autoComplete="off"
-                    >
-                      <option value="">เลือกผู้รับผิดชอบ</option>
-                      <option value="ฝรล.">ฝรล.</option>
-                      <option value="ส่วนระบบงานสนับสนุน">ส่วนระบบงานสนับสนุน</option>
-                      <option value="ระบบสนับสนุนนโยบายรัฐ">ระบบสนับสนุนนโยบายรัฐ</option>
-                      <option value="ธนรัตน์ เกรอด">ธนรัตน์ เกรอด</option>
-                    </select>
-                    </StyledWrapper>
+                      placeholder="เลือกผู้รับผิดชอบ"
+                    />
                     {errors.developUnit && (
                       <p className="mt-1 text-sm text-red-600">{errors.developUnit}</p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-100">
-                      Computer Backup
-                    </label>
-                    <StyledWrapper>
-                    <select
-                      name="computerbackup"
+                    <ModernDropdown
+                      options={['YES', 'NO']}
                       value={formData.computerbackup}
-                      onChange={handleChange}
-                      className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                        ${errors.computerbackup ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                      onChange={(value) => handleChange({
+                        target: { name: 'computerbackup', value }
+                      } as any)}
+                      label="Computer Backup"
                       required
-                      autoComplete="off"
-                    >
-                      <option value="NO">NO</option>
-                      <option value="YES">YES</option>
-                    </select>
-                    </StyledWrapper>
+                      placeholder="Select Option"
+                    />
                     {errors.computerbackup && (
                       <p className="mt-1 text-sm text-red-600">{errors.computerbackup}</p>
                     )}
@@ -1083,23 +1068,18 @@ export default function CreateSystem() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          Environment
-                        </label>
+
                         <StyledWrapper>
-                        <select
-                          name="environment"
-                          value={env.environment}
-                          onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`environment-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
-                          required
-                        >
-                          <option value="">Select Environment</option>
-                          {ENVIRONMENT_OPTIONS.map(option => (
-                            <option key={option} value={option}>{option}</option>
-                          ))}
-                        </select>
+                        <ModernDropdown
+  options={ENVIRONMENT_OPTIONS}
+  value={env.environment}
+  onChange={(value) => handleEnvironmentChange({
+    target: { name: 'environment', value }
+  }, index)}
+  label="Environment"
+  required
+  placeholder="Select Environment"
+/>
                         </StyledWrapper>
                         {errors[`environment-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`environment-${index}`]}</p>
@@ -1149,72 +1129,48 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          Server Type
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="serverType"
+                        <ModernDropdown
+                          options={SERVER_TYPE_OPTIONS}
                           value={env.serverType}
-                          onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`serverType-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                          onChange={(value) => handleEnvironmentChange({
+                            target: { name: 'serverType', value }
+                          }, index)}
+                          label="Server Type"
                           required
-                        >
-                          <option value="">Select Server Type</option>
-                          {SERVER_TYPE_OPTIONS.map(option => (
-                            <option key={option} value={option}>{option}</option>
-                          ))}
-                        </select>
-                        </StyledWrapper>
+                          placeholder="Select Server Type"
+                        />
                         {errors[`serverType-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`serverType-${index}`]}</p>
                         )}
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          Server Role
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="serverRole"
+                        <ModernDropdown
+                          options={SERVER_ROLE_OPTIONS}
                           value={env.serverRole}
-                          onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`serverRole-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                          onChange={(value) => handleEnvironmentChange({
+                            target: { name: 'serverRole', value }
+                          }, index)}
+                          label="Server Role"
                           required
-                        >
-                          <option value="">Select Server Role</option>
-                          {SERVER_ROLE_OPTIONS.map(option => (
-                            <option key={option} value={option}>{option}</option>
-                          ))}
-                        </select>
-                        </StyledWrapper>
+                          placeholder="Select Server Role"
+                        />
                         {errors[`serverRole-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`serverRole-${index}`]}</p>
                         )}
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          Server Duty
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="serverDuty"
+                        <ModernDropdown
+                          options={SERVER_DUTY_OPTIONS}
                           value={env.serverDuty}
-                          onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`serverDuty-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                          onChange={(value) => handleEnvironmentChange({
+                            target: { name: 'serverDuty', value }
+                          }, index)}
+                          label="Server Duty"
                           required
-                        >
-                          <option value="">Select Server Duty</option>
-                          {SERVER_DUTY_OPTIONS.map(option => (
-                            <option key={option} value={option}>{option}</option>
-                          ))}
-                        </select>
-                        </StyledWrapper>
+                          placeholder="Select Server Duty"
+                        />
                         {errors[`serverDuty-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`serverDuty-${index}`]}</p>
                         )}
@@ -1391,69 +1347,48 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          DR
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="dr"
+                        <ModernDropdown
+                          options={['DR', 'DC']}
                           value={env.dr}
-                          onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`dr-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                          onChange={(value) => handleEnvironmentChange({
+                            target: { name: 'dr', value }
+                          }, index)}
+                          label="DR"
                           required
-                        >
-                          <option value="">Select DR/DC</option>
-                          <option value="DR">DR</option>
-                          <option value="DC">DC</option>
-                        </select>
-                        </StyledWrapper>
+                          placeholder="Select DR/DC"
+                        />
                         {errors[`dr-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`dr-${index}`]}</p>
                         )}
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          Join Domain
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="joinDomain"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={env.joinDomain}
-                          onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`joinDomain-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                          onChange={(value) => handleEnvironmentChange({
+                            target: { name: 'joinDomain', value }
+                          }, index)}
+                          label="Join Domain"
                           required
-                        >
-                          <option value="">Select Option</option>
-                          <option value="YES">YES</option>
-                          <option value="NO">NO</option>
-                        </select>
-                        </StyledWrapper>
+                          placeholder="Select Option"
+                        />
                         {errors[`joinDomain-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`joinDomain-${index}`]}</p>
                         )}
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          Windows Cluster
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="windowsCluster"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={env.windowsCluster}
-                          onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`windowsCluster-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                          onChange={(value) => handleEnvironmentChange({
+                            target: { name: 'windowsCluster', value }
+                          }, index)}
+                          label="Windows Cluster"
                           required
-                        >
-                          <option value="">Select Option</option>
-                          <option value="YES">YES</option>
-                          <option value="NO">NO</option>
-                        </select>
-                        </StyledWrapper>
+                          placeholder="Select Option"
+                        />
                         {errors[`windowsCluster-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`windowsCluster-${index}`]}</p>
                         )}
@@ -1464,39 +1399,37 @@ export default function CreateSystem() {
                           Production Unit
                         </label>
                         <div className={`grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 border rounded-md ${
-                          errors[`productionUnit-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'
+                          errors[`productionUnit-${index}`] ? 'border-red-500' : 'border-gray-600  text-gray-100'
                         }`}>
                           {PRODUCTION_UNIT_OPTIONS.map((option) => (
-                            <div key={option} className="flex items-center space-x-2">
-                              <input
-                                type="checkbox"
-                                id={`productionUnit-${index}-${option}`}
-                                checked={env.productionUnit.includes(option)}
-                                onChange={(e) => {
-                                  const updatedUnits = e.target.checked
-                                    ? [...env.productionUnit, option]
-                                    : env.productionUnit.filter(unit => unit !== option);
-                                  
-                                  handleEnvironmentChange({
-                                    target: {
-                                      name: 'productionUnit',
-                                      value: updatedUnits
-                                    }
-                                  }, index);
-                                }}
-                                className={`h-4 w-4 focus:ring-pink-500 rounded ${
-                                  errors[`productionUnit-${index}`] 
-                                    ? 'border-red-500 text-red-600' 
-                                    : 'border-gray-300 text-pink-600'
-                                }`}
-                              />
-                              <label 
-                                htmlFor={`productionUnit-${index}-${option}`}
-                                className="text-sm text-gray-100"
-                              >
-                                {option}
+                            <Checkbox3d key={option}>
+                              <label className="container flex items-center space-x-2">
+                                <input
+                                  type="checkbox"
+                                  id={`productionUnit-${index}-${option}`}
+                                  checked={env.productionUnit.includes(option)}
+                                  onChange={(e) => {
+                                    const updatedUnits = e.target.checked
+                                      ? [...env.productionUnit, option]
+                                      : env.productionUnit.filter(unit => unit !== option);
+                                    
+                                    handleEnvironmentChange({
+                                      target: {
+                                        name: 'productionUnit',
+                                        value: updatedUnits
+                                      }
+                                    }, index);
+                                  }}
+                                />
+                                <svg viewBox="0 0 64 64" height="24" width="24">
+                                  <path
+                                    d="M 0 16 V 56 A 8 8 0 0 0 8 64 H 56 A 8 8 0 0 0 64 56 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16"
+                                    className="path"
+                                  />
+                                </svg>
+                                <span className="text-sm text-gray-100 ml-2">{option}</span>
                               </label>
-                            </div>
+                            </Checkbox3d>
                           ))}
                         </div>
                         {errors[`productionUnit-${index}`] && (
@@ -1556,255 +1489,185 @@ export default function CreateSystem() {
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          Active Directory (AD)
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="ad"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={conn.ad}
-                          onChange={(e) => handleConnectionChange(e, index)}
-                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
-                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                        </StyledWrapper>
+                          onChange={(value) => handleConnectionChange({
+                            target: { name: 'ad', value }
+                          } as any, index)}
+                          label="Active Directory (AD)"
+                          required
+                          placeholder="Select Option"
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          ADFS
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="adfs"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={conn.adfs}
-                          onChange={(e) => handleConnectionChange(e, index)}
-                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
-                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                        </StyledWrapper>
+                          onChange={(value) => handleConnectionChange({
+                            target: { name: 'adfs', value }
+                          } as any, index)}
+                          label="ADFS"
+                          required
+                          placeholder="Select Option"
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          DNS
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="dns"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={conn.dns}
-                          onChange={(e) => handleConnectionChange(e, index)}
-                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
-                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                        </StyledWrapper>
+                          onChange={(value) => handleConnectionChange({
+                            target: { name: 'dns', value }
+                          } as any, index)}
+                          label="DNS"
+                          required
+                          placeholder="Select Option"
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          NTP
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="ntp"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={conn.ntp}
-                          onChange={(e) => handleConnectionChange(e, index)}
-                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
-                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                        </StyledWrapper>
+                          onChange={(value) => handleConnectionChange({
+                            target: { name: 'ntp', value }
+                          } as any, index)}
+                          label="NTP"
+                          required
+                          placeholder="Select Option"
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          TPAM
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="tpam"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={conn.tpam}
-                          onChange={(e) => handleConnectionChange(e, index)}
-                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
-                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                        </StyledWrapper>
+                          onChange={(value) => handleConnectionChange({
+                            target: { name: 'tpam', value }
+                          } as any, index)}
+                          label="TPAM"
+                          required
+                          placeholder="Select Option"
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          Netka
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="netka"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={conn.netka}
-                          onChange={(e) => handleConnectionChange(e, index)}
-                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
-                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                        </StyledWrapper>
+                          onChange={(value) => handleConnectionChange({
+                            target: { name: 'netka', value }
+                          } as any, index)}
+                          label="Netka"
+                          required
+                          placeholder="Select Option"
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          FIM
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="fim"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={conn.fim}
-                          onChange={(e) => handleConnectionChange(e, index)}
-                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
-                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                        </StyledWrapper>
+                          onChange={(value) => handleConnectionChange({
+                            target: { name: 'fim', value }
+                          } as any, index)}
+                          label="FIM"
+                          required
+                          placeholder="Select Option"
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          FTP Server
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="ftpServer"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={conn.ftpServer}
-                          onChange={(e) => handleConnectionChange(e, index)}
-                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
-                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                        </StyledWrapper>
+                          onChange={(value) => handleConnectionChange({
+                            target: { name: 'ftpServer', value }
+                          } as any, index)}
+                          label="FTP Server"
+                          required
+                          placeholder="Select Option"
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          FTP GoAnywhere MFT Server
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="ftpGoAnywhereMFTServer"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={conn.ftpGoAnywhereMFTServer}
-                          onChange={(e) => handleConnectionChange(e, index)}
-                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
-                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                        </StyledWrapper>
+                          onChange={(value) => handleConnectionChange({
+                            target: { name: 'ftpGoAnywhereMFTServer', value }
+                          } as any, index)}
+                          label="FTP GoAnywhere MFT Server"
+                          required
+                          placeholder="Select Option"
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          Email SMTP
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="emailSmtp"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={conn.emailSmtp}
-                          onChange={(e) => handleConnectionChange(e, index)}
-                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
-                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                        </StyledWrapper>
+                          onChange={(value) => handleConnectionChange({
+                            target: { name: 'emailSmtp', value }
+                          } as any, index)}
+                          label="Email SMTP"
+                          required
+                          placeholder="Select Option"
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          SMS
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="sms"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={conn.sms}
-                          onChange={(e) => handleConnectionChange(e, index)}
-                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
-                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                        </StyledWrapper>
+                          onChange={(value) => handleConnectionChange({
+                            target: { name: 'sms', value }
+                          } as any, index)}
+                          label="SMS"
+                          required
+                          placeholder="Select Option"
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          API Management
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="apiManagement"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={conn.apiManagement}
-                          onChange={(e) => handleConnectionChange(e, index)}
-                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
-                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                        </StyledWrapper>
+                          onChange={(value) => handleConnectionChange({
+                            target: { name: 'apiManagement', value }
+                          } as any, index)}
+                          label="API Management"
+                          required
+                          placeholder="Select Option"
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          DV
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="dv"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={conn.dv}
-                          onChange={(e) => handleConnectionChange(e, index)}
-                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
-                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                        </StyledWrapper>
+                          onChange={(value) => handleConnectionChange({
+                            target: { name: 'dv', value }
+                          } as any, index)}
+                          label="DV"
+                          required
+                          placeholder="Select Option"
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          SNMP
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="snmp"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={conn.snmp}
-                          onChange={(e) => handleConnectionChange(e, index)}
-                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
-                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                        </StyledWrapper>
+                          onChange={(value) => handleConnectionChange({
+                            target: { name: 'snmp', value }
+                          } as any, index)}
+                          label="SNMP"
+                          required
+                          placeholder="Select Option"
+                        />
                       </div>
                     </div>
                   </div>
@@ -1941,57 +1804,42 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          Centralize Log
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="centralizeLog"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={security.centralizeLog}
-                          onChange={(e) => handleSecurityChange(e, index)}
-                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
-                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                        </StyledWrapper>
+                          onChange={(value) => handleSecurityChange({
+                            target: { name: 'centralizeLog', value }
+                          } as any, index)}
+                          label="Centralize Log"
+                          required
+                          placeholder="Select Option"
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          Setup Agent Patch
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="setupAgentPatch"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={security.setupAgentPatch}
-                          onChange={(e) => handleSecurityChange(e, index)}
-                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
-                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                        </StyledWrapper>
+                          onChange={(value) => handleSecurityChange({
+                            target: { name: 'setupAgentPatch', value }
+                          } as any, index)}
+                          label="Setup Agent Patch"
+                          required
+                          placeholder="Select Option"
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
-                          Internet Facing
-                        </label>
-                        <StyledWrapper>
-                        <select
-                          name="internetFacing"
+                        <ModernDropdown
+                          options={['YES', 'NO']}
                           value={security.internetFacing}
-                          onChange={(e) => handleSecurityChange(e, index)}
-                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
-                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                        </StyledWrapper>
+                          onChange={(value) => handleSecurityChange({
+                            target: { name: 'internetFacing', value }
+                          } as any, index)}
+                          label="Internet Facing"
+                          required
+                          placeholder="Select Option"
+                        />
                       </div>
                     </div>
                   </div>

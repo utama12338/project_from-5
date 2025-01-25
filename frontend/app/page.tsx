@@ -216,6 +216,19 @@ const ColorlibStepIconRoot = styled('div')<{
   }),
 }));
 
+// Add custom styles for the StepLabel text
+const CustomStepLabel = styled(StepLabel)({
+  '& .MuiStepLabel-label': {
+    color: '#fff', // This makes the text white
+  },
+  '& .MuiStepLabel-label.Mui-active': {
+    color: '#fff', // Active state text color
+  },
+  '& .MuiStepLabel-label.Mui-completed': {
+    color: '#fff', // Completed state text color
+  }
+});
+
 function ColorlibStepIcon(props: StepIconProps) {
   const { active, completed, className } = props;
 
@@ -762,7 +775,7 @@ export default function CreateSystem() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-8">
+    <div className="min-h-screen bg-[rgb(17,17,16)] py-8">
       <motion.div 
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
         initial={{ opacity: 0 }}
@@ -772,7 +785,7 @@ export default function CreateSystem() {
         {/* Header */}
         <div className="mb-8 flex justify-between items-center">
           <motion.h2 
-            className="text-3xl font-bold text-gray-100"
+            className="text-3xl font-bold text-white"
             initial={{ x: -20 }}
             animate={{ x: 0 }}
             transition={{ duration: 0.5 }}
@@ -814,7 +827,7 @@ export default function CreateSystem() {
             <Stepper alternativeLabel activeStep={currentStep - 1} connector={<ColorlibConnector />}>
               {steps.map((label) => (
                 <Step key={label}>
-                  <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
+                  <CustomStepLabel StepIconComponent={ColorlibStepIcon}>{label}</CustomStepLabel>
                 </Step>
               ))}
             </Stepper>
@@ -823,7 +836,7 @@ export default function CreateSystem() {
 
         {/* Form Content */}
         <motion.div 
-          className="bg-gray-800 shadow-2xl rounded-2xl p-8 text-gray-100"
+          className="bg-[rgb(27,27,26)] shadow-2xl rounded-2xl p-8 text-white"
           variants={fadeInUp}
           initial="initial"
           animate="animate"
@@ -860,11 +873,12 @@ export default function CreateSystem() {
                     <label className="block text-sm font-medium text-gray-100">
                       ประเภทการพัฒนา Develop Type
                     </label>
+                    <StyledWrapper>
                     <select
                       name="developType"
                       value={formData.developType}
                       onChange={handleChange}
-                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                      className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                         ${errors.developType ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                       required
                       autoComplete="off"
@@ -873,6 +887,7 @@ export default function CreateSystem() {
                       <option value="OUTSOURCE">OUTSOURCE</option>
                       <option value="IN HOUSE">IN HOUSE</option>
                     </select>
+                    </StyledWrapper>
                     {errors.developType && (
                       <p className="mt-1 text-sm text-red-600">{errors.developType}</p>
                     )}
@@ -882,16 +897,18 @@ export default function CreateSystem() {
                     <label className="block text-sm font-medium text-gray-100">
                       เลขที่สัญญา Contract NO.
                     </label>
+                    <StyledWrapper>
                     <input
                       type="text"
                       name="contractNo"
                       value={formData.contractNo}
                       onChange={handleChange}
-                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                      className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                         ${errors.contractNo ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                       required
                       autoComplete="off"
                     />
+                    </StyledWrapper>
                     {errors.contractNo && (
                       <p className="mt-1 text-sm text-red-600">{errors.contractNo}</p>
                     )}
@@ -901,16 +918,18 @@ export default function CreateSystem() {
                     <label className="block teBusiness Unitxt-sm font-medium text-gray-100">
                     บริษัทคู่สัญญา  / ติดต่อ   Vendor / Contact NO.
                     </label>  
+                    <StyledWrapper>
                     <input
                       type="text"
                       name="vendorContactNo"
                       value={formData.vendorContactNo}
                       onChange={handleChange}
-                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                      className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                         ${errors.vendorContactNo ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                       required
                       autoComplete="off"
                     />
+                    </StyledWrapper>
                     {errors.vendorContactNo && (
                       <p className="mt-1 text-sm text-red-600">{errors.vendorContactNo}</p>
                     )}
@@ -920,16 +939,18 @@ export default function CreateSystem() {
                     <label className="block teBusiness Unitxt-sm font-medium text-gray-100">
                     หน่วยงานเจ้าของระบบงาน Business Unit
                     </label>
+                    <StyledWrapper>
                     <input
                       type="text"
                       name="businessUnit"
                       value={formData.businessUnit}
                       onChange={handleChange}
-                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                      className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                         ${errors.businessUnit ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                       required
                       autoComplete="off"
                     />
+                    </StyledWrapper>
                     {errors.businessUnit && (
                       <p className="mt-1 text-sm text-red-600">{errors.businessUnit}</p>
                     )}
@@ -939,11 +960,12 @@ export default function CreateSystem() {
                     <label className="block text-sm font-medium text-gray-100">
                       ผู้รับผิดชอบของทีมพัฒนา Develop Unit
                     </label>
+                    <StyledWrapper>
                     <select
                       name="developUnit"
                       value={formData.developUnit}
                       onChange={handleChange}
-                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                      className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                         ${errors.developUnit ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                       required
                       autoComplete="off"
@@ -954,6 +976,7 @@ export default function CreateSystem() {
                       <option value="ระบบสนับสนุนนโยบายรัฐ">ระบบสนับสนุนนโยบายรัฐ</option>
                       <option value="ธนรัตน์ เกรอด">ธนรัตน์ เกรอด</option>
                     </select>
+                    </StyledWrapper>
                     {errors.developUnit && (
                       <p className="mt-1 text-sm text-red-600">{errors.developUnit}</p>
                     )}
@@ -963,11 +986,12 @@ export default function CreateSystem() {
                     <label className="block text-sm font-medium text-gray-100">
                       Computer Backup
                     </label>
+                    <StyledWrapper>
                     <select
                       name="computerbackup"
                       value={formData.computerbackup}
                       onChange={handleChange}
-                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                      className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                         ${errors.computerbackup ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                       required
                       autoComplete="off"
@@ -975,6 +999,7 @@ export default function CreateSystem() {
                       <option value="NO">NO</option>
                       <option value="YES">YES</option>
                     </select>
+                    </StyledWrapper>
                     {errors.computerbackup && (
                       <p className="mt-1 text-sm text-red-600">{errors.computerbackup}</p>
                     )}
@@ -1061,11 +1086,12 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Environment
                         </label>
+                        <StyledWrapper>
                         <select
                           name="environment"
                           value={env.environment}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`environment-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                         >
@@ -1074,6 +1100,7 @@ export default function CreateSystem() {
                             <option key={option} value={option}>{option}</option>
                           ))}
                         </select>
+                        </StyledWrapper>
                         {errors[`environment-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`environment-${index}`]}</p>
                         )}
@@ -1083,16 +1110,18 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Server Name
                         </label>
+                        <StyledWrapper>
                         <input
                           type="text"
                           name="serverName"
                           value={env.serverName}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`serverName-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
+                        </StyledWrapper>
                         {errors[`serverName-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`serverName-${index}`]}</p>
                         )}
@@ -1102,16 +1131,18 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           IP Address
                         </label>
+                        <StyledWrapper>
                         <input
                           type="text"
                           name="ip"
                           value={env.ip}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`ip-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
+                        </StyledWrapper>
                         {errors[`ip-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`ip-${index}`]}</p>
                         )}
@@ -1121,11 +1152,12 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Server Type
                         </label>
+                        <StyledWrapper>
                         <select
                           name="serverType"
                           value={env.serverType}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`serverType-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                         >
@@ -1134,6 +1166,7 @@ export default function CreateSystem() {
                             <option key={option} value={option}>{option}</option>
                           ))}
                         </select>
+                        </StyledWrapper>
                         {errors[`serverType-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`serverType-${index}`]}</p>
                         )}
@@ -1143,11 +1176,12 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Server Role
                         </label>
+                        <StyledWrapper>
                         <select
                           name="serverRole"
                           value={env.serverRole}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`serverRole-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                         >
@@ -1156,6 +1190,7 @@ export default function CreateSystem() {
                             <option key={option} value={option}>{option}</option>
                           ))}
                         </select>
+                        </StyledWrapper>
                         {errors[`serverRole-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`serverRole-${index}`]}</p>
                         )}
@@ -1165,11 +1200,12 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Server Duty
                         </label>
+                        <StyledWrapper>
                         <select
                           name="serverDuty"
                           value={env.serverDuty}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`serverDuty-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                         >
@@ -1178,6 +1214,7 @@ export default function CreateSystem() {
                             <option key={option} value={option}>{option}</option>
                           ))}
                         </select>
+                        </StyledWrapper>
                         {errors[`serverDuty-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`serverDuty-${index}`]}</p>
                         )}
@@ -1187,17 +1224,19 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Database
                         </label>
+                        <StyledWrapper>
                         <input
                           type="text"
                           name="database"
                           value={env.database}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`database-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           placeholder="Database management"
                           required
                           autoComplete="off"
                         />
+                        </StyledWrapper>
                         {errors[`database-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`database-${index}`]}</p>
                         )}
@@ -1207,17 +1246,19 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Application
                         </label>
+                        <StyledWrapper>
                         <input
                           type="text"
                           name="application"
                           value={env.application}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`application-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           placeholder="Supporting software IIS .net framework"
                           required
                           autoComplete="off"
                         />
+                        </StyledWrapper>
                         {errors[`application-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`application-${index}`]}</p>
                         )}
@@ -1227,16 +1268,18 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Operating System
                         </label>
+                        <StyledWrapper>
                         <input
                           type="text"
                           name="operatingSystem"
                           value={env.operatingSystem}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`operatingSystem-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
+                        </StyledWrapper>
                         {errors[`operatingSystem-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`operatingSystem-${index}`]}</p>
                         )}
@@ -1246,16 +1289,18 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Service Pack
                         </label>
+                        <StyledWrapper>
                         <input
                           type="text"
                           name="servicePack"
                           value={env.servicePack}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`servicePack-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
+                        </StyledWrapper>
                         {errors[`servicePack-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`servicePack-${index}`]}</p>
                         )}
@@ -1265,16 +1310,18 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Build
                         </label>
+                        <StyledWrapper>
                         <input
                           type="text"
                           name="build"
                           value={env.build}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`build-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
+                        </StyledWrapper>
                         {errors[`build-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`build-${index}`]}</p>
                         )}
@@ -1284,16 +1331,18 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           CPU
                         </label>
+                        <StyledWrapper>
                         <input
                           type="text"
                           name="cpu"
                           value={env.cpu}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`cpu-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
+                        </StyledWrapper>
                         {errors[`cpu-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`cpu-${index}`]}</p>
                         )}
@@ -1303,16 +1352,18 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           RAM
                         </label>
+                        <StyledWrapper>
                         <input
                           type="text"
                           name="ram"
                           value={env.ram}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`ram-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
+                        </StyledWrapper>
                         {errors[`ram-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`ram-${index}`]}</p>
                         )}
@@ -1322,16 +1373,18 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Disk
                         </label>
+                        <StyledWrapper>
                         <input
                           type="text"
                           name="disk"
                           value={env.disk}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`disk-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
+                        </StyledWrapper>
                         {errors[`disk-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`disk-${index}`]}</p>
                         )}
@@ -1341,11 +1394,12 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           DR
                         </label>
+                        <StyledWrapper>
                         <select
                           name="dr"
                           value={env.dr}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`dr-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                         >
@@ -1353,6 +1407,7 @@ export default function CreateSystem() {
                           <option value="DR">DR</option>
                           <option value="DC">DC</option>
                         </select>
+                        </StyledWrapper>
                         {errors[`dr-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`dr-${index}`]}</p>
                         )}
@@ -1362,11 +1417,12 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Join Domain
                         </label>
+                        <StyledWrapper>
                         <select
                           name="joinDomain"
                           value={env.joinDomain}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`joinDomain-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                         >
@@ -1374,6 +1430,7 @@ export default function CreateSystem() {
                           <option value="YES">YES</option>
                           <option value="NO">NO</option>
                         </select>
+                        </StyledWrapper>
                         {errors[`joinDomain-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`joinDomain-${index}`]}</p>
                         )}
@@ -1383,11 +1440,12 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Windows Cluster
                         </label>
+                        <StyledWrapper>
                         <select
                           name="windowsCluster"
                           value={env.windowsCluster}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`windowsCluster-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                         >
@@ -1395,6 +1453,7 @@ export default function CreateSystem() {
                           <option value="YES">YES</option>
                           <option value="NO">NO</option>
                         </select>
+                        </StyledWrapper>
                         {errors[`windowsCluster-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`windowsCluster-${index}`]}</p>
                         )}
@@ -1500,224 +1559,252 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Active Directory (AD)
                         </label>
+                        <StyledWrapper>
                         <select
                           name="ad"
                           value={conn.ad}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
                             shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
                         </select>
+                        </StyledWrapper>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
                           ADFS
                         </label>
+                        <StyledWrapper>
                         <select
                           name="adfs"
                           value={conn.adfs}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
                             shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
                         </select>
+                        </StyledWrapper>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
                           DNS
                         </label>
+                        <StyledWrapper>
                         <select
                           name="dns"
                           value={conn.dns}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
                             shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
                         </select>
+                        </StyledWrapper>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
                           NTP
                         </label>
+                        <StyledWrapper>
                         <select
                           name="ntp"
                           value={conn.ntp}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
                             shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
                         </select>
+                        </StyledWrapper>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
                           TPAM
                         </label>
+                        <StyledWrapper>
                         <select
                           name="tpam"
                           value={conn.tpam}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
                             shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
                         </select>
+                        </StyledWrapper>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
                           Netka
                         </label>
+                        <StyledWrapper>
                         <select
                           name="netka"
                           value={conn.netka}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
                             shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
                         </select>
+                        </StyledWrapper>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
                           FIM
                         </label>
+                        <StyledWrapper>
                         <select
                           name="fim"
                           value={conn.fim}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
                             shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
                         </select>
+                        </StyledWrapper>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
                           FTP Server
                         </label>
+                        <StyledWrapper>
                         <select
                           name="ftpServer"
                           value={conn.ftpServer}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
                             shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
                         </select>
+                        </StyledWrapper>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
                           FTP GoAnywhere MFT Server
                         </label>
+                        <StyledWrapper>
                         <select
                           name="ftpGoAnywhereMFTServer"
                           value={conn.ftpGoAnywhereMFTServer}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
                             shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
                         </select>
+                        </StyledWrapper>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
                           Email SMTP
                         </label>
+                        <StyledWrapper>
                         <select
                           name="emailSmtp"
                           value={conn.emailSmtp}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
                             shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
                         </select>
+                        </StyledWrapper>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
                           SMS
                         </label>
+                        <StyledWrapper>
                         <select
                           name="sms"
                           value={conn.sms}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
                             shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
                         </select>
+                        </StyledWrapper>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
                           API Management
                         </label>
+                        <StyledWrapper>
                         <select
                           name="apiManagement"
                           value={conn.apiManagement}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
                             shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
                         </select>
+                        </StyledWrapper>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
                           DV
                         </label>
+                        <StyledWrapper>
                         <select
                           name="dv"
                           value={conn.dv}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
                             shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
                         </select>
+                        </StyledWrapper>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
                           SNMP
                         </label>
+                        <StyledWrapper>
                         <select
                           name="snmp"
                           value={conn.snmp}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
                             shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
                         </select>
+                        </StyledWrapper>
                       </div>
                     </div>
                   </div>
@@ -1773,16 +1860,18 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           URL Website
                         </label>
+                        <StyledWrapper>
                         <input
                           type="text"
                           name="urlWebsite"
                           value={security.urlWebsite}
                           onChange={(e) => handleSecurityChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`urlWebsite-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
+                        </StyledWrapper>
                         {errors[`urlWebsite-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`urlWebsite-${index}`]}</p>
                         )}
@@ -1792,16 +1881,18 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Certificate Expire Date
                         </label>
+                        <StyledWrapper>
                         <input
                           type="date"
                           name="certificateExpireDate"
                           value={security.certificateExpireDate}
                           onChange={(e) => handleSecurityChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`certificateExpireDate-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
+                        </StyledWrapper>
                         {errors[`certificateExpireDate-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`certificateExpireDate-${index}`]}</p>
                         )}
@@ -1811,16 +1902,18 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Backup Policy
                         </label>
+                        <StyledWrapper>
                         <input
                           type="text"
                           name="backupPolicy"
                           value={security.backupPolicy}
                           onChange={(e) => handleSecurityChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`backupPolicy-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
+                        </StyledWrapper>
                         {errors[`backupPolicy-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`backupPolicy-${index}`]}</p>
                         )}
@@ -1830,16 +1923,18 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Downtime Allowed
                         </label>
+                        <StyledWrapper>
                         <input
                           type="text"
                           name="downtimeAllowed"
                           value={security.downtimeAllowed}
                           onChange={(e) => handleSecurityChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
                             ${errors[`downtimeAllowed-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
+                        </StyledWrapper>
                         {errors[`downtimeAllowed-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`downtimeAllowed-${index}`]}</p>
                         )}
@@ -1849,48 +1944,54 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100">
                           Centralize Log
                         </label>
+                        <StyledWrapper>
                         <select
                           name="centralizeLog"
                           value={security.centralizeLog}
                           onChange={(e) => handleSecurityChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
                             shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
                         </select>
+                        </StyledWrapper>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
                           Setup Agent Patch
                         </label>
+                        <StyledWrapper>
                         <select
                           name="setupAgentPatch"
                           value={security.setupAgentPatch}
                           onChange={(e) => handleSecurityChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
                             shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
                         </select>
+                        </StyledWrapper>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
                           Internet Facing
                         </label>
+                        <StyledWrapper>
                         <select
                           name="internetFacing"
                           value={security.internetFacing}
                           onChange={(e) => handleSecurityChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                          className="input mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
                             shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
                         </select>
+                        </StyledWrapper>
                       </div>
                     </div>
                   </div>

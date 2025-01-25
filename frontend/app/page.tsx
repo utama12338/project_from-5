@@ -8,7 +8,9 @@ import CSVPreviewModal from './components/CSVPreviewModal';
 import { CSVValidationResult } from './types/csv';
 import { motion, type Variants } from 'framer-motion';
 import { FiServer, FiShield, FiDatabase, FiLink,FiArrowLeft } from 'react-icons/fi';
-
+// 
+import StyledWrapper  from './components/neoninput';
+// 
 // steper
 import Stack from '@mui/material/Stack';
 import Stepper from '@mui/material/Stepper';
@@ -174,13 +176,13 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.active}`]: {
     [`& .${stepConnectorClasses.line}`]: {
       backgroundImage:
-        'linear-gradient( 95deg,rgb(99,102,241) 0%,rgb(129,140,248) 50%,rgb(165,180,252) 100%)',
+        'linear-gradient( 95deg,rgb(236,72,153) 0%,rgb(244,114,182) 50%,rgb(251,207,232) 100%)',
     },
   },
   [`&.${stepConnectorClasses.completed}`]: {
     [`& .${stepConnectorClasses.line}`]: {
       backgroundImage:
-        'linear-gradient( 95deg,rgb(99,102,241) 0%,rgb(129,140,248) 50%,rgb(165,180,252) 100%)',
+        'linear-gradient( 95deg,rgb(236,72,153) 0%,rgb(244,114,182) 50%,rgb(251,207,232) 100%)',
     },
   },
   [`& .${stepConnectorClasses.line}`]: {
@@ -194,7 +196,7 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
 const ColorlibStepIconRoot = styled('div')<{
   ownerState: { completed?: boolean; active?: boolean };
 }>(({ theme, ownerState }) => ({
-  backgroundColor: '#ccc',
+  backgroundColor: '#374151', // darker gray
   zIndex: 1,
   color: '#fff',
   width: 50,
@@ -205,12 +207,12 @@ const ColorlibStepIconRoot = styled('div')<{
   alignItems: 'center',
   ...(ownerState.active && {
     backgroundImage:
-      'linear-gradient( 136deg, rgb(99,102,241) 0%, rgb(129,140,248) 50%, rgb(165,180,252) 100%)',
-    boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
+      'linear-gradient( 136deg, rgb(236,72,153) 0%, rgb(244,114,182) 50%, rgb(251,207,232) 100%)',
+    boxShadow: '0 4px 10px 0 rgba(236,72,153,.25)',
   }),
   ...(ownerState.completed && {
     backgroundImage:
-      'linear-gradient( 136deg, rgb(99,102,241) 0%, rgb(129,140,248) 50%, rgb(165,180,252) 100%)',
+      'linear-gradient( 136deg, rgb(236,72,153) 0%, rgb(244,114,182) 50%, rgb(251,207,232) 100%)',
   }),
 }));
 
@@ -760,7 +762,7 @@ export default function CreateSystem() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white py-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-8">
       <motion.div 
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
         initial={{ opacity: 0 }}
@@ -770,7 +772,7 @@ export default function CreateSystem() {
         {/* Header */}
         <div className="mb-8 flex justify-between items-center">
           <motion.h2 
-            className="text-3xl font-bold text-gray-900"
+            className="text-3xl font-bold text-gray-100"
             initial={{ x: -20 }}
             animate={{ x: 0 }}
             transition={{ duration: 0.5 }}
@@ -791,8 +793,8 @@ export default function CreateSystem() {
             />
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="px-6 py-3 bg-emerald-600 text-white rounded-lg shadow-lg
-                hover:bg-emerald-700 transform transition-all duration-200
+              className="px-6 py-3 bg-pink-500 text-white rounded-lg shadow-lg
+                hover:bg-pink-600 transform transition-all duration-200
                 hover:shadow-xl active:scale-95 flex items-center space-x-2"
             >
               <FiDatabase className="w-5 h-5" />
@@ -821,7 +823,7 @@ export default function CreateSystem() {
 
         {/* Form Content */}
         <motion.div 
-          className="bg-white shadow-2xl rounded-2xl p-8"
+          className="bg-gray-800 shadow-2xl rounded-2xl p-8 text-gray-100"
           variants={fadeInUp}
           initial="initial"
           animate="animate"
@@ -830,39 +832,40 @@ export default function CreateSystem() {
             {/* Step 1: ข้อมูลระบบพื้นฐาน */}
             {currentStep === 1 && (
               <motion.div className="space-y-4" variants={fadeInUp}>
-                <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
+                <h3 className="text-lg font-medium text-gray-100 border-b pb-2">
                   ข้อมูลระบบพื้นฐาน
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-100">
                       ชื่อระบบ System name
                     </label>
-                    <input
+                    <StyledWrapper>
+                    <input  
                       type="text"
                       name="systemName"
                       value={formData.systemName}
                       onChange={handleChange}
-                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                        ${errors.systemName ? 'border-red-500' : 'border-gray-300'}`}
-                      required
+                      className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                        ${errors.systemName ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                      required  
                       autoComplete="off"
-                    />
+                    /> </StyledWrapper>
                     {errors.systemName && (
                       <p className="mt-1 text-sm text-red-600">{errors.systemName}</p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-100">
                       ประเภทการพัฒนา Develop Type
                     </label>
                     <select
                       name="developType"
                       value={formData.developType}
                       onChange={handleChange}
-                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                        ${errors.developType ? 'border-red-500' : 'border-gray-300'}`}
+                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                        ${errors.developType ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                       required
                       autoComplete="off"
                     >
@@ -876,7 +879,7 @@ export default function CreateSystem() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-100">
                       เลขที่สัญญา Contract NO.
                     </label>
                     <input
@@ -884,8 +887,8 @@ export default function CreateSystem() {
                       name="contractNo"
                       value={formData.contractNo}
                       onChange={handleChange}
-                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                        ${errors.contractNo ? 'border-red-500' : 'border-gray-300'}`}
+                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                        ${errors.contractNo ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                       required
                       autoComplete="off"
                     />
@@ -895,7 +898,7 @@ export default function CreateSystem() {
                   </div>
 
                   <div>
-                    <label className="block teBusiness Unitxt-sm font-medium text-gray-700">
+                    <label className="block teBusiness Unitxt-sm font-medium text-gray-100">
                     บริษัทคู่สัญญา  / ติดต่อ   Vendor / Contact NO.
                     </label>  
                     <input
@@ -903,8 +906,8 @@ export default function CreateSystem() {
                       name="vendorContactNo"
                       value={formData.vendorContactNo}
                       onChange={handleChange}
-                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                        ${errors.vendorContactNo ? 'border-red-500' : 'border-gray-300'}`}
+                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                        ${errors.vendorContactNo ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                       required
                       autoComplete="off"
                     />
@@ -914,7 +917,7 @@ export default function CreateSystem() {
                   </div>
 
                   <div>
-                    <label className="block teBusiness Unitxt-sm font-medium text-gray-700">
+                    <label className="block teBusiness Unitxt-sm font-medium text-gray-100">
                     หน่วยงานเจ้าของระบบงาน Business Unit
                     </label>
                     <input
@@ -922,8 +925,8 @@ export default function CreateSystem() {
                       name="businessUnit"
                       value={formData.businessUnit}
                       onChange={handleChange}
-                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                        ${errors.businessUnit ? 'border-red-500' : 'border-gray-300'}`}
+                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                        ${errors.businessUnit ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                       required
                       autoComplete="off"
                     />
@@ -933,15 +936,15 @@ export default function CreateSystem() {
                   </div>
 
                     <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-100">
                       ผู้รับผิดชอบของทีมพัฒนา Develop Unit
                     </label>
                     <select
                       name="developUnit"
                       value={formData.developUnit}
                       onChange={handleChange}
-                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                        ${errors.developUnit ? 'border-red-500' : 'border-gray-300'}`}
+                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                        ${errors.developUnit ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                       required
                       autoComplete="off"
                     >
@@ -957,15 +960,15 @@ export default function CreateSystem() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-100">
                       Computer Backup
                     </label>
                     <select
                       name="computerbackup"
                       value={formData.computerbackup}
                       onChange={handleChange}
-                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                        ${errors.computerbackup ? 'border-red-500' : 'border-gray-300'}`}
+                      className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                        ${errors.computerbackup ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                       required
                       autoComplete="off"
                     >
@@ -984,7 +987,7 @@ export default function CreateSystem() {
             {currentStep === 2 && (
               <motion.div className="space-y-4" variants={fadeInUp}>
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
+                  <h3 className="text-lg font-medium text-gray-100 border-b pb-2">
                     ข้อมูลสภาพแวดล้อม - {formData.systemName || 'ไม่ระบุชื่อระบบ'}
                   </h3>
                   
@@ -1055,15 +1058,15 @@ export default function CreateSystem() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Environment
                         </label>
                         <select
                           name="environment"
                           value={env.environment}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`environment-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`environment-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                         >
                           <option value="">Select Environment</option>
@@ -1077,7 +1080,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Server Name
                         </label>
                         <input
@@ -1085,8 +1088,8 @@ export default function CreateSystem() {
                           name="serverName"
                           value={env.serverName}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`serverName-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`serverName-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
@@ -1096,7 +1099,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           IP Address
                         </label>
                         <input
@@ -1104,8 +1107,8 @@ export default function CreateSystem() {
                           name="ip"
                           value={env.ip}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`ip-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`ip-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
@@ -1115,15 +1118,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Server Type
                         </label>
                         <select
                           name="serverType"
                           value={env.serverType}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`serverType-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`serverType-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                         >
                           <option value="">Select Server Type</option>
@@ -1137,15 +1140,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Server Role
                         </label>
                         <select
                           name="serverRole"
                           value={env.serverRole}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`serverRole-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`serverRole-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                         >
                           <option value="">Select Server Role</option>
@@ -1159,15 +1162,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Server Duty
                         </label>
                         <select
                           name="serverDuty"
                           value={env.serverDuty}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`serverDuty-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`serverDuty-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                         >
                           <option value="">Select Server Duty</option>
@@ -1181,7 +1184,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Database
                         </label>
                         <input
@@ -1189,8 +1192,8 @@ export default function CreateSystem() {
                           name="database"
                           value={env.database}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`database-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`database-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           placeholder="Database management"
                           required
                           autoComplete="off"
@@ -1201,7 +1204,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Application
                         </label>
                         <input
@@ -1209,8 +1212,8 @@ export default function CreateSystem() {
                           name="application"
                           value={env.application}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`application-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`application-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           placeholder="Supporting software IIS .net framework"
                           required
                           autoComplete="off"
@@ -1221,7 +1224,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Operating System
                         </label>
                         <input
@@ -1229,8 +1232,8 @@ export default function CreateSystem() {
                           name="operatingSystem"
                           value={env.operatingSystem}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`operatingSystem-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`operatingSystem-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
@@ -1240,7 +1243,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Service Pack
                         </label>
                         <input
@@ -1248,8 +1251,8 @@ export default function CreateSystem() {
                           name="servicePack"
                           value={env.servicePack}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`servicePack-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`servicePack-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
@@ -1259,7 +1262,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Build
                         </label>
                         <input
@@ -1267,8 +1270,8 @@ export default function CreateSystem() {
                           name="build"
                           value={env.build}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`build-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`build-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
@@ -1278,7 +1281,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           CPU
                         </label>
                         <input
@@ -1286,8 +1289,8 @@ export default function CreateSystem() {
                           name="cpu"
                           value={env.cpu}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`cpu-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`cpu-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
@@ -1297,7 +1300,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           RAM
                         </label>
                         <input
@@ -1305,8 +1308,8 @@ export default function CreateSystem() {
                           name="ram"
                           value={env.ram}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`ram-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`ram-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
@@ -1316,7 +1319,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Disk
                         </label>
                         <input
@@ -1324,8 +1327,8 @@ export default function CreateSystem() {
                           name="disk"
                           value={env.disk}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`disk-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`disk-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
@@ -1335,15 +1338,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           DR
                         </label>
                         <select
                           name="dr"
                           value={env.dr}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`dr-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`dr-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                         >
                           <option value="">Select DR/DC</option>
@@ -1356,15 +1359,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Join Domain
                         </label>
                         <select
                           name="joinDomain"
                           value={env.joinDomain}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`joinDomain-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`joinDomain-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                         >
                           <option value="">Select Option</option>
@@ -1377,15 +1380,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Windows Cluster
                         </label>
                         <select
                           name="windowsCluster"
                           value={env.windowsCluster}
                           onChange={(e) => handleEnvironmentChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`windowsCluster-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`windowsCluster-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                         >
                           <option value="">Select Option</option>
@@ -1398,11 +1401,11 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-100 mb-2">
                           Production Unit
                         </label>
                         <div className={`grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 border rounded-md ${
-                          errors[`productionUnit-${index}`] ? 'border-red-500' : 'border-gray-300'
+                          errors[`productionUnit-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'
                         }`}>
                           {PRODUCTION_UNIT_OPTIONS.map((option) => (
                             <div key={option} className="flex items-center space-x-2">
@@ -1422,15 +1425,15 @@ export default function CreateSystem() {
                                     }
                                   }, index);
                                 }}
-                                className={`h-4 w-4 focus:ring-indigo-500 rounded ${
+                                className={`h-4 w-4 focus:ring-pink-500 rounded ${
                                   errors[`productionUnit-${index}`] 
                                     ? 'border-red-500 text-red-600' 
-                                    : 'border-gray-300 text-indigo-600'
+                                    : 'border-gray-300 text-pink-600'
                                 }`}
                               />
                               <label 
                                 htmlFor={`productionUnit-${index}-${option}`}
-                                className="text-sm text-gray-700"
+                                className="text-sm text-gray-100"
                               >
                                 {option}
                               </label>
@@ -1453,14 +1456,14 @@ export default function CreateSystem() {
             {currentStep === 3 && (
               <motion.div className="space-y-4" variants={fadeInUp}>
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
+                  <h3 className="text-lg font-medium text-gray-100 border-b pb-2">
                     ข้อมูลการเชื่อมต่อ
                   </h3>
                 </div>
                 {formData.connectionInfo.map((conn, index) => (
                   <div key={index} className="space-y-4 border p-4 rounded-lg">
                     <div className="flex justify-between items-center">
-                      <h4 className="font-medium">
+                      <h4 className="font-medium text-gray-100">
                         Server Name: {formData.environmentInfo[index]?.serverName || 'N/A'}
                       </h4>
 <motion.button
@@ -1494,14 +1497,15 @@ export default function CreateSystem() {
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Active Directory (AD)
                         </label>
                         <select
                           name="ad"
                           value={conn.ad}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
@@ -1509,14 +1513,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           ADFS
                         </label>
                         <select
                           name="adfs"
                           value={conn.adfs}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
@@ -1524,14 +1529,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           DNS
                         </label>
                         <select
                           name="dns"
                           value={conn.dns}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
@@ -1539,14 +1545,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           NTP
                         </label>
                         <select
                           name="ntp"
                           value={conn.ntp}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
@@ -1554,14 +1561,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           TPAM
                         </label>
                         <select
                           name="tpam"
                           value={conn.tpam}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
@@ -1569,14 +1577,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Netka
                         </label>
                         <select
                           name="netka"
                           value={conn.netka}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
@@ -1584,14 +1593,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           FIM
                         </label>
                         <select
                           name="fim"
                           value={conn.fim}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
@@ -1599,14 +1609,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           FTP Server
                         </label>
                         <select
                           name="ftpServer"
                           value={conn.ftpServer}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
@@ -1614,14 +1625,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           FTP GoAnywhere MFT Server
                         </label>
                         <select
                           name="ftpGoAnywhereMFTServer"
                           value={conn.ftpGoAnywhereMFTServer}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
@@ -1629,14 +1641,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Email SMTP
                         </label>
                         <select
                           name="emailSmtp"
                           value={conn.emailSmtp}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
@@ -1644,14 +1657,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           SMS
                         </label>
                         <select
                           name="sms"
                           value={conn.sms}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
@@ -1659,14 +1673,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           API Management
                         </label>
                         <select
                           name="apiManagement"
                           value={conn.apiManagement}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
@@ -1674,14 +1689,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           DV
                         </label>
                         <select
                           name="dv"
                           value={conn.dv}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
@@ -1689,14 +1705,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           SNMP
                         </label>
                         <select
                           name="snmp"
                           value={conn.snmp}
                           onChange={(e) => handleConnectionChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
@@ -1712,14 +1729,14 @@ export default function CreateSystem() {
             {currentStep === 4 && (
               <motion.div className="space-y-4" variants={fadeInUp}>
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
+                  <h3 className="text-lg font-medium text-gray-100 border-b pb-2">
                     ข้อมูลความปลอดภัย
                   </h3>
                 </div>
                 {formData.securityInfo.map((security, index) => (
                   <div key={index} className="space-y-4 border p-4 rounded-lg">
                     <div className="flex justify-between items-center">
-                      <h4 className="font-medium">
+                      <h4 className="font-medium text-gray-100">
                         Server Name: {formData.environmentInfo[index]?.serverName || 'N/A'}
                       </h4>
                      <motion.button
@@ -1753,7 +1770,7 @@ export default function CreateSystem() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           URL Website
                         </label>
                         <input
@@ -1761,8 +1778,8 @@ export default function CreateSystem() {
                           name="urlWebsite"
                           value={security.urlWebsite}
                           onChange={(e) => handleSecurityChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`urlWebsite-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`urlWebsite-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
@@ -1772,7 +1789,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Certificate Expire Date
                         </label>
                         <input
@@ -1780,8 +1797,8 @@ export default function CreateSystem() {
                           name="certificateExpireDate"
                           value={security.certificateExpireDate}
                           onChange={(e) => handleSecurityChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`certificateExpireDate-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`certificateExpireDate-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
@@ -1791,7 +1808,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Backup Policy
                         </label>
                         <input
@@ -1799,8 +1816,8 @@ export default function CreateSystem() {
                           name="backupPolicy"
                           value={security.backupPolicy}
                           onChange={(e) => handleSecurityChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`backupPolicy-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`backupPolicy-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
@@ -1810,7 +1827,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Downtime Allowed
                         </label>
                         <input
@@ -1818,8 +1835,8 @@ export default function CreateSystem() {
                           name="downtimeAllowed"
                           value={security.downtimeAllowed}
                           onChange={(e) => handleSecurityChange(e, index)}
-                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                            ${errors[`downtimeAllowed-${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                          className={`mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
+                            ${errors[`downtimeAllowed-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
                           required
                           autoComplete="off"
                         />
@@ -1829,14 +1846,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Centralize Log
                         </label>
                         <select
                           name="centralizeLog"
                           value={security.centralizeLog}
                           onChange={(e) => handleSecurityChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
@@ -1844,14 +1862,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Setup Agent Patch
                         </label>
                         <select
                           name="setupAgentPatch"
                           value={security.setupAgentPatch}
                           onChange={(e) => handleSecurityChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
@@ -1859,14 +1878,15 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-100">
                           Internet Facing
                         </label>
                         <select
                           name="internetFacing"
                           value={security.internetFacing}
                           onChange={(e) => handleSecurityChange(e, index)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 
+                            shadow-sm focus:border-pink-500 focus:ring-pink-500"
                         >
                           <option value="NO">NO</option>
                           <option value="YES">YES</option>
@@ -1889,9 +1909,10 @@ export default function CreateSystem() {
                 <motion.button
   type="button"
   onClick={prevStep}
-  className="px-6 py-3 border-2 border-indigo-600 rounded-lg shadow-md
-    text-indigo-600 font-medium transform transition-all
-    duration-200 hover:shadow-lg active:scale-95 flex items-center space-x-2"
+  className="px-6 py-3 border-2 border-pink-500 rounded-lg shadow-md
+    text-pink-500 font-medium transform transition-all
+    duration-200 hover:shadow-lg active:scale-95 flex items-center space-x-2
+    hover:bg-pink-500 hover:text-white"
   variants={backButtonVariants}
   initial="initial"
   whileHover="hover"
@@ -1911,8 +1932,8 @@ export default function CreateSystem() {
                 className={`px-6 py-3 rounded-lg shadow-lg font-medium
                   transform transition-all duration-200 flex items-center space-x-2
                   ${currentStep === 4 
-                    ? 'bg-green-600 hover:bg-green-700' 
-                    : 'bg-indigo-600 hover:bg-indigo-700'
+                    ? 'bg-pink-600 hover:bg-pink-700' 
+                    : 'bg-pink-500 hover:bg-pink-600'
                   } text-white hover:shadow-xl active:scale-95
                   ${(isSubmitting || isSubmitted) && 'opacity-50 cursor-not-allowed'}`}
                 whileHover={buttonHover}

@@ -9,6 +9,23 @@ import { CSVValidationResult } from './types/csv';
 import { motion, type Variants } from 'framer-motion';
 import { FiServer, FiShield, FiDatabase, FiLink,FiArrowLeft } from 'react-icons/fi';
 
+// steper
+import Stack from '@mui/material/Stack';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
+import { styled } from '@mui/material/styles';
+import { StepIconProps } from '@mui/material/StepIcon';
+import Check from '@mui/icons-material/Check';
+import DescriptionIcon from '@mui/icons-material/Description';
+import StorageIcon from '@mui/icons-material/Storage';
+import LinkIcon from '@mui/icons-material/Link';
+import SecurityIcon from '@mui/icons-material/Security';
+// steper
+
+
+
 // Add interface for validation errors
 interface ValidationErrors {
   [key: string]: string;
@@ -147,6 +164,76 @@ interface EnvironmentInfo {
   productionUnit: string[];
 }
 
+
+// steper
+
+const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
+  [`&.${stepConnectorClasses.alternativeLabel}`]: {
+    top: 22,
+  },
+  [`&.${stepConnectorClasses.active}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      backgroundImage:
+        'linear-gradient( 95deg,rgb(99,102,241) 0%,rgb(129,140,248) 50%,rgb(165,180,252) 100%)',
+    },
+  },
+  [`&.${stepConnectorClasses.completed}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      backgroundImage:
+        'linear-gradient( 95deg,rgb(99,102,241) 0%,rgb(129,140,248) 50%,rgb(165,180,252) 100%)',
+    },
+  },
+  [`& .${stepConnectorClasses.line}`]: {
+    height: 3,
+    border: 0,
+    backgroundColor: '#eaeaf0',
+    borderRadius: 1,
+  },
+}));
+
+const ColorlibStepIconRoot = styled('div')<{
+  ownerState: { completed?: boolean; active?: boolean };
+}>(({ theme, ownerState }) => ({
+  backgroundColor: '#ccc',
+  zIndex: 1,
+  color: '#fff',
+  width: 50,
+  height: 50,
+  display: 'flex',
+  borderRadius: '50%',
+  justifyContent: 'center',
+  alignItems: 'center',
+  ...(ownerState.active && {
+    backgroundImage:
+      'linear-gradient( 136deg, rgb(99,102,241) 0%, rgb(129,140,248) 50%, rgb(165,180,252) 100%)',
+    boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
+  }),
+  ...(ownerState.completed && {
+    backgroundImage:
+      'linear-gradient( 136deg, rgb(99,102,241) 0%, rgb(129,140,248) 50%, rgb(165,180,252) 100%)',
+  }),
+}));
+
+function ColorlibStepIcon(props: StepIconProps) {
+  const { active, completed, className } = props;
+
+  const icons: { [index: string]: React.ReactElement } = {
+    1: <DescriptionIcon />,
+    2: <StorageIcon />,
+    3: <LinkIcon />,
+    4: <SecurityIcon />,
+  };
+
+  return (
+    <ColorlibStepIconRoot ownerState={{ completed, active }} className={className}>
+      {icons[String(props.icon)]}
+    </ColorlibStepIconRoot>
+  );
+}
+
+const steps = ['ข้อมูลระบบ (Systeminfo)', 'สภาพแวดล้อม (Environment)', 'การเชื่อมต่อ (ConnectionInfo)', 'ความปลอดภัย (Security)'];
+
+// steper
 export default function CreateSystem() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -714,40 +801,22 @@ export default function CreateSystem() {
           </motion.div>
         </div>
 
-        {/* Progress Steps */}
+        {/* Replace existing progress steps with MUI Stepper */}
         <motion.div 
           className="mb-12"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="flex justify-between mb-4">
-            {['ข้อมูลระบบ', 'สภาพแวดล้อม', 'การเชื่อมต่อ', 'ความปลอดภัย'].map((step, index) => (
-              <motion.div
-                key={index}
-                className={`flex flex-col items-center space-y-2 ${
-                  currentStep > index + 1 ? 'text-indigo-600' :
-                  currentStep === index + 1 ? 'text-indigo-600' : 'text-gray-400'
-                }`}
-                whileHover={{ scale: 1.05 }}
-              >
-                <div className={`p-3 rounded-full ${
-                  currentStep >= index + 1 ? 'bg-indigo-100' : 'bg-gray-100'
-                }`}>
-                  {getStepIcon(index + 1)}
-                </div>
-                <span className="text-sm font-medium">{step}</span>
-              </motion.div>
-            ))}
-          </div>
-          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-indigo-600"
-              initial={{ width: 0 }}
-              animate={{ width: `${(currentStep / 4) * 100}%` }}
-              transition={{ duration: 0.3 }}
-            />
-          </div>
+          <Stack spacing={4}>
+            <Stepper alternativeLabel activeStep={currentStep - 1} connector={<ColorlibConnector />}>
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Stack>
         </motion.div>
 
         {/* Form Content */}

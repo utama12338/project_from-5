@@ -1,6 +1,6 @@
 "use client"
 import { useRef, useState } from 'react';
-import axios from 'axios';
+import { api } from '../../../services/api';
 import { useRouter } from 'next/navigation';
 import Papa from 'papaparse';
 import Swal from 'sweetalert2';
@@ -8,13 +8,15 @@ import CSVPreviewModal from '../../../components/CSVPreviewModal';
 import { CSVValidationResult } from '../../../types/csv';
 import { motion, type Variants } from 'framer-motion';
 import { FiServer, FiShield, FiDatabase, FiLink,FiArrowLeft } from 'react-icons/fi';
+import axios from 'axios'
 // 
 import StyledWrapper  from '../../../components/neoninput';
 // 
 import Checkbox3d from '../../../components/checkbox3d'
 // 
-import ModernDropdown from '../../../components/ModernDropdown'
+import ModernDropdown from '../../../components/ModernDropdown';
 import CustomDatePicker from '../../../components/CustomDatePicker';
+import { validateForm, type ValidationErrors } from '../../../utils/validation';
 // 
 // steper
 import Stack from '@mui/material/Stack';
@@ -35,9 +37,7 @@ import SecurityIcon from '@mui/icons-material/Security';
 
 
 // Add interface for validation errors
-interface ValidationErrors {
-  [key: string]: string;
-}
+
 // animation 
 const buttonVariants = {
   hover: {
@@ -383,8 +383,8 @@ export default function CreateSystem() {
 
     // ตรวจสอบว่าระบบมีอยู่แล้วหรือไม่
     try {
-      const response = await axios.get(`http://localhost:4000/from/api/system/check?systemName=${row.systemName}`);
-      if (response.data) {
+      const exists = await api.checkSystem(row.systemName);
+      if (exists) {
         status = 'update';
       }
     } catch (error) {
@@ -454,9 +454,11 @@ export default function CreateSystem() {
 
   // ฟังก์ชันสำหรับไปขั้นตอนถัดไป
   const nextStep = () => {
-    if (validateForm(currentStep)) {
+    const validationErrors = validateForm(currentStep, formData);
+    if (Object.keys(validationErrors).length === 0) {
       setCurrentStep(prev => prev + 1);
     } else {
+      setErrors(validationErrors);
       Swal.fire({
         title: 'ข้อมูลไม่ครบถ้วน!',
         text: 'กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง',
@@ -479,13 +481,12 @@ export default function CreateSystem() {
       return;
     }
 
-    if (validateForm(currentStep)) {
+    const validationErrors = validateForm(currentStep, formData);
+    if (Object.keys(validationErrors).length === 0) {
       try {
         setIsSubmitting(true);
-        const response = await axios.post('http://localhost:4000/from/createforme', {
-          ...formData,  
-        });
-        console.log('Success:', response.data);
+        const response = await api.createSystem(formData);
+        console.log('Success:', response);
         
         setIsSubmitted(true);
         router.push('/form');
@@ -508,6 +509,7 @@ export default function CreateSystem() {
         setIsSubmitting(false);
       }
     } else {
+      setErrors(validationErrors);
       Swal.fire({
         title: 'ข้อมูลไม่ครบถ้วน!',
         text: 'กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง',
@@ -628,121 +630,6 @@ export default function CreateSystem() {
       connectionInfo: prev.connectionInfo.filter((_, i) => i !== index),
       securityInfo: prev.securityInfo.filter((_, i) => i !== index)
     }));
-  };
-
-  // Add validation function
-  const validateForm = (step: number): boolean => {
-    const newErrors: ValidationErrors = {};
-
-    // Validate Step 1: Basic Info
-    if (step === 1) {
-      if (!formData.systemName.trim()) {
-        newErrors.systemName = 'กรุณากรอกชื่อระบบ';
-      }
-      if (!formData.developType) {
-        newErrors.developType = 'กรุณาเลือกประเภทการพัฒนา';
-      }
-      if (!formData.contractNo.trim()) {
-        newErrors.contractNo = 'กรุณากรอกเลขที่สัญญา';
-      }
-      if (!formData.vendorContactNo.trim()) {
-        newErrors.vendorContactNo = 'กรุณากรอกข้อมูลบริษัทคู่สัญญา';
-      }
-      if (!formData.businessUnit.trim()) {
-        newErrors.businessUnit = 'กรุณากรอกหน่วยงานเจ้าของระบบงาน';
-      }
-      if (!formData.developUnit) {
-        newErrors.developUnit = 'กรุณาเลือกผู้รับผิดชอบ';
-      }
-      if (!formData.computerbackup) {
-        newErrors.computerbackup = 'กรุณาเลือกสถานะ Computer Backup';
-      }
-    }
-
-    // Validate Step 2: Environment Info
-    if (step === 2) {
-      formData.environmentInfo.forEach((env, index) => {
-        if (!env.environment.trim()) {
-          newErrors[`environment-${index}`] = 'กรุณากรอก Environment';
-        }
-        if (!env.serverName.trim()) {
-          newErrors[`serverName-${index}`] = 'กรุณากรอก Server Name';
-        }
-        if (!env.serverType.trim()) {
-          newErrors[`serverType-${index}`] = 'กรุณาเลือก Server Type';
-        }
-        if (!env.serverRole.trim()) {
-          newErrors[`serverRole-${index}`] = 'กรุณาเลือก Server Role';
-        }
-        if (!env.serverDuty.trim()) {
-          newErrors[`serverDuty-${index}`] = 'กรุณาเลือก Server Duty';
-        }
-        if (!env.database.trim()) {
-          newErrors[`database-${index}`] = 'กรุณากรอก Database';
-        }
-        if (!env.application.trim()) {
-          newErrors[`application-${index}`] = 'กรุณากรอก Application';
-        }
-        if (!env.operatingSystem.trim()) {
-          newErrors[`operatingSystem-${index}`] = 'กรุณากรอก Operating System';
-        }
-        if (!env.servicePack.trim()) {
-          newErrors[`servicePack-${index}`] = 'กรุณากรอก Service Pack';
-        }
-        if (!env.build.trim()) {
-          newErrors[`build-${index}`] = 'กรุณากรอก Build';
-        }
-        if (!env.cpu.trim()) {
-          newErrors[`cpu-${index}`] = 'กรุณากรอก CPU';
-        }
-        if (!env.ram.trim()) {
-          newErrors[`ram-${index}`] = 'กรุณากรอก RAM';
-        }
-        if (!env.disk.trim()) {
-          newErrors[`disk-${index}`] = 'กรุณากรอก Disk';
-        }
-        if (!env.dr.trim()) {
-          newErrors[`dr-${index}`] = 'กรุณาเลือก DR';
-        }
-        if (!env.joinDomain.trim()) {
-          newErrors[`joinDomain-${index}`] = 'กรุณาเลือก Join Domain';
-        }
-        if (!env.windowsCluster.trim()) {
-          newErrors[`windowsCluster-${index}`] = 'กรุณาเลือก Windows Cluster';
-        }
-        if (!env.productionUnit || env.productionUnit.length === 0) {
-          newErrors[`productionUnit-${index}`] = 'กรุณาเลือก Production Unit อย่างน้อย 1 รายการ';
-        }
-        if (!env.ip.trim()) {
-          newErrors[`ip-${index}`] = 'กรุณากรอก IP Address';
-        } else if (!/^(\d{1,3}\.){3}\d{1,3}$/.test(env.ip)) {
-          newErrors[`ip-${index}`] = 'รูปแบบ IP Address ไม่ถูกต้อง';
-        }
-      });
-    }
-
-    // Validate Step 4: Security Info
-    if (step === 4) {
-      formData.securityInfo.forEach((security, index) => {
-        if (!security.urlWebsite.trim()) {
-          newErrors[`urlWebsite-${index}`] = 'กรุณากรอก URL Website';
-        } else if (!/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/.test(security.urlWebsite)) {
-          newErrors[`urlWebsite-${index}`] = 'รูปแบบ URL ไม่ถูกต้อง';
-        }
-        if (!security.certificateExpireDate) {
-          newErrors[`certificateExpireDate-${index}`] = 'กรุณาเลือกวันที่หมดอายุ Certificate';
-        }
-        if (!security.backupPolicy.trim()) {
-          newErrors[`backupPolicy-${index}`] = 'กรุณากรอก Backup Policy';
-        }
-        if (!security.downtimeAllowed.trim()) {
-          newErrors[`downtimeAllowed-${index}`] = 'กรุณากรอก Downtime Allowed';
-        }
-      });
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
   const handleClosePreview = () => {
@@ -1770,7 +1657,7 @@ export default function CreateSystem() {
                           />
                         </StyledWrapper>
                         {errors[`certificateExpireDate-${index}`] && (
-                          <p >{errors[`certificateExpireDate-${index}`]}</p>
+                          <p className="mt-1 text-sm text-red-500">{errors[`certificateExpireDate-${index}`]}</p>
                         )}
                       </div>
 

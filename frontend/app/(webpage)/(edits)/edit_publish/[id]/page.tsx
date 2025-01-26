@@ -8,11 +8,15 @@ import StyledWrapper from '../../../../components/neoninput';
 import ModernDropdown from '../../../../components/ModernDropdown';
 import CustomDatePicker from '../../../../components/CustomDatePicker';
 import Checkbox3d from '../../../../components/checkbox3d';
+import { api } from '../../../../services/api';
+import { validateForm, ValidationErrors } from '../../../../utils/validation';
+import Swal from 'sweetalert2';
+import { colors, shadows, transitions } from '../../../../styles/theme';
+import styled from 'styled-components';
 
 const ENVIRONMENT_OPTIONS = ['DEV', 'SIT', 'UAT', 'PreProd', 'Prod'];
 const SERVER_TYPE_OPTIONS = [
   'Physics',
-  'Network Device',
   'WorkStation PC',
   'Laptop',
   'Virtualize Environment',
@@ -170,24 +174,28 @@ const tabs = [
 const FormField = ({ 
   label, 
   value, 
-  onChange 
+  onChange,
+  error 
 }: { 
   label: string; 
   value: string; 
   onChange?: (value: string) => void;
+  error?: string;
 }) => (
   <div className="mb-4">
     <label className="block text-sm font-medium text-gray-100 mb-2">{label}</label>
     <StyledWrapper>
       <input 
         type="text"
-        className="w-full rounded-md border-none bg-transparent text-white p-2 
+        className={`w-full rounded-md border-none bg-transparent text-white p-2 
                 focus:ring-2 focus:ring-pink-500 
-                hover:border-gray-400 transition-colors"
+                hover:border-gray-400 transition-colors
+                ${error ? 'border-red-500 ring-1 ring-red-500' : ''}`}
         value={value || ''}
         onChange={(e) => onChange?.(e.target.value)}
       />
     </StyledWrapper>
+    {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
   </div>
 );
 
@@ -197,6 +205,8 @@ interface FormFieldOptionProps {
   onChange?: (value: string | string[]) => void;
   options: string[];
   multiple?: boolean;
+  error?: string;
+  required?: boolean;
 }
 
 const FormFieldOption = ({
@@ -204,8 +214,9 @@ const FormFieldOption = ({
   value,
   onChange,
   options,
-  multiple = false
-}: FormFieldOptionProps) => (
+  multiple = false,
+  error
+}: FormFieldOptionProps & { error?: string }) => (
   <div className="mb-4">
     <label className="block text-sm font-medium text-gray-100 mb-2">{label}</label>
     {multiple ? (
@@ -249,6 +260,7 @@ const FormFieldOption = ({
         placeholder={`Select ${label}`}
       />
     )}
+    {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
   </div>
 );
 
@@ -262,19 +274,33 @@ const updateArrayItemField = (array: any[], index: number, field: string, value:
   });
 };
 
+const FormContainer = ({ children }: { children: React.ReactNode }) => (
+  <div style={{ 
+    backgroundColor: colors.background.secondary,
+    color: colors.text.primary,
+    boxShadow: shadows.primary,
+    transition: transitions.default
+  }} className="p-6 rounded-lg">
+    {children}
+  </div>
+);
+
 export default function EditSystem() {
   const [activeTab, setActiveTab] = useState('system');
   const [systemData, setSystemData] = useState<SystemData>(defaultSystemData);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<ValidationErrors>({});
   const { id } = useParams(); 
   const router = useRouter();
   
   const fetchSystemData = useCallback(async () => {
     try {
-      const response = await axios.get(`http://localhost:4000/from/getSystemById/${id}`);
-      console.log('Fetched data:', response.data);
-      setSystemData(response.data);
+      // Convert string id to number
+      const numericId = parseInt(id as string, 10);
+      const data = await api.getSystemById(numericId);
+      console.log('Fetched data:', data);
+      setSystemData(data);
       setError(null);
     } catch (error) {
       console.error('เกิดข้อผิดพลาด:', error);
@@ -300,27 +326,69 @@ export default function EditSystem() {
 
   const handleSave = async () => {
     try {
-      console.log('ข้อมูลที่ส่งไป:', systemData);
+      // Validate all sections at once
+      let allErrors = {};
       
-      const response = await axios.put(`http://localhost:4000/from/updateforme/${id}`, systemData, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      // Validate System Info (Step 1)
+      const systemErrors = validateForm(1, systemData);
+      // Validate Environment Info (Step 2)
+      const environmentErrors = validateForm(2, systemData);
+      // Validate Connection Info (Step 3)
+      const connectionErrors = validateForm(3, systemData);
+      // Validate Security Info (Step 4)
+      const securityErrors = validateForm(4, systemData);
+
+      // Combine all errors
+      allErrors = {
+        ...systemErrors,
+        ...environmentErrors,
+        ...connectionErrors,
+        ...securityErrors
+      };
+
+      setErrors(allErrors);
+
+      if (Object.keys(allErrors).length > 0) {
+        // Group errors by section for better user feedback
+        const errorSections = [];
+        if (Object.keys(systemErrors).length > 0) errorSections.push('ข้อมูลระบบ');
+        if (Object.keys(environmentErrors).length > 0) errorSections.push('สภาพแวดล้อม');
+        if (Object.keys(connectionErrors).length > 0) errorSections.push('การเชื่อมต่อ');
+        if (Object.keys(securityErrors).length > 0) errorSections.push('ความปลอดภัย');
+
+        // Show error message with sections that need attention
+        Swal.fire({
+          title: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+          html: `กรุณาตรวจสอบข้อมูลในส่วน:<br>${errorSections.join('<br>')}`,
+          icon: 'warning',
+          confirmButtonText: 'ตกลง'
+        });
+        return;
+      }
+
+      // If validation passes, proceed with save
+      const numericId = parseInt(id as string, 10);
+      await api.updateSystem(numericId, systemData);
+      
+      Swal.fire({
+        title: 'บันทึกสำเร็จ!',
+        text: 'ข้อมูลของคุณถูกบันทึกเรียบร้อยแล้ว',
+        icon: 'success',
+        confirmButtonText: 'ตกลง'
       });
       
-      if (response.status === 200) {
-        console.log('Response จาก API:', response);
-        alert('บันทึกข้อมูลสำเร็จ');
-        return router.push('/forme');
-      } else {
-        throw new Error('ไม่สามารถบันทึกข้อมูลได้');
-      }
+      return router.push('/forme');
     } catch (error) {
       console.error('เกิดข้อผิดพลาด:', error);
-      alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+      Swal.fire({
+        title: 'เกิดข้อผิดพลาด!',
+        text: 'ไม่สามารถบันทึกข้อมูลได้',
+        icon: 'error',
+        confirmButtonText: 'ตกลง'
+      });
     }
   };
-  
+
   const updateSystemField = (field: keyof SystemData, value: string | string[]) => {
     setSystemData(prev => ({
       ...prev,
@@ -424,27 +492,32 @@ export default function EditSystem() {
         label="ชื่อระบบ" 
         value={systemData.systemName} 
         onChange={(value) => updateSystemField('systemName', value)}
+        error={errors.systemName}
       />
       <FormFieldOption 
         label="ประเภทการพัฒนา" 
         value={systemData.developType} 
         onChange={(value) => updateSystemField('developType', value)}
         options={['IN HOUSE', 'OUTSOURCE']}
+        error={errors.developType}
       />
       <FormField 
         label="เลขที่สัญญา" 
         value={systemData.contractNo} 
         onChange={(value) => updateSystemField('contractNo', value)}
+        error={errors.contractNo}
       />
       <FormField 
         label="เลขที่ติดต่อผู้ขาย" 
         value={systemData.vendorContactNo} 
         onChange={(value) => updateSystemField('vendorContactNo', value)}
+        error={errors.vendorContactNo}
       />
       <FormField 
         label="หน่วยธุรกิจ" 
         value={systemData.businessUnit} 
         onChange={(value) => updateSystemField('businessUnit', value)}
+        error={errors.businessUnit}
       />
       <FormFieldOption
         label="หน่วยพัฒนา" 
@@ -454,6 +527,7 @@ export default function EditSystem() {
           updateSystemField('developUnit', finalValue);
         }}
         options={['ฝรล.', 'ส่วนระบบงานสนับสนุน','ระบบสนับสนุนนโยบายรัฐ','ธนรัตน์ เกรอด']}
+        error={errors.developUnit}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormFieldOption
@@ -461,6 +535,7 @@ export default function EditSystem() {
           value={systemData.computerbackup}
           onChange={(value) => updateSystemField('computerbackup', value)}
           options={['YES', 'NO']}
+          error={errors.computerbackup}
         />
       </div>
     </div>
@@ -484,11 +559,13 @@ const renderEnvironmentInfo = () => (
             label="Server Name" 
             value={env.serverName}
             onChange={(value) => updateEnvironmentInfo(index, 'serverName', value)}
+            error={errors[`serverName-${index}`]}
           />
           <FormField 
             label="IP" 
             value={env.ip}
             onChange={(value) => updateEnvironmentInfo(index, 'ip', value)}
+            error={errors[`ip-${index}`]}
           />
           <FormFieldOption
             label="Server Type"
@@ -512,41 +589,49 @@ const renderEnvironmentInfo = () => (
             label="ฐานข้อมูล" 
             value={env.database}
             onChange={(value) => updateEnvironmentInfo(index, 'database', value)}
+            error={errors[`database-${index}`]}
           />
           <FormField 
             label="แอปพลิเคชัน" 
             value={env.application}
             onChange={(value) => updateEnvironmentInfo(index, 'application', value)}
+            error={errors[`application-${index}`]}
           />
           <FormField 
             label="ระบบปฏิบัติการ" 
             value={env.operatingSystem}
             onChange={(value) => updateEnvironmentInfo(index, 'operatingSystem', value)}
+            error={errors[`operatingSystem-${index}`]}
           />
           <FormField 
             label="Service Pack" 
             value={env.servicePack}
             onChange={(value) => updateEnvironmentInfo(index, 'servicePack', value)}
+            error={errors[`servicePack-${index}`]}
           />
           <FormField 
             label="Build" 
             value={env.build}
             onChange={(value) => updateEnvironmentInfo(index, 'build', value)}
+            error={errors[`build-${index}`]}
           />
           <FormField 
             label="CPU" 
             value={env.cpu}
             onChange={(value) => updateEnvironmentInfo(index, 'cpu', value)}
+            error={errors[`cpu-${index}`]}
           />
           <FormField 
             label="RAM" 
             value={env.ram}
             onChange={(value) => updateEnvironmentInfo(index, 'ram', value)}
+            error={errors[`ram-${index}`]}
           />
           <FormField 
             label="Disk" 
             value={env.disk}
             onChange={(value) => updateEnvironmentInfo(index, 'disk', value)}
+            error={errors[`disk-${index}`]}
           />
           <FormFieldOption
             label="DR"
@@ -566,17 +651,31 @@ const renderEnvironmentInfo = () => (
             onChange={(value) => updateEnvironmentInfo(index, 'windowsCluster', value)}
             options={['YES', 'NO']}
           />
-          <FormFieldOption
-            label="Production Unit"
-            value={Array.isArray(env.productionUnit) 
-              ? env.productionUnit 
-              : env.productionUnit.split(',').filter(Boolean)}
-            onChange={(value) => {
-              updateEnvironmentInfo(index, 'productionUnit', value);
-            }}
-            options={PRODUCTION_UNIT_OPTIONS}
-            multiple={true}
-          />
+            <FormFieldOption
+              label="Production Unit"
+              value={Array.isArray(env.productionUnit) 
+                ? env.productionUnit 
+                : env.productionUnit.split(',').filter(Boolean)}
+              onChange={(value) => {
+                if (value && value.length > 0) {
+                  updateEnvironmentInfo(index, 'productionUnit', value);
+                  // Clear error if exists
+                  const newErrors = {...errors};
+                  delete newErrors[`productionUnit-${index}`];
+                  setErrors(newErrors);
+                } else {
+                  // Set error if no units selected
+                  setErrors(prev => ({
+                    ...prev,
+                    [`productionUnit-${index}`]: 'Please select at least one Production Unit'
+                  }));
+                }
+              }}
+              options={PRODUCTION_UNIT_OPTIONS}
+              multiple={true}
+              error={errors[`productionUnit-${index}`]}
+              required={true}
+            />
         </div>
         <div className="flex justify-end mt-4">
           <button
@@ -710,6 +809,7 @@ const renderSecurityInfo = () => (
             label="URL Website" 
             value={security.urlWebsite}
             onChange={(value) => updateSecurityInfo(index, 'urlWebsite', value)}
+            error={errors[`urlWebsite-${index}`]}
           />
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-100 mb-2">
@@ -725,18 +825,24 @@ const renderSecurityInfo = () => (
                 }}
                 placeholder="Select expiry date"
                 required
+                error={!!errors[`certificateExpireDate-${index}`]}
               />
             </StyledWrapper>
+            {errors[`certificateExpireDate-${index}`] && (
+              <p className="mt-1 text-sm text-red-500">{errors[`certificateExpireDate-${index}`]}</p>
+            )}
           </div>
           <FormField 
             label="Backup Policy" 
             value={security.backupPolicy}
             onChange={(value) => updateSecurityInfo(index, 'backupPolicy', value)}
+            error={errors[`backupPolicy-${index}`]}
           />
           <FormField 
             label="Downtime Allowed" 
             value={security.downtimeAllowed}
             onChange={(value) => updateSecurityInfo(index, 'downtimeAllowed', value)}
+            error={errors[`downtimeAllowed-${index}`]}
           />
           <FormFieldOption
             label="Centralize Log"
@@ -763,27 +869,36 @@ const renderSecurityInfo = () => (
 );
 
   return (
-    <div className="min-h-screen bg-[rgb(17,17,16)] py-8">
+    <div style={{ backgroundColor: colors.background.primary }} className="min-h-screen py-8">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-white">แก้ไขระบบ</h1>
+          <h1 style={{ color: colors.text.primary }} className="text-2xl font-bold">
+            แก้ไขระบบ
+          </h1>
           <div className="space-x-4">
             <motion.button
               onClick={handleShare}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center px-4 py-2 bg-pink-500/10 text-pink-500 rounded-md
-                       hover:bg-pink-500/20 focus:outline-none focus:ring-2 focus:ring-pink-500"
+              style={{ 
+                backgroundColor: `${colors.button.primary.background}10`,
+                color: colors.button.primary.background
+              }}
+              className="inline-flex items-center px-4 py-2 rounded-md"
+              whileHover={{ 
+                backgroundColor: `${colors.button.primary.hover}20`,
+                scale: 1.05 
+              }}
             >
               <Share2 className="w-4 h-4 mr-2" />
               แชร์
             </motion.button>
             <motion.button
               onClick={handleSave}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center px-4 py-2 bg-pink-600 text-white rounded-md
-                       hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500"
+              style={{ backgroundColor: colors.button.primary.background }}
+              className="inline-flex items-center px-4 py-2 text-white rounded-md"
+              whileHover={{ 
+                backgroundColor: colors.button.primary.hover,
+                scale: 1.05 
+              }}
             >
               <Save className="w-4 h-4 mr-2" />
               บันทึก
@@ -797,12 +912,10 @@ const renderSecurityInfo = () => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-4 px-6 font-medium text-sm transition-colors
-                  ${activeTab === tab.id 
-                    ? 'text-pink-500' // Remove border-b-2
-                    : 'text-gray-400 hover:text-gray-300'
-                  }
-                  focus:outline-none`}
+                style={{ 
+                  color: activeTab === tab.id ? colors.button.primary.background : colors.text.secondary
+                }}
+                className={`py-4 px-6 font-medium text-sm transition-colors`}
               >
                 {tab.label}
               </button>
@@ -812,52 +925,24 @@ const renderSecurityInfo = () => (
 
         <AnimatePresence>
           {activeTab === 'system' && (
-            <motion.div 
-              key="system"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-              className="bg-[rgb(27,27,26)] p-6 rounded-lg shadow-xl"
-            >
+            <FormContainer>
               {renderSystemInfo()}
-            </motion.div>
+            </FormContainer>
           )}
           {activeTab === 'environment' && (
-            <motion.div 
-              key="environment"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-              className="bg-[rgb(27,27,26)] p-6 rounded-lg shadow-xl"
-            >
+            <FormContainer>
               {renderEnvironmentInfo()}
-            </motion.div>
+            </FormContainer>
           )}
           {activeTab === 'connection' && (
-            <motion.div
-              key="connection"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-              className="bg-[rgb(27,27,26)] p-6 rounded-lg shadow-xl"
-            >
+            <FormContainer>
               {renderConnectionInfo()}
-            </motion.div>
+            </FormContainer>
           )}
           {activeTab === 'security' && (
-            <motion.div
-              key="security"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-              className="bg-[rgb(27,27,26)] p-6 rounded-lg shadow-xl"
-            >
+            <FormContainer>
               {renderSecurityInfo()}
-            </motion.div>
+            </FormContainer>
           )}
         </AnimatePresence>
       </div>

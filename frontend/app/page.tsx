@@ -14,6 +14,7 @@ import StyledWrapper  from './components/neoninput';
 import Checkbox3d from './components/checkbox3d'
 // 
 import ModernDropdown from './components/ModernDropdown'
+import CustomDatePicker from './components/CustomDatePicker';
 // 
 // steper
 import Stack from '@mui/material/Stack';
@@ -777,6 +778,20 @@ export default function CreateSystem() {
       case 4: return <FiShield className="w-6 h-6" />;
       default: return null;
     }
+  };
+
+  const handleDateChange = (date: Date | null, index: number) => {
+    setFormData(prev => {
+      const newSecurityInfo = [...prev.securityInfo];
+      newSecurityInfo[index] = {
+        ...newSecurityInfo[index],
+        certificateExpireDate: date ? date.toISOString().split('T')[0] : ''
+      };
+      return {
+        ...prev,
+        securityInfo: newSecurityInfo
+      };
+    });
   };
 
   return (
@@ -1740,24 +1755,22 @@ export default function CreateSystem() {
                         )}
                       </div>
 
-                      <div>
+                      <div   >
                         <label className="block text-sm font-medium text-gray-100">
                           Certificate Expire Date
                         </label>
-                        <StyledWrapper>
-                        <input
-                          type="date"
-                          name="certificateExpireDate"
-                          value={security.certificateExpireDate}
-                          onChange={(e) => handleSecurityChange(e, index)}
-                          className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`certificateExpireDate-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
-                          required
-                          autoComplete="off"
-                        />
+                        <StyledWrapper  style={{ position: 'relative', zIndex: 1000 }}>
+                          <CustomDatePicker
+                            selectedDate={security.certificateExpireDate ? new Date(security.certificateExpireDate) : null}
+                            onChange={(date) => handleDateChange(date, index)}
+                            placeholder="Select expiry date"
+                            required
+                            error={!!errors[`certificateExpireDate-${index}`]}
+                          
+                          />
                         </StyledWrapper>
                         {errors[`certificateExpireDate-${index}`] && (
-                          <p className="mt-1 text-sm text-red-600">{errors[`certificateExpireDate-${index}`]}</p>
+                          <p >{errors[`certificateExpireDate-${index}`]}</p>
                         )}
                       </div>
 

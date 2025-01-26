@@ -182,13 +182,13 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.active}`]: {
     [`& .${stepConnectorClasses.line}`]: {
       backgroundImage:
-        'linear-gradient( 95deg,rgb(236,72,153) 0%,rgb(244,114,182) 50%,rgb(251,207,232) 100%)',
+        'linear-gradient( 95deg,rgb(236,72,153) 0%,rgb(244,114,182) 50%,rgb(255, 0, 144) 100%)',
     },
   },
   [`&.${stepConnectorClasses.completed}`]: {
     [`& .${stepConnectorClasses.line}`]: {
       backgroundImage:
-        'linear-gradient( 95deg,rgb(236,72,153) 0%,rgb(244,114,182) 50%,rgb(251,207,232) 100%)',
+        'linear-gradient( 95deg,rgb(236,72,153) 0%,rgb(244,114,182) 50%,rgb(255, 0, 144) 100%)',
     },
   },
   [`& .${stepConnectorClasses.line}`]: {
@@ -213,12 +213,12 @@ const ColorlibStepIconRoot = styled('div')<{
   alignItems: 'center',
   ...(ownerState.active && {
     backgroundImage:
-      'linear-gradient( 136deg, rgb(236,72,153) 0%, rgb(244,114,182) 50%, rgb(251,207,232) 100%)',
+      'linear-gradient( 136deg, rgb(236,72,153) 0%, rgb(244,114,182) 50%, rgb(126, 0, 71) 100%)',
     boxShadow: '0 4px 10px 0 rgba(236,72,153,.25)',
   }),
   ...(ownerState.completed && {
     backgroundImage:
-      'linear-gradient( 136deg, rgb(236,72,153) 0%, rgb(244,114,182) 50%, rgb(251,207,232) 100%)',
+      'linear-gradient( 136deg, rgb(236,72,153) 0%, rgb(244,114,182) 50%, rgb(170, 0, 96) 100%)',
   }),
 }));
 
@@ -826,9 +826,9 @@ export default function CreateSystem() {
             />
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="px-6 py-3 bg-pink-500 text-white rounded-lg shadow-lg
-                hover:bg-pink-600 transform transition-all duration-200
-                hover:shadow-xl active:scale-95 flex items-center space-x-2"
+              className="px-6 py-3 bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white rounded-lg shadow-lg
+              hover:from-green-500 hover:via-green-600 hover:to-green-700 transform transition-all duration-200
+              hover:shadow-xl active:scale-95 flex items-center space-x-2"
             >
               <FiDatabase className="w-5 h-5" />
               <span>Import CSV</span>
@@ -865,7 +865,7 @@ export default function CreateSystem() {
             {/* Step 1: ข้อมูลระบบพื้นฐาน */}
             {currentStep === 1 && (
               <motion.div className="space-y-4" variants={fadeInUp}>
-                <h3 className="text-lg font-medium text-gray-100 border-b pb-2">
+                <h3 className="text-lg font-medium text-gray-100">
                   ข้อมูลระบบพื้นฐาน
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
@@ -1012,7 +1012,7 @@ export default function CreateSystem() {
             {currentStep === 2 && (
               <motion.div className="space-y-4" variants={fadeInUp}>
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-100 border-b pb-2">
+                  <h3 className="text-lg font-medium text-gray-100">
                     ข้อมูลสภาพแวดล้อม - {formData.systemName || 'ไม่ระบุชื่อระบบ'}
                   </h3>
                   
@@ -1048,7 +1048,7 @@ export default function CreateSystem() {
 </motion.button>
                 </div>
                 {formData.environmentInfo.map((env, index) => (
-                  <div key={index} className="space-y-4 border p-4 rounded-lg">
+                  <div key={index} className="space-y-4 bg-[rgb(32,32,31)] p-4 rounded-lg">
                     <div className="flex justify-between items-center">
                       <h4 className="font-medium">ข้อมูลชุดที่ {index + 1}</h4>
                     
@@ -1413,8 +1413,8 @@ export default function CreateSystem() {
                         <label className="block text-sm font-medium text-gray-100 mb-2">
                           Production Unit
                         </label>
-                        <div className={`grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 border rounded-md ${
-                          errors[`productionUnit-${index}`] ? 'border-red-500' : 'border-gray-600  text-gray-100'
+                        <div className={`grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 rounded-md ${
+                          errors[`productionUnit-${index}`] ? 'border-red-500' : 'bg-[rgb(32,32,31)] text-gray-100'
                         }`}>
                           {PRODUCTION_UNIT_OPTIONS.map((option) => (
                             <Checkbox3d key={option}>
@@ -1463,12 +1463,12 @@ export default function CreateSystem() {
             {currentStep === 3 && (
               <motion.div className="space-y-4" variants={fadeInUp}>
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-100 border-b pb-2">
+                  <h3 className="text-lg font-medium text-gray-100">
                     ข้อมูลการเชื่อมต่อ
                   </h3>
                 </div>
                 {formData.connectionInfo.map((conn, index) => (
-                  <div key={index} className="space-y-4 border p-4 rounded-lg">
+                  <div key={index} className="space-y-4 bg-[rgb(32,32,31)] p-4 rounded-lg">
                     <div className="flex justify-between items-center">
                       <h4 className="font-medium text-gray-100">
                         Server Name: {formData.environmentInfo[index]?.serverName || 'N/A'}
@@ -1694,12 +1694,12 @@ export default function CreateSystem() {
             {currentStep === 4 && (
               <motion.div className="space-y-4" variants={fadeInUp}>
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-100 border-b pb-2">
+                  <h3 className="text-lg font-medium text-gray-100">
                     ข้อมูลความปลอดภัย
                   </h3>
                 </div>
                 {formData.securityInfo.map((security, index) => (
-                  <div key={index} className="space-y-4 border p-4 rounded-lg">
+                  <div key={index} className="space-y-4 bg-[rgb(32,32,31)] p-4 rounded-lg">
                     <div className="flex justify-between items-center">
                       <h4 className="font-medium text-gray-100">
                         Server Name: {formData.environmentInfo[index]?.serverName || 'N/A'}

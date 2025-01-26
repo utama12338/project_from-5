@@ -903,85 +903,85 @@ export default function CreateSystem() {
                     ข้อมูลสภาพแวดล้อม - {formData.systemName || 'ไม่ระบุชื่อระบบ'}
                   </h3>
                   
-                 
+                                    
 
-<motion.button
-  type="button"
-  onClick={addNewEntries}
-  className="group px-4 py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 
-    text-white rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700
-    transform transition-all duration-200 hover:shadow-xl
-    flex items-center space-x-2 font-medium"
-  variants={buttonVariants}
-  whileHover="hover"
-  whileTap="tap"
->
-  <motion.svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    className="h-5 w-5"
-    fill="none" 
-    viewBox="0 0 24 24" 
-    stroke="currentColor"
-    variants={iconVariants}
-  >
-    <path 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      strokeWidth={2} 
-      d="M12 4v16m8-8H4" 
-    />
-  </motion.svg>
-  <span>เพิ่มข้อมูล</span>
-</motion.button>
+                    <motion.button
+                      type="button"
+                      onClick={addNewEntries}
+                      className="group px-4 py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 
+                        text-white rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700
+                        transform transition-all duration-200 hover:shadow-xl
+                        flex items-center space-x-2 font-medium"
+                      variants={buttonVariants}
+                      whileHover="hover"
+                      whileTap="tap"
+                    >
+                      <motion.svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className="h-5 w-5"
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                        variants={iconVariants}
+                      >
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          strokeWidth={2} 
+                          d="M12 4v16m8-8H4" 
+                        />
+                      </motion.svg>
+                      <span>เพิ่มข้อมูล</span>
+                    </motion.button>
                 </div>
                 {formData.environmentInfo.map((env, index) => (
                   <div key={index} className="space-y-4 bg-[rgb(32,32,31)] p-4 rounded-lg">
                     <div className="flex justify-between items-center">
                       <h4 className="font-medium">ข้อมูลชุดที่ {index + 1}</h4>
-                    
-<motion.button
-  type="button"
-  onClick={() => removeEntries(index)}
-  className="group px-3 py-2 bg-gradient-to-r from-red-500 to-rose-600 
-    text-white rounded-lg shadow-md hover:from-red-600 hover:to-rose-700
-    transform transition-all duration-200 hover:shadow-lg 
-    flex items-center space-x-2"
-  variants={deleteButtonVariants}
-  whileHover="hover"
-  whileTap="tap"
->
-  <motion.svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    className="h-5 w-5" 
-    fill="none" 
-    viewBox="0 0 24 24" 
-    stroke="currentColor"
-    variants={deleteIconVariants}
-  >
-    <path 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      strokeWidth={2} 
-      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m4-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" 
-    />
-  </motion.svg>
-  <span>ลบ</span>
-</motion.button>
+                                              
+                          <motion.button
+                            type="button"
+                            onClick={() => removeEntries(index)}
+                            className="group px-3 py-2 bg-gradient-to-r from-red-500 to-rose-600 
+                              text-white rounded-lg shadow-md hover:from-red-600 hover:to-rose-700
+                              transform transition-all duration-200 hover:shadow-lg 
+                              flex items-center space-x-2"
+                            variants={deleteButtonVariants}
+                            whileHover="hover"
+                            whileTap="tap"
+                          >
+                            <motion.svg 
+                              xmlns="http://www.w3.org/2000/svg" 
+                              className="h-5 w-5" 
+                              fill="none" 
+                              viewBox="0 0 24 24" 
+                              stroke="currentColor"
+                              variants={deleteIconVariants}
+                            >
+                              <path 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round" 
+                                strokeWidth={2} 
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m4-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" 
+                              />
+                            </motion.svg>
+                            <span>ลบ</span>
+                          </motion.button>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
 
                         <StyledWrapper>
                         <ModernDropdown
-  options={ENVIRONMENT_OPTIONS}
-  value={env.environment}
-  onChange={(value) => handleEnvironmentChange({
-    target: { name: 'environment', value }
-  }, index)}
-  label="Environment"
-  required
-  placeholder="Select Environment"
-/>
+                              options={ENVIRONMENT_OPTIONS}
+                              value={env.environment}
+                              onChange={(value) => handleEnvironmentChange({
+                                target: { name: 'environment', value }
+                              }, index)}
+                              label="Environment"
+                              required
+                              placeholder="Select Environment"
+                            />
                         </StyledWrapper>
                         {errors[`environment-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`environment-${index}`]}</p>
@@ -1044,6 +1044,7 @@ export default function CreateSystem() {
                         {errors[`serverType-${index}`] && (
                           <p className="mt-1 text-sm text-red-600">{errors[`serverType-${index}`]}</p>
                         )}
+                        
                       </div>
 
                       <div>

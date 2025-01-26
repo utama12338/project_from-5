@@ -52,6 +52,9 @@ export interface FormData {
     certificateExpireDate: string;
     backupPolicy: string;
     downtimeAllowed: string;
+    centralizeLog: string;
+    setupAgentPatch: string;
+    internetFacing: string;
   }>;
 }
 
@@ -166,6 +169,15 @@ export const validateForm = (step: number, formData: FormData): ValidationErrors
       }
       if (!security.downtimeAllowed.trim()) {
         newErrors[`downtimeAllowed-${index}`] = 'กรุณากรอก Downtime Allowed';
+      }
+      if (!security.centralizeLog.trim()) {
+        newErrors[`centralizeLog-${index}`] = 'กรุณากรอก Downtime Allowed';
+      }
+      if (!security.setupAgentPatch.trim()) {
+        newErrors[`setupAgentPatch-${index}`] = 'กรุณากรอก Downtime Allowed';
+      }
+      if (!security.internetFacing.trim()) {
+        newErrors[`internetFacing-${index}`] = 'กรุณากรอก Downtime Allowed';
       }
     });
   }

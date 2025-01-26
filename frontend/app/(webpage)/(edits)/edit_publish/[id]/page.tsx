@@ -554,6 +554,7 @@ const renderEnvironmentInfo = () => (
             value={env.environment}
             onChange={(value) => updateEnvironmentInfo(index, 'environment', value)}
             options={ENVIRONMENT_OPTIONS}
+            error={errors[`environment-${index}`]}
           />
           <FormField 
             label="Server Name" 
@@ -572,18 +573,21 @@ const renderEnvironmentInfo = () => (
             value={env.serverType}
             onChange={(value) => updateEnvironmentInfo(index, 'serverType', value)}
             options={SERVER_TYPE_OPTIONS}
+            error={errors[`serverType-${index}`]}
           />
           <FormFieldOption
             label="Server Role"
             value={env.serverRole}
             onChange={(value) => updateEnvironmentInfo(index, 'serverRole', value)}
             options={SERVER_ROLE_OPTIONS}
+            error={errors[`serverRole-${index}`]}
           />
           <FormFieldOption
             label="Server Duty"
             value={env.serverDuty}
             onChange={(value) => updateEnvironmentInfo(index, 'serverDuty', value)}
             options={SERVER_DUTY_OPTIONS}
+            error={errors[`serverDuty-${index}`]}
           />
           <FormField 
             label="ฐานข้อมูล" 
@@ -638,18 +642,21 @@ const renderEnvironmentInfo = () => (
             value={env.dr}
             onChange={(value) => updateEnvironmentInfo(index, 'dr', value)}
             options={['DR', 'DC']}
+            error={errors[`dr-${index}`]}
           />
           <FormFieldOption
             label="Join Domain"
             value={env.joinDomain}
             onChange={(value) => updateEnvironmentInfo(index, 'joinDomain', value)}
             options={['YES', 'NO']}
+            error={errors[`joinDomain-${index}`]}
           />
           <FormFieldOption
             label="Windows Cluster"
             value={env.windowsCluster}
             onChange={(value) => updateEnvironmentInfo(index, 'windowsCluster', value)}
             options={['YES', 'NO']}
+            error={errors[`windowsCluster-${index}`]}
           />
             <FormFieldOption
               label="Production Unit"
@@ -712,84 +719,98 @@ const renderConnectionInfo = () => (
             value={conn.ad}
             onChange={(value) => updateConnectionInfo(index, 'ad', value)}
             options={['YES', 'NO']}
+            error={errors[`ad-${index}`]}
           />
           <FormFieldOption 
             label="DNS" 
             value={conn.dns}
             onChange={(value) => updateConnectionInfo(index, 'dns', value)}
             options={['YES', 'NO']}
+            error={errors[`dns-${index}`]}
           />
           <FormFieldOption 
             label="TPAM" 
             value={conn.tpam}
             onChange={(value) => updateConnectionInfo(index, 'tpam', value)}
             options={['YES', 'NO']}
+            error={errors[`tpam-${index}`]}
           />
           <FormFieldOption 
             label="FIM" 
             value={conn.fim}
             onChange={(value) => updateConnectionInfo(index, 'fim', value)}
             options={['YES', 'NO']}
+            error={errors[`fim-${index}`]}
           />
           <FormFieldOption 
             label="FTP Server" 
             value={conn.ftpServer}
             onChange={(value) => updateConnectionInfo(index, 'ftpServer', value)}
             options={['YES', 'NO']}
+            error={errors[`ftpServer-${index}`]}
           />
           <FormFieldOption 
             label="Email SMTP" 
             value={conn.emailSmtp}
             onChange={(value) => updateConnectionInfo(index, 'emailSmtp', value)}
             options={['YES', 'NO']}
+            error={errors[`emailSmtp-${index}`]}
           />
           <FormFieldOption 
             label="API Management" 
             value={conn.apiManagement}
             onChange={(value) => updateConnectionInfo(index, 'apiManagement', value)}
             options={['YES', 'NO']}
+                error={errors[`apiManagement-${index}`]}
           />
           <FormFieldOption 
             label="SNMP" 
             value={conn.snmp}
             onChange={(value) => updateConnectionInfo(index, 'snmp', value)}
             options={['YES', 'NO']}
+              error={errors[`snmp-${index}`]}
           />
           <FormFieldOption 
             label="ADFS" 
             value={conn.adfs}
             onChange={(value) => updateConnectionInfo(index, 'adfs', value)}
             options={['YES', 'NO']}
+            error={errors[`adfs-${index}`]}
           />
           <FormFieldOption 
             label="NTP" 
             value={conn.ntp}
             onChange={(value) => updateConnectionInfo(index, 'ntp', value)}
             options={['YES', 'NO']}
+            error={errors[`ntp-${index}`]}
           />
           <FormFieldOption 
             label="Netka" 
             value={conn.netka}
             onChange={(value) => updateConnectionInfo(index, 'netka', value)}
             options={['YES', 'NO']}
+            error={errors[`netka-${index}`]}
           />
           <FormFieldOption 
             label="FTP GoAnywhere MFT Server" 
             value={conn.ftpGoAnywhereMFTServer}
             onChange={(value) => updateConnectionInfo(index, 'ftpGoAnywhereMFTServer', value)}
             options={['YES', 'NO']}
+            error={errors[`ftpGoAnywhereMFTServer-${index}`]}
           />
           <FormFieldOption 
             label="SMS" 
             value={conn.sms}
             onChange={(value) => updateConnectionInfo(index, 'sms', value)}
             options={['YES', 'NO']}
+            error={errors[`sms-${index}`]}
           />
           <FormFieldOption 
             label="DV" 
             value={conn.dv}
             onChange={(value) => updateConnectionInfo(index, 'dv', value)}
             options={['YES', 'NO']}
+            error={errors[`dv-${index}`]}
           />
         </div>
       </div>
@@ -849,18 +870,21 @@ const renderSecurityInfo = () => (
             value={security.centralizeLog}
             onChange={(value) => updateSecurityInfo(index, 'centralizeLog', value)}
             options={['YES', 'NO']}
+            error={errors[`centralizeLog-${index}`]}
           />
           <FormFieldOption
             label="Setup Agent Patch"
             value={security.setupAgentPatch}
             onChange={(value) => updateSecurityInfo(index, 'setupAgentPatch', value)}
             options={['YES', 'NO']}
+            error={errors[`setupAgentPatch-${index}`]}
           />
           <FormFieldOption
             label="Internet Facing"
             value={security.internetFacing}
             onChange={(value) => updateSecurityInfo(index, 'internetFacing', value)}
             options={['YES', 'NO']}
+            error={errors[`internetFacing-${index}`]}
           />
         </div>
       </div>

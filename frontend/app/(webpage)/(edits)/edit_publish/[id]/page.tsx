@@ -12,7 +12,8 @@ import { api } from '../../../../services/api';
 import { validateForm, ValidationErrors } from '../../../../utils/validation';
 import Swal from 'sweetalert2';
 import { colors, shadows, transitions } from '../../../../styles/theme';
-import styled from 'styled-components';
+
+import Agenda from '../../../../components/edit_publish/agenda';
 
 const ENVIRONMENT_OPTIONS = ['DEV', 'SIT', 'UAT', 'PreProd', 'Prod'];
 const SERVER_TYPE_OPTIONS = [
@@ -164,12 +165,6 @@ const defaultSystemData: SystemData = {
   }]
 };
 
-const tabs = [
-  { id: 'system', label: 'ข้อมูลระบบ' },
-  { id: 'environment', label: 'สภาพแวดล้อม' },
-  { id: 'connection', label: 'การเชื่อมต่อ' },
-  { id: 'security', label: 'ความปลอดภัย' }
-];
 
 const FormField = ({ 
   label, 
@@ -930,22 +925,7 @@ const renderSecurityInfo = () => (
           </div>
         </div>
 
-        <div className="mb-6"> {/* Remove border-b border-gray-700 */}
-          <nav className="flex -mb-px">
-            {tabs.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                style={{ 
-                  color: activeTab === tab.id ? colors.button.primary.background : colors.text.secondary
-                }}
-                className={`py-4 px-6 font-medium text-sm transition-colors`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </nav>
-        </div>
+        <Agenda activeTab={activeTab} setActiveTab={setActiveTab} />
 
         <AnimatePresence>
           {activeTab === 'system' && (

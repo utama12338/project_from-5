@@ -1,9 +1,13 @@
-'use client'
+"use client"
 import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Share2, Save,Plus } from 'lucide-react';
-import { useParams,useRouter } from 'next/navigation';
+import { Share2, Save, Plus } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
+import StyledWrapper from '../../../../components/neoninput';
+import ModernDropdown from '../../../../components/ModernDropdown';
+import CustomDatePicker from '../../../../components/CustomDatePicker';
+import Checkbox3d from '../../../../components/checkbox3d';
 
 const ENVIRONMENT_OPTIONS = ['DEV', 'SIT', 'UAT', 'PreProd', 'Prod'];
 const SERVER_TYPE_OPTIONS = [
@@ -171,21 +175,22 @@ const FormField = ({
   label: string; 
   value: string; 
   onChange?: (value: string) => void;
- 
 }) => (
   <div className="mb-4">
-    <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
-    <input 
-      type="text"
-      className="w-full rounded-md border border-gray-300 shadow-sm p-2 
-                 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                 hover:border-gray-400 transition-colors"
-      value={value || ''}
-      onChange={(e) => onChange?.(e.target.value)}
-    />
+    <label className="block text-sm font-medium text-gray-100 mb-2">{label}</label>
+    <StyledWrapper>
+      <input 
+        type="text"
+        className="w-full rounded-md border-none bg-transparent text-white p-2 
+                focus:ring-2 focus:ring-pink-500 
+                hover:border-gray-400 transition-colors"
+        value={value || ''}
+        onChange={(e) => onChange?.(e.target.value)}
+      />
+    </StyledWrapper>
   </div>
 );
-// option
+
 interface FormFieldOptionProps {
   label: string;
   value: string | string[];
@@ -202,29 +207,20 @@ const FormFieldOption = ({
   multiple = false
 }: FormFieldOptionProps) => (
   <div className="mb-4">
-    <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+    <label className="block text-sm font-medium text-gray-100 mb-2">{label}</label>
     {multiple ? (
-      <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 border rounded-md">
-        {options.map((option) => {
-          const isSelected = Array.isArray(value) 
-            ? value.includes(option)
-            : typeof value === 'string' 
-              ? value.split(',').includes(option)
-              : false;
-
-          return (
-            <div key={option} className="flex items-center space-x-2">
+      <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 rounded-md bg-[rgb(32,32,31)]">
+        {options.map((option) => (
+          <Checkbox3d key={option}>
+            <label className="container flex items-center space-x-2">
               <input
                 type="checkbox"
-                id={`${label}-${option}`}
-                checked={isSelected}
+                checked={Array.isArray(value) ? value.includes(option) : value.split(',').includes(option)}
                 onChange={(e) => {
                   if (onChange) {
                     const currentValues = Array.isArray(value) 
                       ? value 
-                      : typeof value === 'string'
-                        ? value.split(',').filter(Boolean)
-                        : [];
+                      : value.split(',').filter(Boolean);
                     
                     const newValues = e.target.checked
                       ? [...currentValues, option]
@@ -233,36 +229,29 @@ const FormFieldOption = ({
                     onChange(newValues);
                   }
                 }}
-                className="h-4 w-4 focus:ring-indigo-500 border-gray-300 rounded text-indigo-600"
               />
-              <label htmlFor={`${label}-${option}`} className="text-sm text-gray-700">
-                {option}
-              </label>
-            </div>
-          );
-        })}
+              <svg viewBox="0 0 64 64" height="24" width="24">
+                <path d="M 0 16 V 56 A 8 8 0 0 0 8 64 H 56 A 8 8 0 0 0 64 56 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16" className="path"/>
+              </svg>
+              <span className="text-sm text-gray-100 ml-2">{option}</span>
+            </label>
+          </Checkbox3d>
+        ))}
       </div>
     ) : (
-      <select
-        className="w-full rounded-md border border-gray-300 shadow-sm p-2 
-                   focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                   hover:border-gray-400 transition-colors"
+      <ModernDropdown
+        options={options}
         value={value as string}
-        onChange={(e) => onChange?.(e.target.value)}
-      >
-        <option value="">Select {label}</option>
-        {options.map((option, index) => (
-          <option key={index} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
+        onChange={(value) => onChange?.(value)}
+
+        // label={label} label ที่ซ้ำซ้อนออก
+        required
+        placeholder={`Select ${label}`}
+      />
     )}
   </div>
 );
 
-
-// option
 const updateArrayItemField = (array: any[], index: number, field: string, value: string | string[]) => {
   return array.map((item, i) => {
     if (i === index) {
@@ -281,8 +270,6 @@ export default function EditSystem() {
   const { id } = useParams(); 
   const router = useRouter();
   
-
-  
   const fetchSystemData = useCallback(async () => {
     try {
       const response = await axios.get(`http://localhost:4000/from/getSystemById/${id}`);
@@ -300,8 +287,6 @@ export default function EditSystem() {
       setLoading(false);
     }
   }, [id]);
-  
-  // ...existing code...
 
   useEffect(() => {
     fetchSystemData();
@@ -323,13 +308,9 @@ export default function EditSystem() {
         },
       });
       
-      // ตรวจสอบว่า response มีสถานะ 200
       if (response.status === 200) {
         console.log('Response จาก API:', response);
         alert('บันทึกข้อมูลสำเร็จ');
-        
-        // หลังจากบันทึกสำเร็จให้ทำการนำทาง
-        
         return router.push('/forme');
       } else {
         throw new Error('ไม่สามารถบันทึกข้อมูลได้');
@@ -340,8 +321,6 @@ export default function EditSystem() {
     }
   };
   
-  
-
   const updateSystemField = (field: keyof SystemData, value: string | string[]) => {
     setSystemData(prev => ({
       ...prev,
@@ -354,11 +333,9 @@ export default function EditSystem() {
       ...prev,
       environmentInfo: prev.environmentInfo.map((item, i) => {
         if (i === index) {
-          // เก็บค่า array โดยตรงสำหรับ productionUnit
           if (field === 'productionUnit') {
             return { ...item, [field]: value };
           }
-          // สำหรับฟิลด์อื่นๆ ยังคงใช้การแปลงเป็น string
           const finalValue = Array.isArray(value) ? value.join(',') : value;
           return { ...item, [field]: finalValue };
         }
@@ -381,71 +358,67 @@ export default function EditSystem() {
     }));
   };
 
-  // แก้ไขฟังก์ชัน addEnvironmentInfo ให้เพิ่มข้อมูลทั้งหมดพร้อมกัน
-const addEnvironmentInfo = () => {
-  setSystemData(prev => ({
-    ...prev,
-    environmentInfo: [...prev.environmentInfo, {
-      environment: '',
-      serverName: '',
-      ip: '',
-      serverType: '',
-      serverRole: '',
-      serverDuty: '',
-      database: '',
-      application: '',
-      operatingSystem: '',
-      servicePack: '',
-      build: '',
-      cpu: '',
-      ram: '',
-      disk: '',
-      dr: '',
-      joinDomain: '',
-      windowsCluster: '',
-      productionUnit: ''
-    }],
-    // เพิ่ม connectionInfo พร้อมกัน
-    connectionInfo: [...prev.connectionInfo, {
-      ad: '',
-      adfs: '',
-      dns: '',
-      ntp: '',
-      tpam: '',
-      netka: '',
-      fim: '',
-      ftpServer: '',
-      ftpGoAnywhereMFTServer: '',
-      emailSmtp: '',
-      sms: '',
-      apiManagement: '',
-      dv: '',
-      snmp: ''
-    }],
-    // เพิ่ม securityInfo พร้อมกัน
-    securityInfo: [...prev.securityInfo, {
-      urlWebsite: '',
-      certificateExpireDate: '',
-      backupPolicy: '',
-      downtimeAllowed: '',
-      centralizeLog: '',
-      setupAgentPatch: '',
-      internetFacing: ''
-    }]
-  }));
-};
+  const addEnvironmentInfo = () => {
+    setSystemData(prev => ({
+      ...prev,
+      environmentInfo: [...prev.environmentInfo, {
+        environment: '',
+        serverName: '',
+        ip: '',
+        serverType: '',
+        serverRole: '',
+        serverDuty: '',
+        database: '',
+        application: '',
+        operatingSystem: '',
+        servicePack: '',
+        build: '',
+        cpu: '',
+        ram: '',
+        disk: '',
+        dr: '',
+        joinDomain: '',
+        windowsCluster: '',
+        productionUnit: ''
+      }],
+      connectionInfo: [...prev.connectionInfo, {
+        ad: '',
+        adfs: '',
+        dns: '',
+        ntp: '',
+        tpam: '',
+        netka: '',
+        fim: '',
+        ftpServer: '',
+        ftpGoAnywhereMFTServer: '',
+        emailSmtp: '',
+        sms: '',
+        apiManagement: '',
+        dv: '',
+        snmp: ''
+      }],
+      securityInfo: [...prev.securityInfo, {
+        urlWebsite: '',
+        certificateExpireDate: '',
+        backupPolicy: '',
+        downtimeAllowed: '',
+        centralizeLog: '',
+        setupAgentPatch: '',
+        internetFacing: ''
+      }]
+    }));
+  };
 
-// แก้ไขฟังก์ชัน removeEnvironmentInfo ให้ลบข้อมูลทั้งหมดพร้อมกัน
-const removeEnvironmentInfo = (index: number) => {
-  setSystemData(prev => ({
-    ...prev,
-    environmentInfo: prev.environmentInfo.filter((_, i) => i !== index),
-    connectionInfo: prev.connectionInfo.filter((_, i) => i !== index),
-    securityInfo: prev.securityInfo.filter((_, i) => i !== index)
-  }));
-};
+  const removeEnvironmentInfo = (index: number) => {
+    setSystemData(prev => ({
+      ...prev,
+      environmentInfo: prev.environmentInfo.filter((_, i) => i !== index),
+      connectionInfo: prev.connectionInfo.filter((_, i) => i !== index),
+      securityInfo: prev.securityInfo.filter((_, i) => i !== index)
+    }));
+  };
 
-const renderSystemInfo = () => (
+  const renderSystemInfo = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <FormField 
         label="ชื่อระบบ" 
@@ -456,7 +429,7 @@ const renderSystemInfo = () => (
         label="ประเภทการพัฒนา" 
         value={systemData.developType} 
         onChange={(value) => updateSystemField('developType', value)}
-        options={['IN HOUSE', 'OUTSOURCE']} // Ensure options are correctly passed
+        options={['IN HOUSE', 'OUTSOURCE']}
       />
       <FormField 
         label="เลขที่สัญญา" 
@@ -483,163 +456,155 @@ const renderSystemInfo = () => (
         options={['ฝรล.', 'ส่วนระบบงานสนับสนุน','ระบบสนับสนุนนโยบายรัฐ','ธนรัตน์ เกรอด']}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-    {/* ...existing fields... */}
-    <FormFieldOption
-      label="Computer Backup"
-      value={systemData.computerbackup}
-      onChange={(value) => updateSystemField('computerbackup', value)}
-      options={['YES', 'NO']}
-    />
-  </div>
-      {/* <FormField 
-        label="สถานะ" 
-        value={systemData.draftStatus} 
-        onChange={(value) => updateSystemField('draftStatus', value)}
-      /> */}
-    </div>
-);
-
-const renderEnvironmentInfo = () => (
-    <div className="space-y-8">
-      {systemData.environmentInfo.map((env, index) => (
-        <div key={index} className="bg-gray-50 p-6 rounded-lg shadow-sm">
-          <h3 className="text-lg font-medium mb-6 text-center text-gray-800">
-            สภาพแวดล้อม {index + 1} : {systemData.systemName}
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormFieldOption
-              label="Environment"
-              value={env.environment}
-              onChange={(value) => updateEnvironmentInfo(index, 'environment', value)}
-              options={ENVIRONMENT_OPTIONS}
-            />
-            <FormField 
-              label="Server Name" 
-              value={env.serverName}
-              onChange={(value) => updateEnvironmentInfo(index, 'serverName', value)}
-            />
-            <FormField 
-              label="IP" 
-              value={env.ip}
-              onChange={(value) => updateEnvironmentInfo(index, 'ip', value)}
-            />
-            <FormFieldOption
-              label="Server Type"
-              value={env.serverType}
-              onChange={(value) => updateEnvironmentInfo(index, 'serverType', value)}
-              options={SERVER_TYPE_OPTIONS}
-            />
-            <FormFieldOption
-              label="Server Role"
-              value={env.serverRole}
-              onChange={(value) => updateEnvironmentInfo(index, 'serverRole', value)}
-              options={SERVER_ROLE_OPTIONS}
-            />
-            <FormFieldOption
-              label="Server Duty"
-              value={env.serverDuty}
-              onChange={(value) => updateEnvironmentInfo(index, 'serverDuty', value)}
-              options={SERVER_DUTY_OPTIONS}
-            />
-            <FormField 
-              label="ฐานข้อมูล" 
-              value={env.database}
-              onChange={(value) => updateEnvironmentInfo(index, 'database', value)}
-            />
-              <FormField 
-              label="แอปพลิเคชัน" 
-              value={env.application}
-              onChange={(value) => updateEnvironmentInfo(index, 'application', value)}
-            />
-              <FormField 
-              label="ระบบปฏิบัติการ" 
-              value={env.operatingSystem}
-              onChange={(value) => updateEnvironmentInfo(index, 'operatingSystem', value)}
-            />
-               <FormField 
-              label="Service Pack" 
-              value={env.servicePack}
-              onChange={(value) => updateEnvironmentInfo(index, 'servicePack', value)}
-            />
-               <FormField 
-              label="Build" 
-              value={env.build}
-              onChange={(value) => updateEnvironmentInfo(index, 'build', value)}
-            />
-                <FormField 
-              label="CPU" 
-              value={env.cpu}
-              onChange={(value) => updateEnvironmentInfo(index, 'cpu', value)}
-            />
-               <FormField 
-              label="RAM" 
-              value={env.ram}
-              onChange={(value) => updateEnvironmentInfo(index, 'ram', value)}
-            />
-                <FormField 
-              label="Disk" 
-              value={env.disk}
-              onChange={(value) => updateEnvironmentInfo(index, 'disk', value)}
-            />
-
-            <FormFieldOption
-              label="DR"
-              value={env.dr}
-              onChange={(value) => updateEnvironmentInfo(index, 'dr', value)}
-              options={['DR', 'DC']}
-            />
-            <FormFieldOption
-              label="Join Domain"
-              value={env.joinDomain}
-              onChange={(value) => updateEnvironmentInfo(index, 'joinDomain', value)}
-              options={['YES', 'NO']}
-            />
-            <FormFieldOption
-              label="Windows Cluster"
-              value={env.windowsCluster}
-              onChange={(value) => updateEnvironmentInfo(index, 'windowsCluster', value)}
-              options={['YES', 'NO']}
-            />
-                        <FormFieldOption
-              label="Production Unit"
-              value={Array.isArray(env.productionUnit) 
-                ? env.productionUnit 
-                : env.productionUnit.split(',').filter(Boolean)}
-              onChange={(value) => {
-                // ส่งค่าเป็น array โดยตรง ไม่ต้องแปลงเป็น string
-                updateEnvironmentInfo(index, 'productionUnit', value);
-              }}
-              options={PRODUCTION_UNIT_OPTIONS}
-              multiple={true}
-            />
-          </div>
-          <div className="flex justify-end mt-4">
-            <button
-              onClick={() => removeEnvironmentInfo(index)}
-              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
-            >
-              ลบ
-            </button>
-          </div>
-        </div>
-      ))}
-      <div className="flex justify-end mt-4">
-      <button
-        onClick={addEnvironmentInfo}
-         className="flex items-center justify-center w-full py-2 mb-4 bg-blue-100
-            hover:bg-blue-200 rounded-md focus:outline-none"
-        >
-          <Plus className="w-5 h-5 text-blue-600" />
-        </button>
+        <FormFieldOption
+          label="Computer Backup"
+          value={systemData.computerbackup}
+          onChange={(value) => updateSystemField('computerbackup', value)}
+          options={['YES', 'NO']}
+        />
       </div>
     </div>
+  );
+
+const renderEnvironmentInfo = () => (
+  <div className="space-y-8">
+    {systemData.environmentInfo.map((env, index) => (
+      <div key={index} className="bg-[rgb(27,27,26)] p-6 rounded-lg shadow-sm">
+        <h3 className="text-lg font-medium mb-6 text-center text-gray-100">
+          สภาพแวดล้อม {index + 1} : {systemData.systemName}
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormFieldOption
+            label="Environment"
+            value={env.environment}
+            onChange={(value) => updateEnvironmentInfo(index, 'environment', value)}
+            options={ENVIRONMENT_OPTIONS}
+          />
+          <FormField 
+            label="Server Name" 
+            value={env.serverName}
+            onChange={(value) => updateEnvironmentInfo(index, 'serverName', value)}
+          />
+          <FormField 
+            label="IP" 
+            value={env.ip}
+            onChange={(value) => updateEnvironmentInfo(index, 'ip', value)}
+          />
+          <FormFieldOption
+            label="Server Type"
+            value={env.serverType}
+            onChange={(value) => updateEnvironmentInfo(index, 'serverType', value)}
+            options={SERVER_TYPE_OPTIONS}
+          />
+          <FormFieldOption
+            label="Server Role"
+            value={env.serverRole}
+            onChange={(value) => updateEnvironmentInfo(index, 'serverRole', value)}
+            options={SERVER_ROLE_OPTIONS}
+          />
+          <FormFieldOption
+            label="Server Duty"
+            value={env.serverDuty}
+            onChange={(value) => updateEnvironmentInfo(index, 'serverDuty', value)}
+            options={SERVER_DUTY_OPTIONS}
+          />
+          <FormField 
+            label="ฐานข้อมูล" 
+            value={env.database}
+            onChange={(value) => updateEnvironmentInfo(index, 'database', value)}
+          />
+          <FormField 
+            label="แอปพลิเคชัน" 
+            value={env.application}
+            onChange={(value) => updateEnvironmentInfo(index, 'application', value)}
+          />
+          <FormField 
+            label="ระบบปฏิบัติการ" 
+            value={env.operatingSystem}
+            onChange={(value) => updateEnvironmentInfo(index, 'operatingSystem', value)}
+          />
+          <FormField 
+            label="Service Pack" 
+            value={env.servicePack}
+            onChange={(value) => updateEnvironmentInfo(index, 'servicePack', value)}
+          />
+          <FormField 
+            label="Build" 
+            value={env.build}
+            onChange={(value) => updateEnvironmentInfo(index, 'build', value)}
+          />
+          <FormField 
+            label="CPU" 
+            value={env.cpu}
+            onChange={(value) => updateEnvironmentInfo(index, 'cpu', value)}
+          />
+          <FormField 
+            label="RAM" 
+            value={env.ram}
+            onChange={(value) => updateEnvironmentInfo(index, 'ram', value)}
+          />
+          <FormField 
+            label="Disk" 
+            value={env.disk}
+            onChange={(value) => updateEnvironmentInfo(index, 'disk', value)}
+          />
+          <FormFieldOption
+            label="DR"
+            value={env.dr}
+            onChange={(value) => updateEnvironmentInfo(index, 'dr', value)}
+            options={['DR', 'DC']}
+          />
+          <FormFieldOption
+            label="Join Domain"
+            value={env.joinDomain}
+            onChange={(value) => updateEnvironmentInfo(index, 'joinDomain', value)}
+            options={['YES', 'NO']}
+          />
+          <FormFieldOption
+            label="Windows Cluster"
+            value={env.windowsCluster}
+            onChange={(value) => updateEnvironmentInfo(index, 'windowsCluster', value)}
+            options={['YES', 'NO']}
+          />
+          <FormFieldOption
+            label="Production Unit"
+            value={Array.isArray(env.productionUnit) 
+              ? env.productionUnit 
+              : env.productionUnit.split(',').filter(Boolean)}
+            onChange={(value) => {
+              updateEnvironmentInfo(index, 'productionUnit', value);
+            }}
+            options={PRODUCTION_UNIT_OPTIONS}
+            multiple={true}
+          />
+        </div>
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={() => removeEnvironmentInfo(index)}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+          >
+            ลบ
+          </button>
+        </div>
+      </div>
+    ))}
+    <div className="flex justify-end mt-4">
+      <button
+        onClick={addEnvironmentInfo}
+        className="flex items-center justify-center w-full py-2 mb-4 bg-blue-100
+          hover:bg-blue-200 rounded-md focus:outline-none"
+      >
+        <Plus className="w-5 h-5 text-blue-600" />
+      </button>
+    </div>
+  </div>
 );
 
 const renderConnectionInfo = () => (
   <div className="space-y-8">
     {systemData.connectionInfo.map((conn, index) => (
-      <div key={index} className="bg-gray-50 p-6 rounded-lg shadow-sm">
-        <h3 className="text-lg font-medium mb-6 text-center text-gray-800">
+      <div key={index} className="bg-[rgb(27,27,26)] p-6 rounded-lg shadow-sm">
+        <h3 className="text-lg font-medium mb-6 text-center text-gray-100">
           ข้อมูลการเชื่อมต่อ {index + 1} : {systemData.environmentInfo[index]?.serverName || 'ไม่มีชื่อ'}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -736,8 +701,8 @@ const renderConnectionInfo = () => (
 const renderSecurityInfo = () => (
   <div className="space-y-6">
     {systemData.securityInfo.map((security, index) => (
-      <div key={index} className="bg-gray-50 p-6 rounded-lg shadow-sm">
-        <h3 className="text-lg font-medium mb-6 text-center text-gray-800">
+      <div key={index} className="bg-[rgb(27,27,26)] p-6 rounded-lg shadow-sm">
+        <h3 className="text-lg font-medium mb-6 text-center text-gray-100">
           ข้อมูลความปลอดภัย {index + 1} : {systemData.environmentInfo[index]?.serverName || 'ไม่มีชื่อ'}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -747,17 +712,21 @@ const renderSecurityInfo = () => (
             onChange={(value) => updateSecurityInfo(index, 'urlWebsite', value)}
           />
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-100 mb-2">
               Certificate Expire Date
             </label>
-            <input
-              type="date"
-              className="w-full rounded-md border border-gray-300 shadow-sm p-2 
-                        focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                        hover:border-gray-400 transition-colors"
-              value={security.certificateExpireDate}
-              onChange={(e) => updateSecurityInfo(index, 'certificateExpireDate', e.target.value)}
-            />
+            <StyledWrapper style={{ position: 'relative', zIndex: 50 }}>
+              <CustomDatePicker
+                selectedDate={security.certificateExpireDate ? new Date(security.certificateExpireDate) : null}
+                onChange={(date) => {
+                  if (date) {
+                    updateSecurityInfo(index, 'certificateExpireDate', date.toISOString().split('T')[0]);
+                  }
+                }}
+                placeholder="Select expiry date"
+                required
+              />
+            </StyledWrapper>
           </div>
           <FormField 
             label="Backup Policy" 
@@ -794,106 +763,104 @@ const renderSecurityInfo = () => (
 );
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">แก้ไขระบบ</h1>
-        <div className="space-x-4">
-          <button
-            onClick={handleShare}
-            className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md
-                     hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
-          >
-            <Share2 className="w-4 h-4 mr-2" />
-            แชร์
-          </button>
-          <button
-            onClick={handleSave}
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md
-                     hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <Save className="w-4 h-4 mr-2" />
-            บันทึก
-          </button>
-        </div>
-      </div>
-      
-      {loading ? (
-        <div className="text-center py-8">
-          <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          กำลังโหลด...
-        </div>
-      ) : error ? (
-        <div className="text-center py-8 text-red-600 bg-red-50 rounded-lg">
-          {error}
-        </div>
-      ) : (
-        <>
-          <div className="border-b border-gray-200 mb-6">
-            <nav className="flex -mb-px">
-              {tabs.map(tab => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`py-4 px-6 border-b-2 font-medium text-sm transition-colors
-                    ${activeTab === tab.id 
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }
-                    focus:outline-none`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </nav>
+    <div className="min-h-screen bg-[rgb(17,17,16)] py-8">
+      <div className="container mx-auto px-4">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-white">แก้ไขระบบ</h1>
+          <div className="space-x-4">
+            <motion.button
+              onClick={handleShare}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-flex items-center px-4 py-2 bg-pink-500/10 text-pink-500 rounded-md
+                       hover:bg-pink-500/20 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            >
+              <Share2 className="w-4 h-4 mr-2" />
+              แชร์
+            </motion.button>
+            <motion.button
+              onClick={handleSave}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-flex items-center px-4 py-2 bg-pink-600 text-white rounded-md
+                       hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              บันทึก
+            </motion.button>
           </div>
-          <AnimatePresence>
-            {activeTab === 'system' && (
-              <motion.div 
+        </div>
+
+        <div className="mb-6"> {/* Remove border-b border-gray-700 */}
+          <nav className="flex -mb-px">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`py-4 px-6 font-medium text-sm transition-colors
+                  ${activeTab === tab.id 
+                    ? 'text-pink-500' // Remove border-b-2
+                    : 'text-gray-400 hover:text-gray-300'
+                  }
+                  focus:outline-none`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        <AnimatePresence>
+          {activeTab === 'system' && (
+            <motion.div 
               key="system"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.2 }}
-              >
-                {renderSystemInfo()}
-              </motion.div>
-            )}
-            {activeTab === 'environment' && (
-               <motion.div 
-               key="environment"
-               initial={{ opacity: 0, x: -20 }}
-               animate={{ opacity: 1, x: 0 }}
-               exit={{ opacity: 0, x: 20 }}
-               transition={{ duration: 0.2 }}
-              >
-                {renderEnvironmentInfo()}
-              </motion.div>
-            )}
-            {activeTab === 'connection' && (
-              <motion.div
+              className="bg-[rgb(27,27,26)] p-6 rounded-lg shadow-xl"
+            >
+              {renderSystemInfo()}
+            </motion.div>
+          )}
+          {activeTab === 'environment' && (
+            <motion.div 
+              key="environment"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+              className="bg-[rgb(27,27,26)] p-6 rounded-lg shadow-xl"
+            >
+              {renderEnvironmentInfo()}
+            </motion.div>
+          )}
+          {activeTab === 'connection' && (
+            <motion.div
               key="connection"
-               initial={{ opacity: 0, x: -20 }}
-               animate={{ opacity: 1, x: 0 }}
-               exit={{ opacity: 0, x: 20 }}
-               transition={{ duration: 0.2 }}
-              >
-                {renderConnectionInfo()}
-              </motion.div>
-            )}
-            {activeTab === 'security' && (
-               <motion.div
-               key="security"
-               initial={{ opacity: 0, x: -20 }}
-               animate={{ opacity: 1, x: 0 }}
-               exit={{ opacity: 0, x: 20 }}
-               transition={{ duration: 0.2 }}
-              >
-                {renderSecurityInfo()}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </>
-      )}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+              className="bg-[rgb(27,27,26)] p-6 rounded-lg shadow-xl"
+            >
+              {renderConnectionInfo()}
+            </motion.div>
+          )}
+          {activeTab === 'security' && (
+            <motion.div
+              key="security"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+              className="bg-[rgb(27,27,26)] p-6 rounded-lg shadow-xl"
+            >
+              {renderSecurityInfo()}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

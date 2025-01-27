@@ -10,6 +10,9 @@ import DetailViewModal from '../components/DetailViewModal';
 import { colors, shadows, transitions } from '../styles/theme';
 import AddSystemButton from '../components/button/addsystem';
 import SearchButton from '../components/button/search';
+import EditButton from '../components/button/edite';
+import DetailButton from '../components/button/detail';
+import FormBox from '../components/form/form_box';
 
 export default function SystemList() {
   const {
@@ -120,14 +123,11 @@ export default function SystemList() {
                 >
                   ดาวน์โหลด CSV ({selectedItems.length})
                 </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleBulkViewClick}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-                >
-                  ดูรายละเอียด ({selectedItems.length})
-                </motion.button>
+                <DetailButton 
+                  onClick={handleBulkViewClick} 
+                  isBulk={true} 
+                  count={selectedItems.length}
+                />
               </>
             )}
           </div>
@@ -138,97 +138,63 @@ export default function SystemList() {
           {currentSystems.map((system) => (
             <motion.div
               key={system.id}
-              style={{
-                backgroundColor: colors.background.secondary,
-                boxShadow: shadows.primary,
-                borderColor: colors.border.primary,
-              }}
-              className={`rounded-xl overflow-hidden ${
-                selectedItems.includes(system.id) ? 'ring-2' : ''
-              }`}
-              whileHover={{ 
-                scale: 1.02,
-                boxShadow: shadows.hover
-              }}
+              whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
-              {/* Card Header */}
-              <div className="px-6 py-4 flex justify-between items-center" 
-                style={{ 
-                  backgroundColor: colors.background.tertiary,
-                  borderBottomColor: colors.border.primary 
-                }}>
-                <input
-                  type="checkbox"
-                  checked={selectedItems.includes(system.id)}
-                  onChange={() => handleSelectItem(system.id)}
-                  className="rounded"
-                  style={{
-                    borderColor: colors.input.border,
-                    backgroundColor: colors.input.background
-                  }}
-                />
-                <div className="flex space-x-2">
-                  <Link
-                    href={`/edit/${system.id}`}
-                    className="p-2 text-yellow-600 hover:text-yellow-900 transition-colors"
-                  >
-                    <i className="fas fa-edit text-lg"></i>
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(system.id)}
-                    className="p-2 text-red-600 hover:text-red-900 transition-colors"
-                  >
-                    <i className="fas fa-trash text-lg"></i>
-                  </button>
-                </div>
-              </div>
-
-              {/* Card Content */}
-              <div className="p-6">
-                <h3 className="text-xl font-semibold mb-4" style={{ color: colors.text.primary }}>
-                  ชื่อระบบ: {system.systemName}
-                </h3>
-                
-                {/* Environment info with updated colors */}
-                {Array.isArray((system as { environmentInfo?: { serverName: string; environment: string; ip: string }[] }).environmentInfo) &&
+              <FormBox
+                header={`ชื่อระบบ: ${system.systemName}`}
+                rightHeaderContent={
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedItems.includes(system.id)}
+                      onChange={() => handleSelectItem(system.id)}
+                      className="rounded"
+                    />
+                    <div className="flex space-x-2">
+                      <Link
+                        href={`/edit/${system.id}`}
+                        className="p-2 text-yellow-600 hover:text-yellow-900 transition-colors"
+                      >
+                        <i className="fas fa-edit text-lg"></i>
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(system.id)}
+                        className="p-2 text-red-600 hover:text-red-900 transition-colors"
+                      >
+                        <i className="fas fa-trash text-lg"></i>
+                      </button>
+                    </div>
+                  </div>
+                }
+              >
+                <div className="space-y-4">
+                  {/* Environment info */}
+                  {Array.isArray((system as { environmentInfo?: { serverName: string; environment: string; ip: string }[] }).environmentInfo) &&
     (system as { environmentInfo?: { serverName: string; environment: string; ip: string }[] }).environmentInfo!.map(
       (env, index) => (
-                    <div key={index} className="mb-4 last:mb-0">
-                      <p className="text-sm" style={{ color: colors.text.secondary }}>
-                        <span className="font-medium">Servername:</span> {env.serverName}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        <span className="font-medium">Environment:</span> {env.environment}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        <span className="font-medium">IP server:</span> {env.ip}
-                      </p>
-                    </div>
-                  ))}
-              </div>
-
-              {/* Updated Card Footer with Edit and View Details buttons */}
-              <div className="px-6 py-4 space-y-2" 
-                style={{ 
-                  backgroundColor: colors.background.tertiary,
-                  borderTopColor: colors.border.primary 
-                }}>
-                <Link
-                  href={`/edit_publish/${system.id}`}
-                  className="w-full inline-flex justify-center items-center px-4 py-2 bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-100 transition-colors mb-2"
-                >
-                  แก้ไขข้อมูล
-                  <i className="fas fa-edit ml-2"></i>
-                </Link>
-                <button
-                  onClick={() => handleSingleSystemView(system)}
-                  className="w-full inline-flex justify-center items-center px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors"
-                >
-                  ดูรายละเอียด
-                  <i className="fas fa-arrow-right ml-2"></i>
-                </button>
-              </div>
+                      <div key={index} className="space-y-2">
+                        <p className="text-sm text-gray-300">
+                          <span className="font-medium">Servername:</span> {env.serverName}
+                        </p>
+                        <p className="text-sm text-gray-400">
+                          <span className="font-medium">Environment:</span> {env.environment}
+                        </p>
+                        <p className="text-sm text-gray-400">
+                          <span className="font-medium">IP server:</span> {env.ip}
+                        </p>
+                      </div>
+                    ))}
+                  
+                  {/* Action buttons */}
+                  <div className="space-y-2 pt-4">
+                    <Link href={`/edit_publish/${system.id}`}>
+                      <EditButton />
+                    </Link>
+                    <DetailButton onClick={() => handleSingleSystemView(system)} />
+                  </div>
+                </div>
+              </FormBox>
             </motion.div>
           ))}
         </div>

@@ -889,23 +889,42 @@ const renderSecurityInfo = () => (
 
   return (
     <div style={{ backgroundColor: colors.background.primary }} className="min-h-screen py-8">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-6">
-          <h1 style={{ color: colors.text.primary }} className="text-2xl font-bold">
+      <div className="container mx-auto px-4 max-w-[98%]">
+        <div className="text-center mb-12">
+          <motion.h1 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            style={{ 
+              color: colors.text.primary,
+              background: `linear-gradient(to right, ${colors.button.primary.background}, ${colors.button.primary.hover})`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }} 
+            className="text-4xl font-bold tracking-tight"
+          >
             แก้ไขระบบ
-          </h1>
-          <div className="space-x-4">
+          </motion.h1>
+          <motion.div 
+            initial={{ opacity: 0, width: 0 }}
+            animate={{ opacity: 1, width: "200px" }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 mx-auto mt-4 rounded-full"
+          />
+          <div className="flex justify-center mt-6 space-x-4">
             <motion.button
               onClick={handleShare}
               style={{ 
                 backgroundColor: `${colors.button.primary.background}10`,
                 color: colors.button.primary.background
               }}
-              className="inline-flex items-center px-4 py-2 rounded-md"
+              className="inline-flex items-center px-6 py-2 rounded-full shadow-lg"
               whileHover={{ 
                 backgroundColor: `${colors.button.primary.hover}20`,
-                scale: 1.05 
+                scale: 1.05,
+                boxShadow: '0 0 20px rgba(236, 72, 153, 0.3)'
               }}
+              transition={{ duration: 0.2 }}
             >
               <Share2 className="w-4 h-4 mr-2" />
               แชร์
@@ -913,11 +932,13 @@ const renderSecurityInfo = () => (
             <motion.button
               onClick={handleSave}
               style={{ backgroundColor: colors.button.primary.background }}
-              className="inline-flex items-center px-4 py-2 text-white rounded-md"
+              className="inline-flex items-center px-6 py-2 text-white rounded-full shadow-lg"
               whileHover={{ 
                 backgroundColor: colors.button.primary.hover,
-                scale: 1.05 
+                scale: 1.05,
+                boxShadow: '0 0 20px rgba(236, 72, 153, 0.5)'
               }}
+              transition={{ duration: 0.2 }}
             >
               <Save className="w-4 h-4 mr-2" />
               บันทึก

@@ -47,37 +47,39 @@ export const tabs = [
 
 const Agenda: React.FC<AgendaProps> = ({ activeTab, setActiveTab }) => {
   return (
-    <div className="mb-12">
+    <div className="mb-12 w-full overflow-hidden">
       <nav className="flex justify-center items-center relative">
-        <div className="flex gap-2 p-2 rounded-xl bg-gray-800/50 backdrop-blur-sm shadow-xl">
-          {tabs.map(tab => (
-            <motion.button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              variants={tabVariants}
-              animate={activeTab === tab.id ? "active" : "inactive"}
-              className={`
-                relative py-3 px-8 rounded-lg font-medium text-sm
-                transition-all duration-300 ease-in-out
-                hover:bg-gray-700/30
-                flex items-center gap-2
-              `}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              {tab.label}
-              <motion.div
-                className="absolute bottom-0 left-0 h-0.5 bg-pink-500"
-                variants={tabUnderlineVariants}
+        <div className="flex gap-2 p-2 rounded-xl bg-gray-800/50 backdrop-blur-sm shadow-xl overflow-x-auto max-w-full">
+          <div className="flex space-x-2 px-2">
+            {tabs.map(tab => (
+              <motion.button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                variants={tabVariants}
                 animate={activeTab === tab.id ? "active" : "inactive"}
-                initial="inactive"
-                style={{
-                  borderRadius: "2px",
-                  marginTop: "2px"
-                }}
-              />
-            </motion.button>
-          ))}
+                className={`
+                  relative py-3 px-6 rounded-lg font-medium text-sm whitespace-nowrap
+                  transition-all duration-300 ease-in-out
+                  hover:bg-gray-700/30
+                  flex items-center gap-2
+                `}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {tab.label}
+                <motion.div
+                  className="absolute bottom-0 left-0 h-0.5 bg-pink-500"
+                  variants={tabUnderlineVariants}
+                  animate={activeTab === tab.id ? "active" : "inactive"}
+                  initial="inactive"
+                  style={{
+                    borderRadius: "2px",
+                    marginTop: "2px"
+                  }}
+                />
+              </motion.button>
+            ))}
+          </div>
         </div>
         <motion.div
           className="absolute -inset-1 bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-blue-500/20 rounded-xl blur-xl"

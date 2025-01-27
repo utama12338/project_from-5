@@ -7,22 +7,41 @@ interface ButtonProps {
   children?: React.ReactNode;
   isSubmit?: boolean;
   isLoading?: boolean;
+  currentStep?: number;
+  totalSteps?: number;
 }
 
-const Button: React.FC<ButtonProps> = ({ onClick, disabled, children, isSubmit, isLoading }) => {
+const Button: React.FC<ButtonProps> = ({ 
+  onClick, 
+  disabled, 
+  children, 
+  isSubmit, 
+  isLoading,
+  currentStep = 1,
+  totalSteps = 4
+}) => {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (onClick) {
-      // Handle both async and sync click handlers
-      const result = onClick(e as any);
-      if (result instanceof Promise) {
-        result.catch(console.error);
+      if (currentStep === totalSteps) {
+        // เมื่อถึงขั้นตอนสุดท้ายจึงจะทำการ submit
+        const result = onClick(e as any);
+        if (result instanceof Promise) {
+          result.catch(console.error);
+        }
+      } else {
+        // ถ้ายังไม่ถึงขั้นตอนสุดท้าย ให้เรียก onClick แบบปกติ
+        onClick(e);
       }
     }
   };
 
   return (
     <StyledWrapper $isSubmit={isSubmit}>
-      <button onClick={handleClick} disabled={disabled || isLoading}>
+      <button 
+        onClick={handleClick} 
+        disabled={disabled || isLoading}
+        type={currentStep === totalSteps ? "submit" : "button"}
+      >
         {isLoading ? 'กำลังบันทึก...' : children || 'ถัดไป'}
       </button>
     </StyledWrapper>

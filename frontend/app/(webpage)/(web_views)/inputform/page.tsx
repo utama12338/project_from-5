@@ -483,41 +483,44 @@ export default function CreateSystem() {
       return;
     }
 
-    const validationErrors = validateForm(currentStep, formData);
-    if (Object.keys(validationErrors).length === 0) {
-      try {
-        setIsSubmitting(true);
-        const response = await api.createSystem(formData);
-        console.log('Success:', response);
-        
-        setIsSubmitted(true);
-        router.push('/form');
-        
+    // ตรวจสอบเฉพาะเมื่ออยู่ในขั้นตอนสุดท้าย
+    if (currentStep === 4) {
+      const validationErrors = validateForm(currentStep, formData);
+      if (Object.keys(validationErrors).length === 0) {
+        try {
+          setIsSubmitting(true);
+          const response = await api.createSystem(formData);
+          console.log('Success:', response);
+          
+          setIsSubmitted(true);
+          router.push('/form');
+          
+          Swal.fire({
+            title: 'บันทึกสำเร็จ!',
+            text: 'ข้อมูลของคุณถูกบันทึกเรียบร้อยแล้ว',
+            icon: 'success',
+            confirmButtonText: 'ตกลง'
+          });
+        } catch (error) {
+          console.error('Error saving data:', error);
+          Swal.fire({
+            title: 'เกิดข้อผิดพลาด!',
+            text: 'ไม่สามารถบันทึกข้อมูลได้',
+            icon: 'error',
+            confirmButtonText: 'ตกลง'
+          });
+        } finally {
+          setIsSubmitting(false);
+        }
+      } else {
+        setErrors(validationErrors);
         Swal.fire({
-          title: 'บันทึกสำเร็จ!',
-          text: 'ข้อมูลของคุณถูกบันทึกเรียบร้อยแล้ว',
-          icon: 'success',
+          title: 'ข้อมูลไม่ครบถ้วน!',
+          text: 'กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง',
+          icon: 'warning',
           confirmButtonText: 'ตกลง'
         });
-      } catch (error) {
-        console.error('Error saving data:', error);
-        Swal.fire({
-          title: 'เกิดข้อผิดพลาด!',
-          text: 'ไม่สามารถบันทึกข้อมูลได้',
-          icon: 'error',
-          confirmButtonText: 'ตกลง'
-        });
-      } finally {
-        setIsSubmitting(false);
       }
-    } else {
-      setErrors(validationErrors);
-      Swal.fire({
-        title: 'ข้อมูลไม่ครบถ้วน!',
-        text: 'กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง',
-        icon: 'warning',
-        confirmButtonText: 'ตกลง'
-      });
     }
   };
 
@@ -1701,6 +1704,8 @@ export default function CreateSystem() {
                 isSubmit={currentStep === 4}
                 isLoading={isSubmitting}
                 disabled={isSubmitting || isSubmitted}
+                currentStep={currentStep}
+                totalSteps={4}
               >
                 {currentStep === 4 ? 'บันทึกข้อมูล' : 'ถัดไป'}
               </Button>

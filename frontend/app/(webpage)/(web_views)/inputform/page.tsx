@@ -31,6 +31,8 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import StorageIcon from '@mui/icons-material/Storage';
 import LinkIcon from '@mui/icons-material/Link';
 import SecurityIcon from '@mui/icons-material/Security';
+import Button from '../../../components/button/next';
+import DeleteButton from '../../../components/button/delete';
 
 // steper
 
@@ -939,34 +941,7 @@ export default function CreateSystem() {
                     <div className="flex justify-between items-center">
                       <h4 className="font-medium">ข้อมูลชุดที่ {index + 1}</h4>
                                               
-                          <motion.button
-                            type="button"
-                            onClick={() => removeEntries(index)}
-                            className="group px-3 py-2 bg-gradient-to-r from-red-500 to-rose-600 
-                              text-white rounded-lg shadow-md hover:from-red-600 hover:to-rose-700
-                              transform transition-all duration-200 hover:shadow-lg 
-                              flex items-center space-x-2"
-                            variants={deleteButtonVariants}
-                            whileHover="hover"
-                            whileTap="tap"
-                          >
-                            <motion.svg 
-                              xmlns="http://www.w3.org/2000/svg" 
-                              className="h-5 w-5" 
-                              fill="none" 
-                              viewBox="0 0 24 24" 
-                              stroke="currentColor"
-                              variants={deleteIconVariants}
-                            >
-                              <path 
-                                strokeLinecap="round" 
-                                strokeLinejoin="round" 
-                                strokeWidth={2} 
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m4-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" 
-                              />
-                            </motion.svg>
-                            <span>ลบ</span>
-                          </motion.button>
+                          <DeleteButton onClick={() => removeEntries(index)} />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
@@ -1361,34 +1336,7 @@ export default function CreateSystem() {
                       <h4 className="font-medium text-gray-100">
                         Server Name: {formData.environmentInfo[index]?.serverName || 'N/A'}
                       </h4>
-<motion.button
-  type="button"
-  onClick={() => removeEntries(index)}
-  className="group px-3 py-2 bg-gradient-to-r from-red-500 to-rose-600 
-    text-white rounded-lg shadow-md hover:from-red-600 hover:to-rose-700
-    transform transition-all duration-200 hover:shadow-lg 
-    flex items-center space-x-2"
-  variants={deleteButtonVariants}
-  whileHover="hover"
-  whileTap="tap"
->
-  <motion.svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    className="h-5 w-5" 
-    fill="none" 
-    viewBox="0 0 24 24" 
-    stroke="currentColor"
-    variants={deleteIconVariants}
-  >
-    <path 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      strokeWidth={2} 
-      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m4-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" 
-    />
-  </motion.svg>
-  <span>ลบ</span>
-</motion.button>
+<DeleteButton onClick={() => removeEntries(index)} />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                       <div>
@@ -1592,34 +1540,7 @@ export default function CreateSystem() {
                       <h4 className="font-medium text-gray-100">
                         Server Name: {formData.environmentInfo[index]?.serverName || 'N/A'}
                       </h4>
-                     <motion.button
-  type="button"
-  onClick={() => removeEntries(index)}
-  className="group px-3 py-2 bg-gradient-to-r from-red-500 to-rose-600 
-    text-white rounded-lg shadow-md hover:from-red-600 hover:to-rose-700
-    transform transition-all duration-200 hover:shadow-lg 
-    flex items-center space-x-2"
-  variants={deleteButtonVariants}
-  whileHover="hover"
-  whileTap="tap"
->
-  <motion.svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    className="h-5 w-5" 
-    fill="none" 
-    viewBox="0 0 24 24" 
-    stroke="currentColor"
-    variants={deleteIconVariants}
-  >
-    <path 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      strokeWidth={2} 
-      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m4-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" 
-    />
-  </motion.svg>
-  <span>ลบ</span>
-</motion.button>
+                     <DeleteButton onClick={() => removeEntries(index)} />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
@@ -1775,28 +1696,16 @@ export default function CreateSystem() {
 </motion.button>
               )}
               
-              <motion.button
-                type={currentStep === 4 ? 'submit' : 'button'}
+              <Button 
                 onClick={currentStep < 4 ? nextStep : handleSubmit}
+                isSubmit={currentStep === 4}
+                isLoading={isSubmitting}
                 disabled={isSubmitting || isSubmitted}
-                className={`px-6 py-3 rounded-lg shadow-lg font-medium
-                  transform transition-all duration-200 flex items-center space-x-2
-                  ${currentStep === 4 
-                    ? 'bg-pink-600 hover:bg-pink-700' 
-                    : 'bg-pink-500 hover:bg-pink-600'
-                  } text-white hover:shadow-xl active:scale-95
-                  ${(isSubmitting || isSubmitted) && 'opacity-50 cursor-not-allowed'}`}
-                whileHover={buttonHover}
-                whileTap={buttonTap}
               >
-                <span>
-                  {currentStep === 4 
-                    ? (isSubmitting ? 'กำลังบันทึก...' : isSubmitted ? 'บันทึกเรียบร้อย' : 'บันทึกข้อมูล')
-                    : 'ถัดไป'
-                  }
-                </span>
-              </motion.button>
+                {currentStep === 4 ? 'บันทึกข้อมูล' : 'ถัดไป'}
+              </Button>
             </motion.div>
+
           </form>
         </motion.div>
       </motion.div>

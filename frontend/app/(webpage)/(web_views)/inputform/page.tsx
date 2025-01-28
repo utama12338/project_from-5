@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import Papa from 'papaparse';
 import Swal from 'sweetalert2';
 import CSVPreviewModal from '../../../components/CSVPreviewModal';
-import { CSVValidationResult } from '../../../types/csv';
 import { motion, type Variants } from 'framer-motion';
 import { FiServer, FiShield, FiDatabase, FiLink,FiArrowLeft } from 'react-icons/fi';
 import axios from 'axios'
@@ -16,7 +15,7 @@ import Checkbox3d from '../../../components/checkbox3d'
 // 
 import ModernDropdown from '../../../components/ModernDropdown';
 import CustomDatePicker from '../../../components/CustomDatePicker';
-import { validateForm, type ValidationErrors } from '../../../utils/validation';
+import { validateForm } from '../../../utils/validation';
 // 
 // steper
 import Stack from '@mui/material/Stack';
@@ -33,6 +32,17 @@ import LinkIcon from '@mui/icons-material/Link';
 import SecurityIcon from '@mui/icons-material/Security';
 import Button from '../../../components/button/next';
 import DeleteButton from '../../../components/button/delete';
+
+import { 
+  FormData, 
+  CSVValidationResult, 
+  CSVRowData, 
+  FormChangeEvent,
+  ValidationErrors,
+  EnvironmentInfo,
+  ConnectionInfo,
+  SecurityInfo
+} from '../../../form/types';
 
 // steper
 
@@ -66,29 +76,7 @@ const iconVariants = {
 };
 
 
-const deleteButtonVariants = { // ของปุ่มลบ
-  hover: {
-    scale: 1.02,
-    transition: {
-      duration: 0.2
-    }
-  },
-  tap: {
-    scale: 0.95
-  }
-};
 
-const deleteIconVariants = {// ของปุ่มลบ
-  hover: {
-    scale: [1, 1.2, 1],
-    rotate: [0, 10, -10, 0],
-    transition: {
-      duration: 1.5,
-      repeat: Infinity,
-      ease: "easeInOut"
-    }
-  }
-};
 
 
 
@@ -153,26 +141,7 @@ const PRODUCTION_UNIT_OPTIONS = [
   'หน่วยระบบสนับสนุนงานธุรกิจ'
 ];
 
-interface EnvironmentInfo {
-  environment: string;
-  serverName: string;
-  ip: string;
-  serverType: string;
-  serverRole: string;
-  serverDuty: string;
-  database: string;
-  application: string;
-  operatingSystem: string;
-  servicePack: string;
-  build: string;
-  cpu: string;
-  ram: string;
-  disk: string;
-  dr: string;
-  joinDomain: string;
-  windowsCluster: string;
-  productionUnit: string[];
-}
+
 
 
 // steper
@@ -264,7 +233,7 @@ export default function CreateSystem() {
   const [currentStep, setCurrentStep] = useState(1);
   
   // สร้าง state สำหรับเก็บข้อมูลฟอร์ม
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     systemName: '',
     developType: '',
     contractNo: '',
@@ -331,7 +300,7 @@ export default function CreateSystem() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   // ฟังก์ชันจัดการการเปลี่ยนแปลงข้อมูล (เหมือนเดิม)
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: FormChangeEvent) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -339,7 +308,7 @@ export default function CreateSystem() {
     }));
   };
 
-  const validateCSVRow = async (row: any, index: number): Promise<CSVValidationResult> => {
+  const validateCSVRow = async (row: CSVRowData, index: number): Promise<CSVValidationResult> => {
     const errors: string[] = [];
     let status: 'invalid' | 'incomplete' | 'update' | 'create' = 'create';
     
@@ -525,24 +494,30 @@ export default function CreateSystem() {
   };
 
   const handleEnvironmentChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | { target: { name: string; value: string | string[] } },
+    e: { target: { name: string; value: string | string[] } },
     index: number
   ) => {
     const { name, value } = e.target;
-    setFormData(prev => {
-      const newEnvironmentInfo = [...prev.environmentInfo];
-      newEnvironmentInfo[index] = {
-        ...newEnvironmentInfo[index],
-        [name]: value
-      };
-      return {
+  
+    if (name === 'productionUnit') {
+      const updatedUnits = Array.isArray(value) ? value : [value];
+      setFormData(prev => ({
         ...prev,
-        environmentInfo: newEnvironmentInfo
-      };
-    });
+        environmentInfo: prev.environmentInfo.map((env, i) => 
+          i === index ? { ...env, [name]: updatedUnits } : env
+        )
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        environmentInfo: prev.environmentInfo.map((env, i) => 
+          i === index ? { ...env, [name]: value } : env
+        )
+      }));
+    }
   };
 
-  const handleConnectionChange = (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
+  const handleConnectionChange = (e: { target: { name: string; value: string } }, index: number) => {
     const { name, value } = e.target;
     setFormData(prev => {
       const newConnectionInfo = [...prev.connectionInfo];
@@ -558,7 +533,7 @@ export default function CreateSystem() {
   };
 
   const handleSecurityChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, 
+    e: FormChangeEvent | { target: { name: string; value: string } }, 
     index: number
   ) => {
     const { name, value } = e.target;
@@ -1286,22 +1261,22 @@ export default function CreateSystem() {
                             <Checkbox3d key={option}>
                               <label className="container flex items-center space-x-2">
                                 <input
-                                  type="checkbox"
-                                  id={`productionUnit-${index}-${option}`}
-                                  checked={env.productionUnit.includes(option)}
-                                  onChange={(e) => {
-                                    const updatedUnits = e.target.checked
-                                      ? [...env.productionUnit, option]
-                                      : env.productionUnit.filter(unit => unit !== option);
-                                    
-                                    handleEnvironmentChange({
-                                      target: {
-                                        name: 'productionUnit',
-                                        value: updatedUnits
-                                      }
-                                    }, index);
-                                  }}
-                                />
+  type="checkbox"
+  id={`productionUnit-${index}-${option}`}
+  checked={Array.isArray(env.productionUnit) && env.productionUnit.includes(option)}
+  onChange={(e) => {
+    const updatedUnits = e.target.checked
+      ? [...(Array.isArray(env.productionUnit) ? env.productionUnit : []), option]
+      : (Array.isArray(env.productionUnit) ? env.productionUnit : []).filter((unit: string) => unit !== option);
+    
+    handleEnvironmentChange({
+      target: {
+        name: 'productionUnit',
+        value: updatedUnits
+      }
+    }, index);
+  }}
+/>
                                 <svg viewBox="0 0 64 64" height="24" width="24">
                                   <path
                                     d="M 0 16 V 56 A 8 8 0 0 0 8 64 H 56 A 8 8 0 0 0 64 56 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16"

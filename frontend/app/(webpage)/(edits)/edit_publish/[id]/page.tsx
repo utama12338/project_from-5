@@ -259,11 +259,19 @@ const FormFieldOption = ({
   </div>
 );
 
-const updateArrayItemField = (array: any[], index: number, field: string, value: string | string[]) => {
+const updateArrayItemField = <T extends Record<string, any>>(
+  array: T[],
+  index: number,
+  field: keyof T,
+  value: string | string[]
+): T[] => {
   return array.map((item, i) => {
     if (i === index) {
+      if (field === 'developUnit' || field === 'businessUnit') {
+        return { ...item, [field]: value };
+      }
       const finalValue = Array.isArray(value) ? value.join(',') : value;
-      return { ...item, [field]: finalValue };
+      return { ...item, [field]: finalValue } as T;
     }
     return item;
   });

@@ -52,7 +52,7 @@ import {ENVIRONMENT_OPTIONS,
   YES_NO,
   DR_DC,
   DEVELOPER_TYPE
-  }from '@/components/itemweb/edit_publish/optionselect';
+  }from '@/types/optionselect';
 // steper
 // animation 
 // Add these constants at the top of the file, after imports

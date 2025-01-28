@@ -23,7 +23,7 @@ import {ENVIRONMENT_OPTIONS,
   YES_NO,
   DR_DC,
   DEVELOPER_TYPE
-}from '@/components/itemweb/edit_publish/optionselect';
+}from '@/types/optionselect';
 import {SystemData,EnvironmentInfo,ConnectionInfo,SecurityInfo} from'@/types/inputform'
 
 

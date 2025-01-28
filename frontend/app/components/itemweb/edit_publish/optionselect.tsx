@@ -1,6 +1,7 @@
-export const ENVIRONMENT_OPTIONS = ['DEV', 'SIT', 'UAT', 'PreProd', 'Prod'];
+export const ENVIRONMENT_OPTIONS = ['DEV', 'SIT', 'UAT', 'PreProd', 'Prod',];
 export const SERVER_TYPE_OPTIONS = [
   'Physics',
+  'Network Device',
   'WorkStation PC',
   'Laptop',
   'Virtualize Environment',
@@ -29,3 +30,25 @@ export const PRODUCTION_UNIT_OPTIONS = [
   'หน่วยระบบสนับสนุนนโยบายรัฐ',
   'หน่วยระบบสนับสนุนงานธุรกิจ'
 ];
+
+export const DEVELOPER_UNIT = [
+    'ฝรล.',
+    'ส่วนระบบงานสนับสนุน',
+    'ระบบสนับสนุนนโยบายรัฐ',
+    'ธนรัตน์ เกรอด'  
+]
+
+export const YES_NO = [
+    'YES',
+    'NO'
+]
+
+export const DR_DC =[
+    'DR',
+    'DC'
+]
+
+export const DEVELOPER_TYPE = [
+  'OUTSOURCE',
+  'IN HOUSE'
+]

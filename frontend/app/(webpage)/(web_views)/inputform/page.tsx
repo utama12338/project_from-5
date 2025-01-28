@@ -43,8 +43,19 @@ import {
   ConnectionInfo,
   SecurityInfo
 } from '../../../types/inputform';
-
+import {ENVIRONMENT_OPTIONS,
+  SERVER_TYPE_OPTIONS,
+  SERVER_ROLE_OPTIONS,
+  SERVER_DUTY_OPTIONS,
+  PRODUCTION_UNIT_OPTIONS,
+  DEVELOPER_UNIT,
+  YES_NO,
+  DR_DC,
+  DEVELOPER_TYPE
+  }from '@/components/itemweb/edit_publish/optionselect';
 // steper
+// animation 
+// Add these constants at the top of the file, after imports
 
 
 
@@ -101,40 +112,7 @@ const backIconVariants: Variants = {
   }
 };
 
-// animation 
-// Add these constants at the top of the file, after imports
-const ENVIRONMENT_OPTIONS = ['DEV', 'SIT', 'UAT', 'PreProd', 'Prod'];
-const SERVER_TYPE_OPTIONS = [
-  'Physics',
-  'Network Device',
-  'WorkStation PC',
-  'Laptop',
-  'Virtualize Environment',
-  'Container'
-];
-const SERVER_ROLE_OPTIONS = [
-  'Database Server',
-  'Application Server',
-  'Web Server'
-];
-const SERVER_DUTY_OPTIONS = [
-  'Web Frontend',
-  'Service Web Backend',
-  'Backup Server',
-  'Database Server',
-  'Server Fileshare',
-  'Log Server',
-  'Gateway Server'
-];
-const PRODUCTION_UNIT_OPTIONS = [
-  'หน่วยโปรแกรมระบบ',
-  'หน่วยระบบงานคอมพิวเตอร์ 1',
-  'หน่วยระบบฐานข้อมูล',
-  'หน่วยระบบงานคอมพิวเตอร์ 2',
-  'หน่วยระบบงานคอมพิวเตอร์ 3',
-  'หน่วยระบบสนับสนุนนโยบายรัฐ',
-  'หน่วยระบบสนับสนุนงานธุรกิจ'
-];
+
 
 
 
@@ -751,7 +729,7 @@ export default function CreateSystem() {
 
                   <div>
                     <ModernDropdown
-                      options={['OUTSOURCE', 'IN HOUSE']}
+                      options={DEVELOPER_TYPE}
                       value={formData.developType}
                       onChange={(value) => handleChange({
                         target: { name: 'developType', value }
@@ -830,12 +808,7 @@ export default function CreateSystem() {
 
                     <div>
                     <ModernDropdown
-                      options={[
-                        'ฝรล.',
-                        'ส่วนระบบงานสนับสนุน',
-                        'ระบบสนับสนุนนโยบายรัฐ',
-                        'ธนรัตน์ เกรอด'
-                      ]}
+                      options={DEVELOPER_UNIT}
                       value={formData.developUnit}
                       onChange={(value) => handleChange({
                         target: { name: 'developUnit', value }
@@ -851,7 +824,7 @@ export default function CreateSystem() {
 
                   <div>
                     <ModernDropdown
-                      options={['YES', 'NO']}
+                      options={YES_NO}
                       value={formData.computerbackup}
                       onChange={(value) => handleChange({
                         target: { name: 'computerbackup', value }
@@ -1197,7 +1170,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['DR', 'DC']}
+                          options={DR_DC}
                           value={env.dr}
                           onChange={(value) => handleEnvironmentChange({
                             target: { name: 'dr', value }
@@ -1213,7 +1186,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={env.joinDomain}
                           onChange={(value) => handleEnvironmentChange({
                             target: { name: 'joinDomain', value }
@@ -1229,7 +1202,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={env.windowsCluster}
                           onChange={(value) => handleEnvironmentChange({
                             target: { name: 'windowsCluster', value }
@@ -1254,22 +1227,22 @@ export default function CreateSystem() {
                             <Checkbox3d key={option}>
                               <label className="container flex items-center space-x-2">
                                 <input
-  type="checkbox"
-  id={`productionUnit-${index}-${option}`}
-  checked={Array.isArray(env.productionUnit) && env.productionUnit.includes(option)}
-  onChange={(e) => {
-    const updatedUnits = e.target.checked
-      ? [...(Array.isArray(env.productionUnit) ? env.productionUnit : []), option]
-      : (Array.isArray(env.productionUnit) ? env.productionUnit : []).filter((unit: string) => unit !== option);
-    
-    handleEnvironmentChange({
-      target: {
-        name: 'productionUnit',
-        value: updatedUnits
-      }
-    }, index);
-  }}
-/>
+                                    type="checkbox"
+                                    id={`productionUnit-${index}-${option}`}
+                                    checked={Array.isArray(env.productionUnit) && env.productionUnit.includes(option)}
+                                    onChange={(e) => {
+                                      const updatedUnits = e.target.checked
+                                        ? [...(Array.isArray(env.productionUnit) ? env.productionUnit : []), option]
+                                        : (Array.isArray(env.productionUnit) ? env.productionUnit : []).filter((unit: string) => unit !== option);
+                                      
+                                      handleEnvironmentChange({
+                                        target: {
+                                          name: 'productionUnit',
+                                          value: updatedUnits
+                                        }
+                                      }, index);
+                                    }}
+                                  />
                                 <svg viewBox="0 0 64 64" height="24" width="24">
                                   <path
                                     d="M 0 16 V 56 A 8 8 0 0 0 8 64 H 56 A 8 8 0 0 0 64 56 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16"
@@ -1312,7 +1285,7 @@ export default function CreateSystem() {
                     <div className="grid grid-cols-3 gap-4">
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={conn.ad}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'ad', value }
@@ -1325,7 +1298,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={conn.adfs}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'adfs', value }
@@ -1338,7 +1311,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={conn.dns}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'dns', value }
@@ -1351,7 +1324,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={conn.ntp}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'ntp', value }
@@ -1364,7 +1337,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={conn.tpam}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'tpam', value }
@@ -1377,7 +1350,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={conn.netka}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'netka', value }
@@ -1390,7 +1363,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={conn.fim}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'fim', value }
@@ -1403,7 +1376,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={conn.ftpServer}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'ftpServer', value }
@@ -1416,7 +1389,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={conn.ftpGoAnywhereMFTServer}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'ftpGoAnywhereMFTServer', value }
@@ -1429,7 +1402,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={conn.emailSmtp}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'emailSmtp', value }
@@ -1442,7 +1415,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={conn.sms}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'sms', value }
@@ -1455,7 +1428,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={conn.apiManagement}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'apiManagement', value }
@@ -1468,7 +1441,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={conn.dv}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'dv', value }
@@ -1481,7 +1454,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={conn.snmp}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'snmp', value }
@@ -1598,7 +1571,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={security.centralizeLog}
                           onChange={(value) => handleSecurityChange({
                             target: { name: 'centralizeLog', value }
@@ -1611,7 +1584,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={security.setupAgentPatch}
                           onChange={(value) => handleSecurityChange({
                             target: { name: 'setupAgentPatch', value }
@@ -1624,7 +1597,7 @@ export default function CreateSystem() {
 
                       <div>
                         <ModernDropdown
-                          options={['YES', 'NO']}
+                          options={YES_NO}
                           value={security.internetFacing}
                           onChange={(value) => handleSecurityChange({
                             target: { name: 'internetFacing', value }

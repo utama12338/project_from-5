@@ -15,10 +15,14 @@ import { colors, shadows, transitions } from '../../../../styles/theme';
 
 import Agenda from '@/components/itemweb/edit_publish/agenda';
 import {ENVIRONMENT_OPTIONS,
-SERVER_TYPE_OPTIONS,
-SERVER_ROLE_OPTIONS,
-SERVER_DUTY_OPTIONS,
-PRODUCTION_UNIT_OPTIONS
+  SERVER_TYPE_OPTIONS,
+  SERVER_ROLE_OPTIONS,
+  SERVER_DUTY_OPTIONS,
+  PRODUCTION_UNIT_OPTIONS,
+  DEVELOPER_UNIT,
+  YES_NO,
+  DR_DC,
+  DEVELOPER_TYPE
 }from '@/components/itemweb/edit_publish/optionselect';
 import {SystemData,EnvironmentInfo,ConnectionInfo,SecurityInfo} from'@/types/inputform'
 
@@ -416,7 +420,7 @@ export default function EditSystem() {
         label="ประเภทการพัฒนา" 
         value={systemData.developType} 
         onChange={(value) => updateSystemField('developType', value)}
-        options={['IN HOUSE', 'OUTSOURCE']}
+        options={DEVELOPER_TYPE}
         error={errors.developType}
       />
       <FormField 
@@ -444,7 +448,7 @@ export default function EditSystem() {
           const finalValue = Array.isArray(value) ? value.join(',') : value;
           updateSystemField('developUnit', finalValue);
         }}
-        options={['ฝรล.', 'ส่วนระบบงานสนับสนุน','ระบบสนับสนุนนโยบายรัฐ','ธนรัตน์ เกรอด']}
+        options={DEVELOPER_UNIT}
         error={errors.developUnit}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -452,7 +456,7 @@ export default function EditSystem() {
           label="Computer Backup"
           value={systemData.computerbackup}
           onChange={(value) => updateSystemField('computerbackup', value)}
-          options={['YES', 'NO']}
+          options={YES_NO}
           error={errors.computerbackup}
         />
       </div>
@@ -559,21 +563,21 @@ const renderEnvironmentInfo = () => (
             label="DR"
             value={env.dr}
             onChange={(value) => updateEnvironmentInfo(index, 'dr', value)}
-            options={['DR', 'DC']}
+            options={DR_DC}
             error={errors[`dr-${index}`]}
           />
           <FormFieldOption
             label="Join Domain"
             value={env.joinDomain}
             onChange={(value) => updateEnvironmentInfo(index, 'joinDomain', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
             error={errors[`joinDomain-${index}`]}
           />
           <FormFieldOption
             label="Windows Cluster"
             value={env.windowsCluster}
             onChange={(value) => updateEnvironmentInfo(index, 'windowsCluster', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
             error={errors[`windowsCluster-${index}`]}
           />
             <FormFieldOption
@@ -636,98 +640,98 @@ const renderConnectionInfo = () => (
             label="AD" 
             value={conn.ad}
             onChange={(value) => updateConnectionInfo(index, 'ad', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
             error={errors[`ad-${index}`]}
           />
           <FormFieldOption 
             label="DNS" 
             value={conn.dns}
             onChange={(value) => updateConnectionInfo(index, 'dns', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
             error={errors[`dns-${index}`]}
           />
           <FormFieldOption 
             label="TPAM" 
             value={conn.tpam}
             onChange={(value) => updateConnectionInfo(index, 'tpam', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
             error={errors[`tpam-${index}`]}
           />
           <FormFieldOption 
             label="FIM" 
             value={conn.fim}
             onChange={(value) => updateConnectionInfo(index, 'fim', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
             error={errors[`fim-${index}`]}
           />
           <FormFieldOption 
             label="FTP Server" 
             value={conn.ftpServer}
             onChange={(value) => updateConnectionInfo(index, 'ftpServer', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
             error={errors[`ftpServer-${index}`]}
           />
           <FormFieldOption 
             label="Email SMTP" 
             value={conn.emailSmtp}
             onChange={(value) => updateConnectionInfo(index, 'emailSmtp', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
             error={errors[`emailSmtp-${index}`]}
           />
           <FormFieldOption 
             label="API Management" 
             value={conn.apiManagement}
             onChange={(value) => updateConnectionInfo(index, 'apiManagement', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
                 error={errors[`apiManagement-${index}`]}
           />
           <FormFieldOption 
             label="SNMP" 
             value={conn.snmp}
             onChange={(value) => updateConnectionInfo(index, 'snmp', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
               error={errors[`snmp-${index}`]}
           />
           <FormFieldOption 
             label="ADFS" 
             value={conn.adfs}
             onChange={(value) => updateConnectionInfo(index, 'adfs', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
             error={errors[`adfs-${index}`]}
           />
           <FormFieldOption 
             label="NTP" 
             value={conn.ntp}
             onChange={(value) => updateConnectionInfo(index, 'ntp', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
             error={errors[`ntp-${index}`]}
           />
           <FormFieldOption 
             label="Netka" 
             value={conn.netka}
             onChange={(value) => updateConnectionInfo(index, 'netka', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
             error={errors[`netka-${index}`]}
           />
           <FormFieldOption 
             label="FTP GoAnywhere MFT Server" 
             value={conn.ftpGoAnywhereMFTServer}
             onChange={(value) => updateConnectionInfo(index, 'ftpGoAnywhereMFTServer', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
             error={errors[`ftpGoAnywhereMFTServer-${index}`]}
           />
           <FormFieldOption 
             label="SMS" 
             value={conn.sms}
             onChange={(value) => updateConnectionInfo(index, 'sms', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
             error={errors[`sms-${index}`]}
           />
           <FormFieldOption 
             label="DV" 
             value={conn.dv}
             onChange={(value) => updateConnectionInfo(index, 'dv', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
             error={errors[`dv-${index}`]}
           />
         </div>
@@ -787,21 +791,21 @@ const renderSecurityInfo = () => (
             label="Centralize Log"
             value={security.centralizeLog}
             onChange={(value) => updateSecurityInfo(index, 'centralizeLog', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
             error={errors[`centralizeLog-${index}`]}
           />
           <FormFieldOption
             label="Setup Agent Patch"
             value={security.setupAgentPatch}
             onChange={(value) => updateSecurityInfo(index, 'setupAgentPatch', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
             error={errors[`setupAgentPatch-${index}`]}
           />
           <FormFieldOption
             label="Internet Facing"
             value={security.internetFacing}
             onChange={(value) => updateSecurityInfo(index, 'internetFacing', value)}
-            options={['YES', 'NO']}
+            options={YES_NO}
             error={errors[`internetFacing-${index}`]}
           />
         </div>

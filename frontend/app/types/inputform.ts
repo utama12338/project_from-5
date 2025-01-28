@@ -19,7 +19,7 @@ export interface EnvironmentInfo {
   dr: string;
   joinDomain: string;
   windowsCluster: string;
-  productionUnit: string | string[];
+  productionUnit: string | string[];// เปลี่ยนเป็นรับได้ทั้ง string และ array
 }
 
 export interface ConnectionInfo {

@@ -14,100 +14,15 @@ import Swal from 'sweetalert2';
 import { colors, shadows, transitions } from '../../../../styles/theme';
 
 import Agenda from '@/components/itemweb/edit_publish/agenda';
+import {ENVIRONMENT_OPTIONS,
+SERVER_TYPE_OPTIONS,
+SERVER_ROLE_OPTIONS,
+SERVER_DUTY_OPTIONS,
+PRODUCTION_UNIT_OPTIONS
+}from '@/components/itemweb/edit_publish/optionselect';
+import {SystemData,EnvironmentInfo,ConnectionInfo,SecurityInfo} from'@/types/inputform'
 
-const ENVIRONMENT_OPTIONS = ['DEV', 'SIT', 'UAT', 'PreProd', 'Prod'];
-const SERVER_TYPE_OPTIONS = [
-  'Physics',
-  'WorkStation PC',
-  'Laptop',
-  'Virtualize Environment',
-  'Container'
-];
-const SERVER_ROLE_OPTIONS = [
-  'Database Server',
-  'Application Server',
-  'Web Server'
-];
-const SERVER_DUTY_OPTIONS = [
-  'Web Frontend',
-  'Service Web Backend',
-  'Backup Server',
-  'Database Server',
-  'Server Fileshare',
-  'Log Server',
-  'Gateway Server'
-];
-const PRODUCTION_UNIT_OPTIONS = [
-  'หน่วยโปรแกรมระบบ',
-  'หน่วยระบบงานคอมพิวเตอร์ 1',
-  'หน่วยระบบฐานข้อมูล',
-  'หน่วยระบบงานคอมพิวเตอร์ 2',
-  'หน่วยระบบงานคอมพิวเตอร์ 3',
-  'หน่วยระบบสนับสนุนนโยบายรัฐ',
-  'หน่วยระบบสนับสนุนงานธุรกิจ'
-];
 
-interface SystemData {
-  id: number;
-  systemName: string;
-  developType: string;
-  contractNo: string;
-  vendorContactNo: string;
-  businessUnit: string;
-  developUnit: string | string[];
-  computerbackup: string;
-  environmentInfo: EnvironmentInfo[];
-  connectionInfo: ConnectionInfo[];
-  securityInfo: SecurityInfo[];
-}
-
-interface EnvironmentInfo {
-  environment: string;
-  serverName: string;
-  ip: string;
-  serverType: string;
-  serverRole: string;
-  serverDuty: string;
-  database: string;
-  application: string;
-  operatingSystem: string;
-  servicePack: string;
-  build: string;
-  cpu: string;
-  ram: string;
-  disk: string;
-  dr: string;
-  joinDomain: string;
-  windowsCluster: string;
-  productionUnit: string | string[]; // เปลี่ยนเป็นรับได้ทั้ง string และ array
-}
-
-interface ConnectionInfo {
-  ad: string;
-  adfs: string;
-  dns: string;
-  ntp: string;
-  tpam: string;
-  netka: string;
-  fim: string;
-  ftpServer: string;
-  ftpGoAnywhereMFTServer: string;
-  emailSmtp: string;
-  sms: string;
-  apiManagement: string;
-  dv: string;
-  snmp: string;
-}
-
-interface SecurityInfo {
-  urlWebsite: string;
-  certificateExpireDate: string;
-  backupPolicy: string;
-  downtimeAllowed: string;
-  centralizeLog: string;
-  setupAgentPatch: string;
-  internetFacing: string;
-}
 
 const defaultSystemData: SystemData = {
   id: 0,

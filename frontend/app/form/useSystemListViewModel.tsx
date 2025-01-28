@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import { fetchSystems, deleteSystem, bulkDeleteSystems, searchSystems } from './api/systemApi';
+import { fetchSystems, deleteSystem, bulkDeleteSystems, searchSystems } from '../services/api';
 import { transformDataForCSV } from './utils/dataTransformers';
 import { downloadCSV } from './utils/fileOperations';
 import { SystemInfo } from '../types/forme';

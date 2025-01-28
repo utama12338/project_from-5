@@ -13,7 +13,7 @@ import { validateForm, ValidationErrors } from '../../../../utils/validation';
 import Swal from 'sweetalert2';
 import { colors, shadows, transitions } from '../../../../styles/theme';
 
-import Agenda from '../../../../components/edit_publish/agenda';
+import Agenda from '@/components/itemweb/edit_publish/agenda';
 
 const ENVIRONMENT_OPTIONS = ['DEV', 'SIT', 'UAT', 'PreProd', 'Prod'];
 const SERVER_TYPE_OPTIONS = [

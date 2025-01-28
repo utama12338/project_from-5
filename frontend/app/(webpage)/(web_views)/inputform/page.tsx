@@ -76,11 +76,6 @@ const iconVariants = {
 };
 
 
-
-
-
-
-
 // 
 const backButtonVariants = {
   initial: {
@@ -222,10 +217,8 @@ function ColorlibStepIcon(props: StepIconProps) {
     </ColorlibStepIconRoot>
   );
 }
-
 const steps = ['ข้อมูลระบบ (Systeminfo)', 'สภาพแวดล้อม (Environment)', 'การเชื่อมต่อ (ConnectionInfo)', 'ความปลอดภัย (Security)'];
 
-// steper
 export default function CreateSystem() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);

@@ -2,9 +2,9 @@
 import { useEffect, useState } from 'react';
 import { motion } from "framer-motion";
 import Link from 'next/link';
-import CustomAlert from './select';
+
 import { useSystemListViewModel } from './useSystemListViewModel';
-import axios from 'axios'
+
 import SearchModal from './components/SearchModal';
 import DetailViewModal from '../components/DetailViewModal';
 import { colors, shadows, transitions } from '../styles/theme';
@@ -246,28 +246,7 @@ export default function SystemList() {
         initialCriteria={lastSearchCriteria}
       />
 
-      {/* CustomAlert */}
-      <CustomAlert
-        isOpen={showAlert}
-        onClose={() => setShowAlert(false)}
-        onConfirm={async () => {
-          try {
-            await Promise.all(
-              selectedItems.map(id => 
-                axios.delete(`http://localhost:4000/from/deleteforme/${id}`)
-              )
-            );
-            setAlertType('success');
-            // Instead of reloading window, fetch fresh data
-            await fetchSystems();
-            setShowAlert(false);
-          } catch (error) {
-            console.error('Error deleting systems:', error);
-            setAlertType('error');
-          }
-        }}
-        type={alertType}
-      />
+
 
       {/* DetailViewModal */}
       {showDetailModal && (

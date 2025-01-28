@@ -3,7 +3,7 @@ import Swal from 'sweetalert2';
 import { fetchSystems, deleteSystem, bulkDeleteSystems, searchSystems } from './api/systemApi';
 import { transformDataForCSV } from './utils/dataTransformers';
 import { downloadCSV } from './utils/fileOperations';
-import { SystemInfo } from './types';
+import { SystemInfo } from '../types/forme';
 import { SearchCriteria } from './components/SearchModal';
 
 export const useSystemListViewModel = () => {

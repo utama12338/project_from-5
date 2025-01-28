@@ -33,8 +33,7 @@ import SecurityIcon from '@mui/icons-material/Security';
 import Button from '../../../components/button/next';
 import DeleteButton from '../../../components/button/delete';
 
-import { 
-  FormData, 
+import { FormData, 
   CSVValidationResult, 
   CSVRowData, 
   FormChangeEvent,
@@ -42,7 +41,7 @@ import {
   EnvironmentInfo,
   ConnectionInfo,
   SecurityInfo
-} from '../../../form/types';
+} from '../../../types/inputform';
 
 // steper
 

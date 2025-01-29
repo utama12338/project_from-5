@@ -135,68 +135,84 @@ export default function SystemList() {
 
         {/* Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {currentSystems.map((system) => (
-            <motion.div
-              key={system.id}
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2 }}
-            >
-              <FormBox
-                header={`ชื่อระบบ: ${system.systemName}`}
-                rightHeaderContent={
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedItems.includes(system.id)}
-                      onChange={() => handleSelectItem(system.id)}
-                      className="rounded"
-                    />
-                    <div className="flex space-x-2">
-                      <Link
-                        href={`/edit/${system.id}`}
-                        className="p-2 text-yellow-600 hover:text-yellow-900 transition-colors"
-                      >
-                        <i className="fas fa-edit text-lg"></i>
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(system.id)}
-                        className="p-2 text-red-600 hover:text-red-900 transition-colors"
-                      >
-                        <i className="fas fa-trash text-lg"></i>
-                      </button>
-                    </div>
-                  </div>
-                }
+          {currentSystems.map((system) => {
+            const envInfo = (system as { environmentInfo?: { serverName: string; environment: string; ip: string }[] }).environmentInfo || [];
+            
+            const initialContent = envInfo.length > 0 && (
+              <div className="space-y-2 mb-4">
+                <p className="text-sm text-gray-300">
+                  <span className="font-medium">Servername:</span> {envInfo[0].serverName}
+                </p>
+                <p className="text-sm text-gray-400">
+                  <span className="font-medium">Environment:</span> {envInfo[0].environment}
+                </p>
+                <p className="text-sm text-gray-400">
+                  <span className="font-medium">IP server:</span> {envInfo[0].ip}
+                </p>
+              </div>
+            );
+
+            const expandableContent = envInfo.slice(1).map((env, index) => (
+              <div key={index} className="space-y-2 mb-4">
+                <p className="text-sm text-gray-300">
+                  <span className="font-medium">Servername:</span> {env.serverName}
+                </p>
+                <p className="text-sm text-gray-400">
+                  <span className="font-medium">Environment:</span> {env.environment}
+                </p>
+                <p className="text-sm text-gray-400">
+                  <span className="font-medium">IP server:</span> {env.ip}
+                </p>
+              </div>
+            ));
+
+            return (
+              <motion.div
+                key={system.id}
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.2 }}
               >
-                <div className="space-y-4">
-                  {/* Environment info */}
-                  {Array.isArray((system as { environmentInfo?: { serverName: string; environment: string; ip: string }[] }).environmentInfo) &&
-    (system as { environmentInfo?: { serverName: string; environment: string; ip: string }[] }).environmentInfo!.map(
-      (env, index) => (
-                      <div key={index} className="space-y-2">
-                        <p className="text-sm text-gray-300">
-                          <span className="font-medium">Servername:</span> {env.serverName}
-                        </p>
-                        <p className="text-sm text-gray-400">
-                          <span className="font-medium">Environment:</span> {env.environment}
-                        </p>
-                        <p className="text-sm text-gray-400">
-                          <span className="font-medium">IP server:</span> {env.ip}
-                        </p>
+                <FormBox
+                  header={`ชื่อระบบ: ${system.systemName}`}
+                  rightHeaderContent={
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        checked={selectedItems.includes(system.id)}
+                        onChange={() => handleSelectItem(system.id)}
+                        className="rounded"
+                      />
+                      <div className="flex space-x-2">
+                        <Link
+                          href={`/edit/${system.id}`}
+                          className="p-2 text-yellow-600 hover:text-yellow-900 transition-colors"
+                        >
+                          <i className="fas fa-edit text-lg"></i>
+                        </Link>
+                        <button
+                          onClick={() => handleDelete(system.id)}
+                          className="p-2 text-red-600 hover:text-red-900 transition-colors"
+                        >
+                          <i className="fas fa-trash text-lg"></i>
+                        </button>
                       </div>
-                    ))}
-                  
-                  {/* Action buttons */}
+                    </div>
+                  }
+                  hasExpandableContent={envInfo.length > 1}
+                  initialContent={initialContent}
+                  expandableContent={expandableContent}
+                  totalItems={envInfo.length}
+                >
                   <div className="space-y-2 pt-4">
                     <Link href={`/edit_publish/${system.id}`}>
                       <EditButton />
                     </Link>
                     <DetailButton onClick={() => handleSingleSystemView(system)} />
                   </div>
-                </div>
-              </FormBox>
-            </motion.div>
-          ))}
+                </FormBox>
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Pagination Controls */}

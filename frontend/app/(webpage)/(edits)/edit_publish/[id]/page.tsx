@@ -24,7 +24,7 @@ import {ENVIRONMENT_OPTIONS,
   DR_DC,
   DEVELOPER_TYPE
 }from '@/types/optionselect';
-import {SystemData,EnvironmentInfo,ConnectionInfo,SecurityInfo} from'@/types/inputform'
+import {SystemData,EnvironmentInfo,ConnectionInfo,SecurityInfo}from'@/types/inputform'
 
 
 

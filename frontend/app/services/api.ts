@@ -2,9 +2,9 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:4000/from';
 
-export interface SystemData {
-  // ...existing interfaces from page.tsx...
-}
+// export interface SystemData {
+//   // ...existing interfaces from page.tsx...
+// }
 
 export const api = {
   // Create system

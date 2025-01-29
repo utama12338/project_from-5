@@ -1,14 +1,32 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import styled from 'styled-components';
 
 interface FormBoxProps {
   children: React.ReactNode;
   header?: string;
   rightHeaderContent?: React.ReactNode;
+  hasExpandableContent?: boolean;
+  expandableContent?: React.ReactNode;
+  initialContent?: React.ReactNode;
+  totalItems?: number;
 }
 
-const FormBox: React.FC<FormBoxProps> = ({ children, header, rightHeaderContent }) => {
+const FormBox: React.FC<FormBoxProps> = ({
+  children,
+  header,
+  rightHeaderContent,
+  hasExpandableContent,
+  expandableContent,
+  initialContent,
+  totalItems = 0,
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   return (
     <StyledWrapper>
       <motion.div 
@@ -28,6 +46,33 @@ const FormBox: React.FC<FormBoxProps> = ({ children, header, rightHeaderContent 
           </div>
         )}
         <div className="box-content">
+          {initialContent}  {/* Move this outside the conditional */}
+          {hasExpandableContent && (
+            <>
+              <AnimatePresence>
+                {isExpanded && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  >
+                    {expandableContent}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              {totalItems > 1 && (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={toggleExpand}
+                  className="expand-button"
+                >
+                  {isExpanded ? 'แสดงน้อยลง' : `แสดงเพิ่มเติม (${totalItems - 1})`}
+                </motion.button>
+              )}
+            </>
+          )}
           {children}
         </div>
       </motion.div>
@@ -68,6 +113,22 @@ const StyledWrapper = styled.div`
   .box-content {
     padding: 1.5rem;
     background-color: rgb(32, 32, 31);
+  }
+
+  .expand-button {
+    display: block;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    color: #60a5fa;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    
+    &:hover {
+      color: #93c5fd;
+    }
   }
 `;
 

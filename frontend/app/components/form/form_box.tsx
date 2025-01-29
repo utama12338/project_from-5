@@ -68,7 +68,7 @@ const FormBox: React.FC<FormBoxProps> = ({
                   onClick={toggleExpand}
                   className="expand-button"
                 >
-                  {isExpanded ? 'แสดงน้อยลง' : `แสดงเพิ่มเติม (${totalItems - 1})`}
+                  {isExpanded ? 'แสดงน้อยลง' : `แสดงเพิ่มเติม ${totalItems - 1}`}
                 </motion.button>
               )}
             </>
@@ -116,20 +116,26 @@ const StyledWrapper = styled.div`
   }
 
   .expand-button {
-    display: block;
-    margin-top: 0.5rem;
-    padding: 0.5rem;
+    display: flex;
+    margin:  auto; // Center the button
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem 1rem;
     color: #60a5fa;
     font-size: 0.875rem;
+    font-weight: 500;
     transition: all 0.2s ease;
-    background: transparent;
+    background: rgba(96, 165, 250, 0.1);
     border: none;
+    border-radius: 6px;
     cursor: pointer;
+    width: fit-content;
     
     &:hover {
       color: #93c5fd;
+      background: rgba(96, 165, 250, 0.15);
     }
-  }
+}
 `;
 
 export default FormBox;

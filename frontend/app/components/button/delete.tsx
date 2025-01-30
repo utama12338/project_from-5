@@ -38,7 +38,7 @@ const StyledWrapper = styled.div`
     width: 55px;
     height: 55px;
     border-radius: 30%;
-    background-color: rgb(255, 95, 95);
+    background-color: rgb(255, 0, 0);
     cursor: pointer;
     border: none;
     transition-duration: 0.3s;
@@ -59,7 +59,7 @@ const StyledWrapper = styled.div`
     transform: rotate(45deg);
   }
   .bin-button:hover {
-    background-color: rgb(255, 0, 0);
+    background-color: rgb(187, 0, 0);
   }
   .bin-button:active {
     transform: scale(0.9);

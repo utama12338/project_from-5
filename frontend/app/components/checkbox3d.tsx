@@ -1,3 +1,4 @@
+'use client'
 import styled from 'styled-components';
 
 const Checkbox3d = styled.div`

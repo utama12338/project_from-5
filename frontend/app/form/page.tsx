@@ -2,9 +2,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from "framer-motion";
 import Link from 'next/link';
-
 import { useSystemListViewModel } from './useSystemListViewModel';
-
 import SearchModal from './components/SearchModal';
 import DetailViewModal from '../components/DetailViewModal';
 import { colors, shadows, transitions } from '../styles/theme';
@@ -13,7 +11,8 @@ import SearchButton from '../components/button/search';
 import EditButton from '../components/button/edite';
 import DetailButton from '../components/button/detail';
 import FormBox from '../components/form/form_box';
-
+import Checkbox3d from '@/components/checkbox3d';
+import Button_v2 from '@/components/button/delete._v2';
 export default function SystemList() {
   const {
     systems,
@@ -173,29 +172,33 @@ export default function SystemList() {
                 transition={{ duration: 0.2 }}
               >
                 <FormBox
-                  header={`ชื่อระบบ: ${system.systemName}`}
+                  header={`${system.systemName}`}
                   rightHeaderContent={
                     <div className="flex items-center space-x-2">
+                      <Checkbox3d>
+                      <label className="container flex items-center space-x-2">
                       <input
                         type="checkbox"
                         checked={selectedItems.includes(system.id)}
                         onChange={() => handleSelectItem(system.id)}
                         className="rounded"
                       />
-                      <div className="flex space-x-2">
-                        <Link
-                          href={`/edit/${system.id}`}
-                          className="p-2 text-yellow-600 hover:text-yellow-900 transition-colors"
-                        >
-                          <i className="fas fa-edit text-lg"></i>
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(system.id)}
-                          className="p-2 text-red-600 hover:text-red-900 transition-colors"
-                        >
-                          <i className="fas fa-trash text-lg"></i>
-                        </button>
-                      </div>
+                      <svg viewBox="0 0 64 64" height="24" width="24">
+                      <path
+                         d="M 0 16 V 56 A 8 8 0 0 0 8 64 H 56 A 8 8 0 0 0 64 56 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16"
+                        className="path"
+                      />
+                      </svg>
+                       </label>
+                      </Checkbox3d>
+                     
+                        
+
+                      
+                        <Button_v2 onClick={() => handleDelete(system.id)}  />
+                       
+
+                     
                     </div>
                   }
                   hasExpandableContent={envInfo.length > 1}

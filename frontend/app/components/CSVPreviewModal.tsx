@@ -1,3 +1,4 @@
+'use client'
 import { PreviewModalProps, CSVValidationResult } from '../types/csv';
 
 export default function CSVPreviewModal({ isOpen, onClose, data, onConfirm }: PreviewModalProps) {

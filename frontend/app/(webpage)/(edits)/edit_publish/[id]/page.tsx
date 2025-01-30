@@ -299,7 +299,7 @@ export default function EditSystem() {
         confirmButtonText: 'ตกลง'
       });
       
-      return router.push('/forme');
+      return router.push('/form');
     } catch (error) {
       console.error('เกิดข้อผิดพลาด:', error);
       Swal.fire({

@@ -1,10 +1,10 @@
 import axios from 'axios';
-
+// import SystemData from '@/types/inputform'
 const BASE_URL = 'http://localhost:4000/from';
 
-// export interface SystemData {
-//   // ...existing interfaces from page.tsx...
-// }
+export interface SystemData {
+  // ...existing interfaces from page.tsx...
+}
 
 export const api = {
   // Create system
@@ -15,12 +15,14 @@ export const api = {
 
   // Get system by ID - change parameter type to number
   getSystemById: async (id: number) => {
+    
     const response = await axios.get(`${BASE_URL}/getSystemById/${id}`);
     return response.data;
   },
 
   // Update system - keep id as number
   updateSystem: async (id: number, data: SystemData) => {
+   
     const response = await axios.put(`${BASE_URL}/updateforme/${id}`, data);
     return response.data;
   },

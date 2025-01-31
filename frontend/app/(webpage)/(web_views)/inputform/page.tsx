@@ -2,15 +2,15 @@
 import { useRef, useState } from 'react';
 import { api } from '../../../services/api';
 import { useRouter } from 'next/navigation';
-import Papa from 'papaparse';
+
 import Swal from 'sweetalert2';
 import CSVPreviewModal from '../../../components/CSVPreviewModal';
-import { motion, type Variants } from 'framer-motion';
+
 import { FiServer, FiShield, FiDatabase, FiLink,FiArrowLeft } from 'react-icons/fi';
-import axios from 'axios'
+import {useCSVImport} from './csv_function';
 // 
 import StyledWrapper  from '../../../components/neoninput';
-// 
+import {backButtonVariants,backIconVariants,buttonVariants,iconVariants} from './animation'
 import Checkbox3d from '../../../components/checkbox3d'
 // 
 import ModernDropdown from '../../../components/ModernDropdown';
@@ -18,14 +18,17 @@ import CustomDatePicker from '../../../components/CustomDatePicker';
 import { validateForm } from '../../../utils/validation';
 // 
 // steper
+import {ColorlibConnector,ColorlibStepIconRoot,CustomStepLabel} from './color' 
 import {colors,shadows,line} from '@/styles/theme'
 // 
 import Stack from '@mui/material/Stack';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
-import { styled } from '@mui/material/styles';
+import { motion, type Variants } from 'framer-motion';
+
+
+import { styled } from '@mui/material/styles';// ย้ายไปอีกไฟล์
+
 import { StepIconProps } from '@mui/material/StepIcon';
 import Check from '@mui/icons-material/Check';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -55,127 +58,10 @@ import {ENVIRONMENT_OPTIONS,
   DR_DC,
   DEVELOPER_TYPE
   }from '@/types/optionselect';
-// steper
-// animation 
-// Add these constants at the top of the file, after imports
 
-
-
-// Add interface for validation errors
-
-// animation 
-const buttonVariants = {
-  hover: {
-    scale: 1.02,
-    transition: {
-      duration: 0.2
-    }
-  },
-  tap: {
-    scale: 0.95
-  }
-};
-
-const iconVariants = {
-  hover: {
-    scale: [1, 0.1, 1.2],
-    rotate: [0, 0, 0],
-    transition: {
-      duration: 2,
-      repeat: Infinity,
-      ease: "linear"
-    }
-  }
-};
-
-
-// 
-const backButtonVariants = {
-  initial: {
-    backgroundColor: "transparent"
-  },
-  hover: {
-    backgroundColor: "rgba(99, 102, 241, 0.05)"
-  }
-};
-
-const backIconVariants: Variants = {
-  hover: {
-    x: [0, 0, -5], // Sliding left and right
-    transition: {
-      duration: 1,
-      repeat: Infinity,
-      ease: "easeInOut",
-      repeatType: "reverse"
-    }
-  },
-  initial: {
-    x: 0
-  }
-};
-
-
-
-
-
-
-// steper
-
-const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
-  [`&.${stepConnectorClasses.alternativeLabel}`]: {
-    top: 22,
-  },
-  [`&.${stepConnectorClasses.active}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      backgroundImage: colors.gradient.primary,
-    },
-  },
-  [`&.${stepConnectorClasses.completed}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      backgroundImage: colors.gradient.primary,
-    },
-  },
-  [`& .${stepConnectorClasses.line}`]: {
-    height: 3,
-    border: 0,
-    backgroundColor: colors.background.tertiary,
-    borderRadius: 1,
-  },
-}));
-
-const ColorlibStepIconRoot = styled('div')<{
-  ownerState: { completed?: boolean; active?: boolean };
-}>(({ theme, ownerState }) => ({
-  backgroundColor: colors.background.tertiary,
-  zIndex: 1,
-  color: colors.text.primary,
-  width: 50,
-  height: 50,
-  display: 'flex',
-  borderRadius: '50%',
-  justifyContent: 'center',
-  alignItems: 'center',
-  ...(ownerState.active && {
-    backgroundImage: colors.gradient.secondary,
-    boxShadow: shadows.primary,
-  }),
-  ...(ownerState.completed && {
-    backgroundImage: colors.gradient.completed,
-  }),
-}));
 
 // Add custom styles for the StepLabel text
-const CustomStepLabel = styled(StepLabel)({
-  '& .MuiStepLabel-label': {
-    color: colors.text.secondary,
-  },
-  '& .MuiStepLabel-label.Mui-active': {
-    color: colors.text.primary,
-  },
-  '& .MuiStepLabel-label.Mui-completed': {
-    color: colors.text.primary,
-  }
-});
+
 
 function ColorlibStepIcon(props: StepIconProps) {
   const { active, completed, className } = props;
@@ -197,7 +83,15 @@ const steps = ['ข้อมูลระบบ (Systeminfo)', 'สภาพแ�
 
 export default function CreateSystem() {
   const router = useRouter();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { 
+    showPreview, 
+    csvData, 
+    fileInputRef, 
+    handleImportCSV, 
+    handleConfirmImport, 
+    handleClosePreview 
+  } = useCSVImport();
+
   // สร้าง state สำหรับควบคุมขั้นตอน
   const [currentStep, setCurrentStep] = useState(1);
   
@@ -260,10 +154,6 @@ export default function CreateSystem() {
   // Add validation errors state
   const [errors, setErrors] = useState<ValidationErrors>({});
 
-  // Add state for CSV preview modal
-  const [showPreview, setShowPreview] = useState(false);
-  const [csvData, setCsvData] = useState<CSVValidationResult[]>([]);
-
   // Add new state for submission status
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -277,120 +167,7 @@ export default function CreateSystem() {
     }));
   };
 
-  const validateCSVRow = async (row: CSVRowData, index: number): Promise<CSVValidationResult> => {
-    const errors: string[] = [];
-    let status: 'invalid' | 'incomplete' | 'update' | 'create' = 'create';
-    
-    // เช็คว่าเป็น empty row หรือไม่
-    const isEmpty = Object.values(row).every(value => !value || value.toString().trim() === '');
-    if (isEmpty) {
-      return {
-        row: index + 1,
-        data: row,
-        status: 'invalid',
-        errors: ['ข้อมูลว่างเปล่า'],
-        systemName: 'N/A'
-      };
-    }
 
-    // Validate required fields
-    const requiredFields = [
-      'systemName',
-      'developType',
-      'contractNo',
-      'vendorContactNo',
-      'businessUnit',
-      'developUnit',
-      'environment',
-      'serverName',
-      'ip'
-    ];
-
-    const missingFields = requiredFields.filter(field => !row[field] || row[field].toString().trim() === '');
-    if (missingFields.length > 0) {
-      status = 'incomplete';
-      errors.push(`ข้อมูลไม่ครบ: ${missingFields.join(', ')}`);
-    }
-
-    // Validate data formats
-    if (row.ip && !/^(\d{1,3}\.){3}\d{1,3}$/.test(row.ip)) {
-      errors.push('รูปแบบ IP Address ไม่ถูกต้อง');
-    }
-    
-    if (row.urlWebsite && !/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/.test(row.urlWebsite)) {
-      errors.push('รูปแบบ URL ไม่ถูกต้อง');
-    }
-
-    // ตรวจสอบว่าระบบมีอยู่แล้วหรือไม่
-    try {
-      const exists = await api.checkSystem(row.systemName);
-      if (exists) {
-        status = 'update';
-      }
-    } catch (error) {
-      console.error('Error checking system:', error);
-    }
-
-    // ถ้ามี error ให้เปลี่ยนสถานะเป็น invalid
-    if (errors.length > 0 && status !== 'incomplete') {
-      status = 'invalid';
-    }
-
-    return {
-      row: index + 1,
-      data: row,
-      status,
-      errors,
-      systemName: row.systemName || 'N/A'
-    };
-  };
-
-  const handleImportCSV = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    Papa.parse(file, {
-      header: true,
-      complete: async (results) => {
-        const validationPromises = results.data.map((row: any, index: number) => 
-          validateCSVRow(row, index)
-        );
-
-        const validatedData = await Promise.all(validationPromises);
-        setCsvData(validatedData);
-        setShowPreview(true);
-      }
-    });
-  };
-
-  const handleConfirmImport = async () => {
-    try {
-      // Process each row based on status
-      for (const row of csvData) { 
-        if (row.status === 'invalid') continue;
-
-        const endpoint = row.status === 'update' ? '/api/system/update' : 
-                        row.status === 'incomplete' ? '/api/system/draft' : 
-                        '/api/system/create';
-
-        await axios.post(endpoint, row.data);
-      }
-
-      setShowPreview(false);
-      // Show success message
-      Swal.fire({
-        title: 'นำเข้าข้อมูลสำเร็จ',
-        icon: 'success'
-      });
-    } catch (error) {
-      console.error('Import error:', error);
-      Swal.fire({
-        title: 'เกิดข้อผิดพลาด',
-        text: 'ไม่สามารถนำเข้าข้อมูลได้',
-        icon: 'error'
-      });
-    }
-  };
 
   // ฟังก์ชันสำหรับไปขั้นตอนถัดไป
   const nextStep = () => {
@@ -581,13 +358,7 @@ export default function CreateSystem() {
     }));
   };
 
-  const handleClosePreview = () => {
-    setShowPreview(false);
-    // Reset file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
+
 
   // Animation variants
   const fadeInUp = {

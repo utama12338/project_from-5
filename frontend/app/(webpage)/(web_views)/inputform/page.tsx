@@ -1,11 +1,6 @@
 "use client"
-import { useRef, useState } from 'react';
-import { api } from '../../../services/api';
 import { useRouter } from 'next/navigation';
-
-import Swal from 'sweetalert2';
 import CSVPreviewModal from '../../../components/CSVPreviewModal';
-
 import { FiServer, FiShield, FiDatabase, FiLink,FiArrowLeft } from 'react-icons/fi';
 import {useCSVImport} from './csv_function';
 // 
@@ -29,9 +24,11 @@ import Step from '@mui/material/Step';
 import { motion } from 'framer-motion';
 
 
+import { useFormHandlers } from './function_handle';
+
 import Button from '../../../components/button/next';
 import DeleteButton from '../../../components/button/delete';
-import { FormData, FormChangeEvent, ValidationErrors} from '../../../types/inputform';
+
 import {ENVIRONMENT_OPTIONS,
   SERVER_TYPE_OPTIONS,
   SERVER_ROLE_OPTIONS,
@@ -42,29 +39,6 @@ import {ENVIRONMENT_OPTIONS,
   DR_DC,
   DEVELOPER_TYPE
   }from '@/types/optionselect';
-
-
-// Add custom styles for the StepLabel text
-
-
-// function ColorlibStepIcon(props: StepIconProps) {
-//   const { active, completed, className } = props;
-
-//   const icons: { [index: string]: React.ReactElement } = {
-//     1: <DescriptionIcon />,
-//     2: <StorageIcon />,
-//     3: <LinkIcon />,
-//     4: <SecurityIcon />,
-//   };
-
-//   return (
-//     <ColorlibStepIconRoot ownerState={{ completed, active }} className={className}>
-//       {icons[String(props.icon)]}
-//     </ColorlibStepIconRoot>
-//   );
-// }
-// const steps = ['ข้อมูลระบบ (Systeminfo)', 'สภาพแวดล้อม (Environment)', 'การเชื่อมต่อ (ConnectionInfo)', 'ความปลอดภัย (Security)'];
-
 
 export default function CreateSystem() {
   const router = useRouter();
@@ -80,284 +54,29 @@ export default function CreateSystem() {
     steps,
     ColorlibStepIcon
   } = iconstrper();
-  // สร้าง state สำหรับควบคุมขั้นตอน
-  const [currentStep, setCurrentStep] = useState(1);
-  
-  // สร้าง state สำหรับเก็บข้อมูลฟอร์ม
-  const [formData, setFormData] = useState<FormData>({
-    systemName: '',
-    developType: '',
-    contractNo: '',
-    vendorContactNo: '',
-    businessUnit: '',
-    developUnit: '',
-    computerbackup: 'NO', // Add this new field
-    environmentInfo: [{
-      environment: '',
-      serverName: '',
-      ip: '',
-      serverType: '',
-      serverRole: '',
-      serverDuty: '',
-      database: '',
-      application: '',
-      operatingSystem: '',
-      servicePack: '',
-      build: '',
-      cpu: '',
-      ram: '',
-      disk: '',
-      dr: '',
-      joinDomain: '',
-      windowsCluster: '',
-      productionUnit: [] as string[]
-    }],
-    connectionInfo: [{
-      ad: 'NO', 
-      adfs: 'NO',
-      dns: 'NO',
-      ntp: 'NO',
-      tpam: 'NO',
-      netka: 'NO',
-      fim: 'NO',
-      ftpServer: 'NO',
-      ftpGoAnywhereMFTServer: 'NO',
-      emailSmtp: 'NO',
-      sms: 'NO',
-      apiManagement: 'NO',
-      dv: 'NO',
-      snmp: 'NO'
-    }],
-    securityInfo: [{
-      urlWebsite: '',
-      certificateExpireDate: '',
-      backupPolicy: '',
-      downtimeAllowed: '',
-      centralizeLog: 'NO',
-      setupAgentPatch: 'NO',
-      internetFacing: 'NO'
-    }]
-  });
-
-  // Add validation errors state
-  const [errors, setErrors] = useState<ValidationErrors>({});
-
-  // Add new state for submission status
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  // ฟังก์ชันจัดการการเปลี่ยนแปลงข้อมูล (เหมือนเดิม)
-  const handleChange = (e: FormChangeEvent) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  // ฟังก์ชันสำหรับไปขั้นตอนถัดไป
-  const nextStep = () => {
-    const validationErrors = validateForm(currentStep, formData);
-    if (Object.keys(validationErrors).length === 0) {
-      setCurrentStep(prev => prev + 1);
-    } else {
-      setErrors(validationErrors);
-      Swal.fire({
-        title: 'ข้อมูลไม่ครบถ้วน!',
-        text: 'กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง',
-        icon: 'warning',
-        confirmButtonText: 'ตกลง'
-      });
-    }
-  };
-
-  // ฟังก์ชันสำหรับกลับไปขั้นตอนก่อนหน้า
-  const prevStep = () => {
-    setCurrentStep(prev => prev - 1);
-  };
-
-  // ฟังก์ชันสำหรับส่งข้อมูล
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (isSubmitting || isSubmitted) {
-      return;
-    }
-
-    // ตรวจสอบเฉพาะเมื่ออยู่ในขั้นตอนสุดท้าย
-    if (currentStep === 4) {
-      const validationErrors = validateForm(currentStep, formData);
-      if (Object.keys(validationErrors).length === 0) {
-        try {
-          setIsSubmitting(true);
-          const response = await api.createSystem(formData);
-          console.log('Success:', response);
-          
-          setIsSubmitted(true);
-          router.push('/form');
-          
-          Swal.fire({
-            title: 'บันทึกสำเร็จ!',
-            text: 'ข้อมูลของคุณถูกบันทึกเรียบร้อยแล้ว',
-            icon: 'success',
-            confirmButtonText: 'ตกลง'
-          });
-        } catch (error) {
-          console.error('Error saving data:', error);
-          Swal.fire({
-            title: 'เกิดข้อผิดพลาด!',
-            text: 'ไม่สามารถบันทึกข้อมูลได้',
-            icon: 'error',
-            confirmButtonText: 'ตกลง'
-          });
-        } finally {
-          setIsSubmitting(false);
-        }
-      } else {
-        setErrors(validationErrors);
-        Swal.fire({
-          title: 'ข้อมูลไม่ครบถ้วน!',
-          text: 'กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง',
-          icon: 'warning',
-          confirmButtonText: 'ตกลง'
-        });
-      }
-    }
-  };
-
-  const handleEnvironmentChange = (
-    e: { target: { name: string; value: string | string[] } },
-    index: number
-  ) => {
-    const { name, value } = e.target;
-  
-    if (name === 'productionUnit') {
-      const updatedUnits = Array.isArray(value) ? value : [value];
-      setFormData(prev => ({
-        ...prev,
-        environmentInfo: prev.environmentInfo.map((env, i) => 
-          i === index ? { ...env, [name]: updatedUnits } : env
-        )
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        environmentInfo: prev.environmentInfo.map((env, i) => 
-          i === index ? { ...env, [name]: value } : env
-        )
-      }));
-    }
-  };
-
-  const handleConnectionChange = (e: { target: { name: string; value: string } }, index: number) => {
-    const { name, value } = e.target;
-    setFormData(prev => {
-      const newConnectionInfo = [...prev.connectionInfo];
-      newConnectionInfo[index] = {
-        ...newConnectionInfo[index],
-        [name]: value
-      };
-      return {
-        ...prev,
-        connectionInfo: newConnectionInfo
-      };
-    });
-  };
-
-  const handleSecurityChange = (
-    e: FormChangeEvent | { target: { name: string; value: string } }, 
-    index: number
-  ) => {
-    const { name, value } = e.target;
-    setFormData(prev => {
-      const newSecurityInfo = [...prev.securityInfo];
-      newSecurityInfo[index] = {
-        ...newSecurityInfo[index],
-        [name]: value
-      };
-      return {
-        ...prev,
-        securityInfo: newSecurityInfo
-      };
-    });
-  };
-
-  // Add function to add new entries
-  const addNewEntries = () => {
-    setFormData(prev => ({
-      ...prev,
-      environmentInfo: [...prev.environmentInfo, {
-        environment: '',
-        serverName: '',
-        ip: '',
-        serverType: '',
-        serverRole: '',
-        serverDuty: '',
-        database: '',
-        application: '',
-        operatingSystem: '',
-        servicePack: '',
-        build: '',
-        cpu: '',
-        ram: '',
-        disk: '',
-        dr: '',
-        joinDomain: '',
-        windowsCluster: '',
-        productionUnit: [] as string[]
-      }],
-      connectionInfo: [...prev.connectionInfo, {
-        ad: 'NO',
-        adfs: 'NO',
-        dns: 'NO',
-        ntp: 'NO',
-        tpam: 'NO',
-        netka: 'NO',
-        fim: 'NO',
-        ftpServer: 'NO',
-        ftpGoAnywhereMFTServer: 'NO',
-        emailSmtp: 'NO',
-        sms: 'NO',
-        apiManagement: 'NO',
-        dv: 'NO',
-        snmp: 'NO'
-      }],
-      securityInfo: [...prev.securityInfo, {
-        urlWebsite: '',
-        certificateExpireDate: '',
-        backupPolicy: '',
-        downtimeAllowed: '',
-        centralizeLog: 'NO',
-        setupAgentPatch: 'NO',
-        internetFacing: 'NO'
-      }]
-    }));
-  };
-
-  // Add function to remove entries
-  const removeEntries = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      environmentInfo: prev.environmentInfo.filter((_, i) => i !== index),
-      connectionInfo: prev.connectionInfo.filter((_, i) => i !== index),
-      securityInfo: prev.securityInfo.filter((_, i) => i !== index)
-    }));
-  };
 
 
-  const handleDateChange = (date: Date | null, index: number) => {
-    setFormData(prev => {
-      const newSecurityInfo = [...prev.securityInfo];
-      newSecurityInfo[index] = {
-        ...newSecurityInfo[index],
-        certificateExpireDate: date ? date.toISOString().split('T')[0] : ''
-      };
-      return {
-        ...prev,
-        securityInfo: newSecurityInfo
-      };
-    });
-  };
+ 
+    const {
+      currentStep,
+      formData,
+      errors,
+      isSubmitting,
+      isSubmitted,
+      handleChange,
+      nextStep,
+      prevStep,
+      handleSubmit,
+      handleEnvironmentChange,
+      handleConnectionChange,
+      handleSecurityChange,
+      handleDateChange,
+      addNewEntries,
+      removeEntries
+    } = useFormHandlers();
+ 
+
+
 
   return (
     <div className="min-h-screen bg-[rgb(17,17,16)] py-8">

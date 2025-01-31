@@ -10,7 +10,7 @@ import { FiServer, FiShield, FiDatabase, FiLink,FiArrowLeft } from 'react-icons/
 import {useCSVImport} from './csv_function';
 // 
 import StyledWrapper  from '../../../components/neoninput';
-import {backButtonVariants,backIconVariants,buttonVariants,iconVariants} from './animation'
+import {backButtonVariants,backIconVariants,buttonVariants,iconVariants,fadeInUp} from './animation'
 import Checkbox3d from '../../../components/checkbox3d'
 // 
 import ModernDropdown from '../../../components/ModernDropdown';
@@ -18,36 +18,20 @@ import CustomDatePicker from '../../../components/CustomDatePicker';
 import { validateForm } from '../../../utils/validation';
 // 
 // steper
+
+import {iconstrper} from './iconstrper'
 import {ColorlibConnector,ColorlibStepIconRoot,CustomStepLabel} from './color' 
 import {colors,shadows,line} from '@/styles/theme'
 // 
 import Stack from '@mui/material/Stack';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
-import { motion, type Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 
-import { styled } from '@mui/material/styles';// ย้ายไปอีกไฟล์
-
-import { StepIconProps } from '@mui/material/StepIcon';
-import Check from '@mui/icons-material/Check';
-import DescriptionIcon from '@mui/icons-material/Description';
-import StorageIcon from '@mui/icons-material/Storage';
-import LinkIcon from '@mui/icons-material/Link';
-import SecurityIcon from '@mui/icons-material/Security';
 import Button from '../../../components/button/next';
 import DeleteButton from '../../../components/button/delete';
-
-import { 
-  FormData, 
-  CSVValidationResult, 
-  CSVRowData, 
-  FormChangeEvent,
-  ValidationErrors,
-  EnvironmentInfo,
-  ConnectionInfo,
-  SecurityInfo
-} from '../../../types/inputform';
+import { FormData, FormChangeEvent, ValidationErrors} from '../../../types/inputform';
 import {ENVIRONMENT_OPTIONS,
   SERVER_TYPE_OPTIONS,
   SERVER_ROLE_OPTIONS,
@@ -63,23 +47,24 @@ import {ENVIRONMENT_OPTIONS,
 // Add custom styles for the StepLabel text
 
 
-function ColorlibStepIcon(props: StepIconProps) {
-  const { active, completed, className } = props;
+// function ColorlibStepIcon(props: StepIconProps) {
+//   const { active, completed, className } = props;
 
-  const icons: { [index: string]: React.ReactElement } = {
-    1: <DescriptionIcon />,
-    2: <StorageIcon />,
-    3: <LinkIcon />,
-    4: <SecurityIcon />,
-  };
+//   const icons: { [index: string]: React.ReactElement } = {
+//     1: <DescriptionIcon />,
+//     2: <StorageIcon />,
+//     3: <LinkIcon />,
+//     4: <SecurityIcon />,
+//   };
 
-  return (
-    <ColorlibStepIconRoot ownerState={{ completed, active }} className={className}>
-      {icons[String(props.icon)]}
-    </ColorlibStepIconRoot>
-  );
-}
-const steps = ['ข้อมูลระบบ (Systeminfo)', 'สภาพแวดล้อม (Environment)', 'การเชื่อมต่อ (ConnectionInfo)', 'ความปลอดภัย (Security)'];
+//   return (
+//     <ColorlibStepIconRoot ownerState={{ completed, active }} className={className}>
+//       {icons[String(props.icon)]}
+//     </ColorlibStepIconRoot>
+//   );
+// }
+// const steps = ['ข้อมูลระบบ (Systeminfo)', 'สภาพแวดล้อม (Environment)', 'การเชื่อมต่อ (ConnectionInfo)', 'ความปลอดภัย (Security)'];
+
 
 export default function CreateSystem() {
   const router = useRouter();
@@ -91,7 +76,10 @@ export default function CreateSystem() {
     handleConfirmImport, 
     handleClosePreview 
   } = useCSVImport();
-
+  const { 
+    steps,
+    ColorlibStepIcon
+  } = iconstrper();
   // สร้าง state สำหรับควบคุมขั้นตอน
   const [currentStep, setCurrentStep] = useState(1);
   
@@ -166,8 +154,6 @@ export default function CreateSystem() {
       [name]: value
     }));
   };
-
-
 
   // ฟังก์ชันสำหรับไปขั้นตอนถัดไป
   const nextStep = () => {
@@ -358,34 +344,6 @@ export default function CreateSystem() {
     }));
   };
 
-
-
-  // Animation variants
-  const fadeInUp = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.5 }
-  };
-
-  const buttonHover = {
-    scale: 1.05,
-    transition: { duration: 0.2 }
-  };
-
-  const buttonTap = {
-    scale: 0.95
-  };
-
-  // Get step icon based on current step
-  const getStepIcon = (step: number) => {
-    switch(step) {
-      case 1: return <FiDatabase className="w-6 h-6" />;
-      case 2: return <FiServer className="w-6 h-6" />;
-      case 3: return <FiLink className="w-6 h-6" />;
-      case 4: return <FiShield className="w-6 h-6" />;
-      default: return null;
-    }
-  };
 
   const handleDateChange = (date: Date | null, index: number) => {
     setFormData(prev => {

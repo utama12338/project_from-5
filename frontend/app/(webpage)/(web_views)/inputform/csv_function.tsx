@@ -142,3 +142,15 @@ export const useCSVImport = () => {
     handleClosePreview
   };
 };
+
+
+  // Get step icon based on current step
+  // const getStepIcon = (step: number) => {
+  //   switch(step) {
+  //     case 1: return <FiDatabase className="w-6 h-6" />;
+  //     case 2: return <FiServer className="w-6 h-6" />;
+  //     case 3: return <FiLink className="w-6 h-6" />;
+  //     case 4: return <FiShield className="w-6 h-6" />;
+  //     default: return null;
+  //   }
+  // };

@@ -10,7 +10,7 @@ import Checkbox3d from '../../../components/checkbox3d'
 // 
 import ModernDropdown from '../../../components/ModernDropdown';
 import CustomDatePicker from '../../../components/CustomDatePicker';
-import { validateForm } from '../../../utils/validation';
+
 // 
 // steper
 
@@ -41,7 +41,7 @@ import {ENVIRONMENT_OPTIONS,
   }from '@/types/optionselect';
 
 export default function CreateSystem() {
-  const router = useRouter();
+
   const { 
     showPreview, 
     csvData, 

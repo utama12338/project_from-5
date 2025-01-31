@@ -161,7 +161,8 @@ export default function CreateSystem() {
           initial="initial"
           animate="animate"
         >
-          <form onSubmit={handleSubmit} className="space-y-8">
+          {/* เปลี่ยนจาก form เป็น div เพื่อป้องกัน default HTML5 validation */}
+          <div className="space-y-8">
             {/* Step 1: ข้อมูลระบบพื้นฐาน */}
             {currentStep === 1 && (
               <motion.div className="space-y-4" variants={fadeInUp}>
@@ -1103,7 +1104,14 @@ export default function CreateSystem() {
               )}
               
               <Button 
-                onClick={currentStep < 4 ? nextStep : handleSubmit}
+                  onClick={async (e) => {
+                  e.preventDefault();
+                  if (currentStep < 4) {
+                    nextStep();
+                  } else {
+                    await handleSubmit(e as React.FormEvent);
+                  }
+                }}
                 isSubmit={currentStep === 4}
                 isLoading={isSubmitting}
                 disabled={isSubmitting || isSubmitted}
@@ -1114,7 +1122,7 @@ export default function CreateSystem() {
               </Button>
             </motion.div>
 
-          </form>
+          </div>
         </motion.div>
       </motion.div>
 

@@ -1,4 +1,4 @@
-  import { useState } from 'react';
+import { useState } from 'react';
   import { api } from '../../../services/api';
   import { useRouter } from 'next/navigation';
   import Swal from 'sweetalert2';
@@ -103,44 +103,44 @@
       return;
     }
 
-    // ตรวจสอบเฉพาะเมื่ออยู่ในขั้นตอนสุดท้าย
-    if (currentStep === 4) {
-      const validationErrors = validateForm(currentStep, formData);
-      if (Object.keys(validationErrors).length === 0) {
-        try {
-          setIsSubmitting(true);
-          const response = await api.createSystem(formData);
-          console.log('Success:', response);
-          
-          setIsSubmitted(true);
-          router.push('/form');
-          
-          Swal.fire({
-            title: 'บันทึกสำเร็จ!',
-            text: 'ข้อมูลของคุณถูกบันทึกเรียบร้อยแล้ว',
-            icon: 'success',
-            confirmButtonText: 'ตกลง'
-          });
-        } catch (error) {
-          console.error('Error saving data:', error);
-          Swal.fire({
-            title: 'เกิดข้อผิดพลาด!',
-            text: 'ไม่สามารถบันทึกข้อมูลได้',
-            icon: 'error',
-            confirmButtonText: 'ตกลง'
-          });
-        } finally {
-          setIsSubmitting(false);
-        }
-      } else {
-        setErrors(validationErrors);
-        Swal.fire({
-          title: 'ข้อมูลไม่ครบถ้วน!',
-          text: 'กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง',
-          icon: 'warning',
-          confirmButtonText: 'ตกลง'
-        });
-      }
+    // ตรวจสอบความถูกต้องของข้อมูลด้วย validateForm แทนการใช้ HTML5 validation
+    const validationErrors = validateForm(currentStep, formData);
+    
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      Swal.fire({
+        title: 'ข้อมูลไม่ครบถ้วน!',
+        text: 'กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง',
+        icon: 'warning',
+        confirmButtonText: 'ตกลง'
+      });
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const response = await api.createSystem(formData);
+      console.log('Success:', response);
+      
+      setIsSubmitted(true);
+      router.push('/form');
+      
+      Swal.fire({
+        title: 'บันทึกสำเร็จ!',
+        text: 'ข้อมูลของคุณถูกบันทึกเรียบร้อยแล้ว',
+        icon: 'success',
+        confirmButtonText: 'ตกลง'
+      });
+    } catch (error) {
+      console.error('Error saving data:', error);
+      Swal.fire({
+        title: 'เกิดข้อผิดพลาด!',
+        text: 'ไม่สามารถบันทึกข้อมูลได้',
+        icon: 'error',
+        confirmButtonText: 'ตกลง'
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -294,5 +294,4 @@
       removeEntries
     };
   };
-  
-  
+

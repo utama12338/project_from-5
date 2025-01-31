@@ -48,3 +48,10 @@ export const shadows = {
 export const transitions = {
   default: 'all 0.2s ease-in-out'
 };
+
+
+export const line = {
+  line:'linear-gradient(to right, rgb(236, 72, 153), rgb(168, 85, 247), rgb(59, 130, 246))'
+
+};
+

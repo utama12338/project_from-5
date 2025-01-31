@@ -11,7 +11,7 @@ import Checkbox3d from '../../../../components/checkbox3d';
 import { api } from '../../../../services/api';
 import { validateForm, ValidationErrors } from '../../../../utils/validation';
 import Swal from 'sweetalert2';
-import { colors, shadows, transitions } from '../../../../styles/theme';
+import { colors, shadows, transitions,line } from '../../../../styles/theme';
 
 import Agenda from '@/components/itemweb/edit_publish/agenda';
 import {ENVIRONMENT_OPTIONS,
@@ -836,7 +836,8 @@ const renderSecurityInfo = () => (
             initial={{ opacity: 0, width: 0 }}
             animate={{ opacity: 1, width: "200px" }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 mx-auto mt-4 rounded-full"
+            className="h-1 mx-auto mt-4 rounded-full"
+            style={{ background: line.line }}
           />
           <div className="flex justify-center mt-6 space-x-4">
             <motion.button

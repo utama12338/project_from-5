@@ -18,6 +18,8 @@ import CustomDatePicker from '../../../components/CustomDatePicker';
 import { validateForm } from '../../../utils/validation';
 // 
 // steper
+import {colors,shadows,line} from '@/styles/theme'
+// 
 import Stack from '@mui/material/Stack';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -125,20 +127,18 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   },
   [`&.${stepConnectorClasses.active}`]: {
     [`& .${stepConnectorClasses.line}`]: {
-      backgroundImage:
-        'linear-gradient( 95deg,rgb(236,72,153) 0%,rgb(244,114,182) 50%,rgb(255, 0, 144) 100%)',
+      backgroundImage: colors.gradient.primary,
     },
   },
   [`&.${stepConnectorClasses.completed}`]: {
     [`& .${stepConnectorClasses.line}`]: {
-      backgroundImage:
-        'linear-gradient( 95deg,rgb(236,72,153) 0%,rgb(244,114,182) 50%,rgb(255, 0, 144) 100%)',
+      backgroundImage: colors.gradient.primary,
     },
   },
   [`& .${stepConnectorClasses.line}`]: {
     height: 3,
     border: 0,
-    backgroundColor: '#eaeaf0',
+    backgroundColor: colors.background.tertiary,
     borderRadius: 1,
   },
 }));
@@ -146,9 +146,9 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
 const ColorlibStepIconRoot = styled('div')<{
   ownerState: { completed?: boolean; active?: boolean };
 }>(({ theme, ownerState }) => ({
-  backgroundColor: '#374151', // darker gray
+  backgroundColor: colors.background.tertiary,
   zIndex: 1,
-  color: '#fff',
+  color: colors.text.primary,
   width: 50,
   height: 50,
   display: 'flex',
@@ -156,26 +156,24 @@ const ColorlibStepIconRoot = styled('div')<{
   justifyContent: 'center',
   alignItems: 'center',
   ...(ownerState.active && {
-    backgroundImage:
-      'linear-gradient( 136deg, rgb(236,72,153) 0%, rgb(244,114,182) 50%, rgb(126, 0, 71) 100%)',
-    boxShadow: '0 4px 10px 0 rgba(236,72,153,.25)',
+    backgroundImage: colors.gradient.secondary,
+    boxShadow: shadows.primary,
   }),
   ...(ownerState.completed && {
-    backgroundImage:
-      'linear-gradient( 136deg, rgb(236,72,153) 0%, rgb(244,114,182) 50%, rgb(170, 0, 96) 100%)',
+    backgroundImage: colors.gradient.completed,
   }),
 }));
 
 // Add custom styles for the StepLabel text
 const CustomStepLabel = styled(StepLabel)({
   '& .MuiStepLabel-label': {
-    color: '#fff', // This makes the text white
+    color: colors.text.secondary,
   },
   '& .MuiStepLabel-label.Mui-active': {
-    color: '#fff', // Active state text color
+    color: colors.text.primary,
   },
   '& .MuiStepLabel-label.Mui-completed': {
-    color: '#fff', // Completed state text color
+    color: colors.text.primary,
   }
 });
 
@@ -641,19 +639,35 @@ export default function CreateSystem() {
         transition={{ duration: 0.5 }}
       >
         {/* Header */}
-        <div className="mb-8 flex justify-between items-center">
-          <motion.h2 
-            className="text-3xl font-bold text-white"
-            initial={{ x: -20 }}
-            animate={{ x: 0 }}
+        <div className="text-center mb-12">
+          <motion.h1 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
+            style={{ 
+              color: colors.text.primary,
+              background: `linear-gradient(to right, ${colors.button.primary.background}, ${colors.button.primary.hover})`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+            className="text-4xl font-bold tracking-tight mb-4"
           >
             เพิ่มข้อมูลระบบ
-          </motion.h2>
+          </motion.h1>
           <motion.div 
-            className="space-x-4"
-            whileHover={buttonHover}
-            whileTap={buttonTap}
+            initial={{ opacity: 0, width: 0 }}
+            animate={{ opacity: 1, width: "200px" }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            style={{
+              height: "2px",
+              background: line.line,
+              margin: "0 auto",
+              borderRadius: "4px"
+              
+            }}
+          />  
+          <div className="flex justify-center mt-6 space-x-4"
+          
           >
             <input
               type="file"
@@ -671,7 +685,7 @@ export default function CreateSystem() {
               <FiDatabase className="w-5 h-5" />
               <span>Import CSV</span>
             </button>
-          </motion.div>
+          </div>
         </div>
 
         {/* Replace existing progress steps with MUI Stepper */}

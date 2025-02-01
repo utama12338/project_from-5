@@ -354,25 +354,51 @@ const searchSystems = async (req: Request, res: Response) => {
       businessUnit 
     } = req.query;
 
+    // const systems = await prisma.systemInfo.findMany({
+    //   where: {
+    //     AND: [
+    //       systemName ? {
+    //         systemName: { contains: systemName as string, mode: 'insensitive' }
+    //       } : {},
+    //       developType ? { developType: developType as string } : {},
+    //       businessUnit ? {
+    //         businessUnit: { contains: businessUnit as string, mode: 'insensitive' }
+    //       } : {},
+    //       environment && serverName && ip ? {
+    //         environmentInfo: {
+    //           some: {
+    //             AND: [
+    //               environment ? { environment: environment as string } : {},
+    //               serverName ? {
+    //                 serverName: { contains: serverName as string, mode: 'insensitive' }
+    //               } : {},
+    //               ip ? { ip: { contains: ip as string } } : {},
+    //             ]
+    //           }
+    //         }
+    //       } : {}
+    //     ]
+    //   },
+    //   include: {
+    //     environmentInfo: true,
+    //     connectionInfo: true,
+    //     securityInfo: true,
+    //   }
+    // });
+
     const systems = await prisma.systemInfo.findMany({
       where: {
         AND: [
-          systemName ? {
-            systemName: { contains: systemName as string, mode: 'insensitive' }
-          } : {},
-          developType ? { developType: developType as string } : {},
-          businessUnit ? {
-            businessUnit: { contains: businessUnit as string, mode: 'insensitive' }
-          } : {},
-          environment || serverName || ip ? {
+          systemName ? { systemName: { equals: systemName as string } } : {},
+          developType ? { developType: { equals: developType as string } } : {},
+          businessUnit ? { businessUnit: { equals: businessUnit as string } } : {},
+          environment && serverName && ip ? {
             environmentInfo: {
               some: {
                 AND: [
-                  environment ? { environment: environment as string } : {},
-                  serverName ? {
-                    serverName: { contains: serverName as string, mode: 'insensitive' }
-                  } : {},
-                  ip ? { ip: { contains: ip as string } } : {},
+                  environment ? { environment: { equals: environment as string } } : {},
+                  serverName ? { serverName: { equals: serverName as string } } : {},
+                  ip ? { ip: { equals: ip as string } } : {},
                 ]
               }
             }
@@ -385,6 +411,7 @@ const searchSystems = async (req: Request, res: Response) => {
         securityInfo: true,
       }
     });
+    
 
     res.json(systems);
   } catch (error) {

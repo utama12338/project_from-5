@@ -363,25 +363,50 @@ exports.checkExistingSystem = checkExistingSystem;
 const searchSystems = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { systemName, serverName, environment, ip, developType, businessUnit } = req.query;
+        // const systems = await prisma.systemInfo.findMany({
+        //   where: {
+        //     AND: [
+        //       systemName ? {
+        //         systemName: { contains: systemName as string, mode: 'insensitive' }
+        //       } : {},
+        //       developType ? { developType: developType as string } : {},
+        //       businessUnit ? {
+        //         businessUnit: { contains: businessUnit as string, mode: 'insensitive' }
+        //       } : {},
+        //       environment && serverName && ip ? {
+        //         environmentInfo: {
+        //           some: {
+        //             AND: [
+        //               environment ? { environment: environment as string } : {},
+        //               serverName ? {
+        //                 serverName: { contains: serverName as string, mode: 'insensitive' }
+        //               } : {},
+        //               ip ? { ip: { contains: ip as string } } : {},
+        //             ]
+        //           }
+        //         }
+        //       } : {}
+        //     ]
+        //   },
+        //   include: {
+        //     environmentInfo: true,
+        //     connectionInfo: true,
+        //     securityInfo: true,
+        //   }
+        // });
         const systems = yield prisma.systemInfo.findMany({
             where: {
                 AND: [
-                    systemName ? {
-                        systemName: { contains: systemName, mode: 'insensitive' }
-                    } : {},
-                    developType ? { developType: developType } : {},
-                    businessUnit ? {
-                        businessUnit: { contains: businessUnit, mode: 'insensitive' }
-                    } : {},
-                    environment || serverName || ip ? {
+                    systemName ? { systemName: { equals: systemName } } : {},
+                    developType ? { developType: { equals: developType } } : {},
+                    businessUnit ? { businessUnit: { equals: businessUnit } } : {},
+                    environment && serverName && ip ? {
                         environmentInfo: {
                             some: {
                                 AND: [
-                                    environment ? { environment: environment } : {},
-                                    serverName ? {
-                                        serverName: { contains: serverName, mode: 'insensitive' }
-                                    } : {},
-                                    ip ? { ip: { contains: ip } } : {},
+                                    environment ? { environment: { equals: environment } } : {},
+                                    serverName ? { serverName: { equals: serverName } } : {},
+                                    ip ? { ip: { equals: ip } } : {},
                                 ]
                             }
                         }

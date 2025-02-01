@@ -52,3 +52,7 @@ export const DEVELOPER_TYPE = [
   'OUTSOURCE',
   'IN HOUSE'
 ]
+
+
+// เพิ่มค่าคงที่สำหรับตัวเลือก "ทั้งหมด"
+export const ALL_OPTION = 'ทั้งหมด';

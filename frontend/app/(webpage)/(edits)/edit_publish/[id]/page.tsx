@@ -527,7 +527,7 @@ const renderEnvironmentInfo = () => (
 
         {/* Environment Filter */}
         <ModernDropdown
-          options={['', ...ENVIRONMENT_OPTIONS]}
+          options={['ทั้งหมด', ...ENVIRONMENT_OPTIONS]}
           value={filterOptions.environment}
           onChange={(value) => setFilterOptions(prev => ({
             ...prev,
@@ -538,7 +538,7 @@ const renderEnvironmentInfo = () => (
 
         {/* Server Type Filter */}
         <ModernDropdown
-          options={['', ...SERVER_TYPE_OPTIONS]}
+          options={['ทั้งหมด', ...SERVER_TYPE_OPTIONS]}
           value={filterOptions.serverType}
           onChange={(value) => setFilterOptions(prev => ({
             ...prev,

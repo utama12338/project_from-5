@@ -431,7 +431,7 @@ export default function EditSystem() {
       const matchesSearch = 
         env.serverName.toLowerCase().includes(filterOptions.searchTerm.toLowerCase()) ||
         env.ip.toLowerCase().includes(filterOptions.searchTerm.toLowerCase()) ||
-        env.application.toLowerCase().includes(filterOptions.searchTerm.toLowerCase());
+        env.serverRole.toLowerCase().includes(filterOptions.searchTerm.toLowerCase());
       
       const matchesEnvironment = 
         !filterOptions.environment || 

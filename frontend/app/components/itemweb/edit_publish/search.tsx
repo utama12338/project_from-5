@@ -15,7 +15,7 @@ const Input: React.FC<InputProps> = ({ value, onChange }) => {
           name="text" 
           className="input" 
           required 
-          placeholder="ค้นหาด้วยชื่อเครื่อง,IP" 
+          placeholder="Servername, IP, Serverole" 
           value={value}
           onChange={onChange}
           autoComplete='off'
@@ -48,23 +48,44 @@ const StyledWrapper = styled.div`
     outline: none;
     width: var(--size-button);
     transition: all ease 0.3s;
-    background-color: #191A1E;
-    box-shadow: 1.5px 1.5px 3px #0e0e0e, -1.5px -1.5px 3px rgb(95 94 94 / 25%), inset 0px 0px 0px #0e0e0e, inset 0px -0px 0px #5f5e5e;
+    background-color: rgb(20, 20, 19);
+    box-shadow: 1.5px 1.5px 3px #0e0e0e, -1.5px -1.5px 3px rgb(95 94 94 / 25%);
     border-radius: 50px;
     cursor: pointer;
   }
 
   .input:focus,
   .input:not(:invalid) {
-    width: 200px;
+    width: 400px;
     cursor: text;
-    box-shadow: 0px 0px 0px #0e0e0e, 0px 0px 0px rgb(95 94 94 / 25%), inset 1.5px 1.5px 3px #0e0e0e, inset -1.5px -1.5px 3px #5f5e5e;
+    animation: rgbShadow 2s infinite linear;
+  }
+
+  .input:hover {
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+    transform: translateY(-1px);
+  }
+
+  @keyframes rgbShadow {
+    0% {
+      box-shadow: -2px -2px 15px #ff0000, 2px 2px 15px #0000ff;
+    }
+    33% {
+      box-shadow: -2px -2px 15px #00ff00, 2px 2px 15px #ff0000;
+    }
+    66% {
+      box-shadow: -2px -2px 15px #0000ff, 2px 2px 15px #00ff00;
+    }
+    100% {
+      box-shadow: -2px -2px 15px #ff0000, 2px 2px 15px #0000ff;
+    }
   }
 
   .input:focus + .icon,
   .input:not(:invalid) + .icon {
     pointer-events: all;
     cursor: pointer;
+    filter: drop-shadow(0 0 5px rgba(255, 0, 255, 0.5));
   }
 
   .container .icon {
@@ -75,11 +96,13 @@ const StyledWrapper = styled.div`
     left: 0;
     padding: 8px;
     pointer-events: none;
+    transition: all 0.3s ease;
   }
 
   .container .icon svg {
     width: 100%;
     height: 100%;
-  }`;
+  }
+`;
 
 export default Input;

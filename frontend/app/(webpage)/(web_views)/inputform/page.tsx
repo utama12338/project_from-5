@@ -751,7 +751,7 @@ export default function CreateSystem() {
                       <h4 className="font-medium text-gray-100">
                         Server Name: {formData.environmentInfo[index]?.serverName || 'N/A'}
                       </h4>
-<DeleteButton onClick={() => removeEntries(index)} />
+                  <DeleteButton onClick={() => removeEntries(index)} />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                       <div>

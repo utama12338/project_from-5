@@ -12,7 +12,7 @@ import { api } from '../../../../services/api';
 import { validateForm, ValidationErrors } from '../../../../utils/validation';
 import Swal from 'sweetalert2';
 import { colors, shadows, transitions,line } from '../../../../styles/theme';
-
+import DeleteButton from '../../../../components/button/delete';
 import Agenda from '@/components/itemweb/edit_publish/agenda';
 import {ENVIRONMENT_OPTIONS,
   SERVER_TYPE_OPTIONS,
@@ -756,14 +756,12 @@ const renderEnvironmentInfo = () => (
                   />
               </div>
             </details>
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={() => removeEnvironmentInfo(index)}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
-              >
-                ลบ
-              </button>
-            </div>
+           <div className="flex justify-end mt-4">
+                  <DeleteButton 
+                    onClick={() => removeEnvironmentInfo(index)} 
+                  />
+                  
+                </div>
           </div>
         ))
     )}

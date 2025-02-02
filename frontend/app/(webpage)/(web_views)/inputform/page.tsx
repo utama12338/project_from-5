@@ -28,6 +28,7 @@ import { useFormHandlers } from './function_handle';
 
 import Button from '../../../components/button/next';
 import DeleteButton from '../../../components/button/delete';
+import AddNewEntriesButton from '../../../components/button/addNewEntries';
 
 import {ENVIRONMENT_OPTIONS,
   SERVER_TYPE_OPTIONS,
@@ -319,37 +320,7 @@ export default function CreateSystem() {
                   <h3 className="text-lg font-medium text-gray-100">
                     ข้อมูลสภาพแวดล้อม - {formData.systemName || 'ไม่ระบุชื่อระบบ'}
                   </h3>
-                  
-                                    
-
-                    <motion.button
-                      type="button"
-                      onClick={addNewEntries}
-                      className="group px-4 py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 
-                        text-white rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700
-                        transform transition-all duration-200 hover:shadow-xl
-                        flex items-center space-x-2 font-medium"
-                      variants={buttonVariants}
-                      whileHover="hover"
-                      whileTap="tap"
-                    >
-                      <motion.svg 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        className="h-5 w-5"
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        stroke="currentColor"
-                        variants={iconVariants}
-                      >
-                        <path 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round" 
-                          strokeWidth={2} 
-                          d="M12 4v16m8-8H4" 
-                        />
-                      </motion.svg>
-                      <span>{BUTTON_LABELS.add}</span>
-                    </motion.button>
+                  <AddNewEntriesButton onClick={addNewEntries} />
                 </div>
                 {formData.environmentInfo.map((env, index) => (
                   <div key={index} className="space-y-4 bg-[rgb(32,32,31)] p-4 rounded-lg">

@@ -1,11 +1,11 @@
 export const SYSTEM_LABELS = {
   systemName: "ชื่อระบบ servername",
   developType: "ประเภทการพัฒนา",
-  contractNo: "เลขที่สัญญา", 
-  vendorContactNo: "เลขที่ติดต่อผู้ขาย",
-  businessUnit: "หน่วยธุรกิจ",
-  developUnit: "หน่วยพัฒนา",
-  computerBackup: "Computer Backup"
+  contractNo: "เลขที่สัญญา Contract number", 
+  vendorContactNo: "เลขที่ติดต่อผู้ขาย Contract no",
+  businessUnit: "หน่วยธุรกิจ business unit",
+  developUnit: "หน่วยพัฒนา Development unit",
+  computerBackup: "คอมพิ้วเตอร์สำรอง Computer Backup"
 };
 
 export const ENVIRONMENT_LABELS = {
@@ -15,9 +15,9 @@ export const ENVIRONMENT_LABELS = {
   serverType: "Server Type",
   serverRole: "Server Role",
   serverDuty: "Server Duty",
-  database: "ฐานข้อมูล",
-  application: "แอปพลิเคชัน",
-  operatingSystem: "ระบบปฏิบัติการ",
+  database: "ฐานข้อมูล Database",
+  application: "แอปพลิเคชัน application",
+  operatingSystem: "ระบบปฏิบัติการ operation system",
   servicePack: "Service Pack",
   build: "Build",
   cpu: "CPU",
@@ -73,7 +73,9 @@ export const BUTTON_LABELS = {
   save: "บันทึก",
   delete: "ลบ",
   showMore: "แสดงรายละเอียดเพิ่มเติม",
-  add: "เพิ่ม"
+  add: "เพิ่ม",
+  back: "ย้ายกลับ",
+  next: "ถัดไป"
 };
 
 export const ERROR_MESSAGES = {

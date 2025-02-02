@@ -40,6 +40,14 @@ import {ENVIRONMENT_OPTIONS,
   DEVELOPER_TYPE
   }from '@/types/optionselect';
 
+import { 
+  SYSTEM_LABELS, 
+  ENVIRONMENT_LABELS, 
+  CONNECTION_LABELS, 
+  SECURITY_LABELS, 
+  BUTTON_LABELS 
+} from '@/constants/labels';
+
 export default function CreateSystem() {
 
   const { 
@@ -172,7 +180,7 @@ export default function CreateSystem() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-100">
-                      ชื่อระบบ System name
+                      {SYSTEM_LABELS.systemName}
                     </label>
                     <StyledWrapper>
                     <input  
@@ -197,7 +205,7 @@ export default function CreateSystem() {
                       onChange={(value) => handleChange({
                         target: { name: 'developType', value }
                       } as any)}
-                      label="ประเภทการพัฒนา Develop Type"
+                      label={SYSTEM_LABELS.developType}
                       required
                       placeholder="เลือกประเภทการพัฒนา"
                     />
@@ -208,7 +216,7 @@ export default function CreateSystem() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-100">
-                      เลขที่สัญญา Contract NO.
+                      {SYSTEM_LABELS.contractNo}
                     </label>
                     <StyledWrapper>
                     <input
@@ -229,7 +237,7 @@ export default function CreateSystem() {
 
                   <div>
                     <label className="block teBusiness Unitxt-sm font-medium text-gray-100">
-                    บริษัทคู่สัญญา  / ติดต่อ   Vendor / Contact NO.
+                    {SYSTEM_LABELS.vendorContactNo}
                     </label>  
                     <StyledWrapper>
                     <input
@@ -250,7 +258,7 @@ export default function CreateSystem() {
 
                   <div>
                     <label className="block teBusiness Unitxt-sm font-medium text-gray-100">
-                    หน่วยงานเจ้าของระบบงาน Business Unit
+                    {SYSTEM_LABELS.businessUnit}
                     </label>
                     <StyledWrapper>
                     <input
@@ -276,7 +284,7 @@ export default function CreateSystem() {
                       onChange={(value) => handleChange({
                         target: { name: 'developUnit', value }
                       } as any)}
-                      label="ผู้รับผิดชอบของทีมพัฒนา Develop Unit"
+                      label={SYSTEM_LABELS.developUnit}
                       required
                       placeholder="เลือกผู้รับผิดชอบ"
                     />
@@ -292,7 +300,7 @@ export default function CreateSystem() {
                       onChange={(value) => handleChange({
                         target: { name: 'computerbackup', value }
                       } as any)}
-                      label="Computer Backup"
+                      label={SYSTEM_LABELS.computerBackup}
                       required
                       placeholder="Select Option"
                     />
@@ -340,7 +348,7 @@ export default function CreateSystem() {
                           d="M12 4v16m8-8H4" 
                         />
                       </motion.svg>
-                      <span>เพิ่มข้อมูล</span>
+                      <span>{BUTTON_LABELS.add}</span>
                     </motion.button>
                 </div>
                 {formData.environmentInfo.map((env, index) => (
@@ -360,7 +368,7 @@ export default function CreateSystem() {
                               onChange={(value) => handleEnvironmentChange({
                                 target: { name: 'environment', value }
                               }, index)}
-                              label="Environment"
+                              label={ENVIRONMENT_LABELS.environment}
                               required
                               placeholder="Select Environment"
                             />
@@ -372,7 +380,7 @@ export default function CreateSystem() {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
-                          Server Name
+                          {ENVIRONMENT_LABELS.serverName}
                         </label>
                         <StyledWrapper>
                         <input
@@ -393,7 +401,7 @@ export default function CreateSystem() {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
-                          IP Address
+                          {ENVIRONMENT_LABELS.ip}
                         </label>
                         <StyledWrapper>
                         <input
@@ -419,7 +427,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleEnvironmentChange({
                             target: { name: 'serverType', value }
                           }, index)}
-                          label="Server Type"
+                          label={ENVIRONMENT_LABELS.serverType}
                           required
                           placeholder="Select Server Type"
                         />
@@ -436,7 +444,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleEnvironmentChange({
                             target: { name: 'serverRole', value }
                           }, index)}
-                          label="Server Role"
+                          label={ENVIRONMENT_LABELS.serverRole}
                           required
                           placeholder="Select Server Role"
                         />
@@ -452,7 +460,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleEnvironmentChange({
                             target: { name: 'serverDuty', value }
                           }, index)}
-                          label="Server Duty"
+                          label={ENVIRONMENT_LABELS.serverDuty}
                           required
                           placeholder="Select Server Duty"
                         />
@@ -463,7 +471,7 @@ export default function CreateSystem() {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
-                          Database
+                          {ENVIRONMENT_LABELS.database}
                         </label>
                         <StyledWrapper>
                         <input
@@ -485,7 +493,7 @@ export default function CreateSystem() {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
-                          Application
+                          {ENVIRONMENT_LABELS.application}
                         </label>
                         <StyledWrapper>
                         <input
@@ -507,7 +515,7 @@ export default function CreateSystem() {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
-                          Operating System
+                          {ENVIRONMENT_LABELS.operatingSystem}
                         </label>
                         <StyledWrapper>
                         <input
@@ -528,7 +536,7 @@ export default function CreateSystem() {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
-                          Service Pack
+                          {ENVIRONMENT_LABELS.servicePack}
                         </label>
                         <StyledWrapper>
                         <input
@@ -549,7 +557,7 @@ export default function CreateSystem() {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
-                          Build
+                          {ENVIRONMENT_LABELS.build}
                         </label>
                         <StyledWrapper>
                         <input
@@ -570,7 +578,7 @@ export default function CreateSystem() {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
-                          CPU
+                          {ENVIRONMENT_LABELS.cpu}
                         </label>
                         <StyledWrapper>
                         <input
@@ -591,7 +599,7 @@ export default function CreateSystem() {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
-                          RAM
+                          {ENVIRONMENT_LABELS.ram}
                         </label>
                         <StyledWrapper>
                         <input
@@ -612,7 +620,7 @@ export default function CreateSystem() {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
-                          Disk
+                          {ENVIRONMENT_LABELS.disk}
                         </label>
                         <StyledWrapper>
                         <input
@@ -638,7 +646,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleEnvironmentChange({
                             target: { name: 'dr', value }
                           }, index)}
-                          label="DR"
+                          label={ENVIRONMENT_LABELS.dr}
                           required
                           placeholder="Select DR/DC"
                         />
@@ -654,7 +662,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleEnvironmentChange({
                             target: { name: 'joinDomain', value }
                           }, index)}
-                          label="Join Domain"
+                          label={ENVIRONMENT_LABELS.joinDomain}
                           required
                           placeholder="Select Option"
                         />
@@ -670,7 +678,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleEnvironmentChange({
                             target: { name: 'windowsCluster', value }
                           }, index)}
-                          label="Windows Cluster"
+                          label={ENVIRONMENT_LABELS.windowsCluster}
                           required
                           placeholder="Select Option"
                         />
@@ -681,7 +689,7 @@ export default function CreateSystem() {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100 mb-2">
-                          Production Unit
+                          {ENVIRONMENT_LABELS.productionUnit}
                         </label>
                         <div className={`grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 rounded-md ${
                           errors[`productionUnit-${index}`] ? 'border-red-500' : 'bg-[rgb(32,32,31)] text-gray-100'
@@ -753,7 +761,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'ad', value }
                           } as any, index)}
-                          label="Active Directory (AD)"
+                          label={CONNECTION_LABELS.ad}
                           required
                           placeholder="Select Option"
                         />
@@ -766,7 +774,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'adfs', value }
                           } as any, index)}
-                          label="ADFS"
+                          label={CONNECTION_LABELS.adfs}
                           required
                           placeholder="Select Option"
                         />
@@ -779,7 +787,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'dns', value }
                           } as any, index)}
-                          label="DNS"
+                          label={CONNECTION_LABELS.dns}
                           required
                           placeholder="Select Option"
                         />
@@ -792,7 +800,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'ntp', value }
                           } as any, index)}
-                          label="NTP"
+                          label={CONNECTION_LABELS.ntp}
                           required
                           placeholder="Select Option"
                         />
@@ -805,7 +813,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'tpam', value }
                           } as any, index)}
-                          label="TPAM"
+                          label={CONNECTION_LABELS.tpam}
                           required
                           placeholder="Select Option"
                         />
@@ -818,7 +826,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'netka', value }
                           } as any, index)}
-                          label="Netka"
+                          label={CONNECTION_LABELS.netka}
                           required
                           placeholder="Select Option"
                         />
@@ -831,7 +839,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'fim', value }
                           } as any, index)}
-                          label="FIM"
+                          label={CONNECTION_LABELS.fim}
                           required
                           placeholder="Select Option"
                         />
@@ -844,7 +852,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'ftpServer', value }
                           } as any, index)}
-                          label="FTP Server"
+                          label={CONNECTION_LABELS.ftpServer}
                           required
                           placeholder="Select Option"
                         />
@@ -857,7 +865,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'ftpGoAnywhereMFTServer', value }
                           } as any, index)}
-                          label="FTP GoAnywhere MFT Server"
+                          label={CONNECTION_LABELS.ftpGoAnywhereMFTServer}
                           required
                           placeholder="Select Option"
                         />
@@ -870,7 +878,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'emailSmtp', value }
                           } as any, index)}
-                          label="Email SMTP"
+                          label={CONNECTION_LABELS.emailSmtp}
                           required
                           placeholder="Select Option"
                         />
@@ -883,7 +891,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'sms', value }
                           } as any, index)}
-                          label="SMS"
+                          label={CONNECTION_LABELS.sms}
                           required
                           placeholder="Select Option"
                         />
@@ -896,7 +904,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'apiManagement', value }
                           } as any, index)}
-                          label="API Management"
+                          label={CONNECTION_LABELS.apiManagement}
                           required
                           placeholder="Select Option"
                         />
@@ -909,7 +917,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'dv', value }
                           } as any, index)}
-                          label="DV"
+                          label={CONNECTION_LABELS.dv}
                           required
                           placeholder="Select Option"
                         />
@@ -922,7 +930,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'snmp', value }
                           } as any, index)}
-                          label="SNMP"
+                          label={CONNECTION_LABELS.snmp}
                           required
                           placeholder="Select Option"
                         />
@@ -952,7 +960,7 @@ export default function CreateSystem() {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
-                          URL Website
+                          {SECURITY_LABELS.urlWebsite}
                         </label>
                         <StyledWrapper>
                         <input
@@ -973,7 +981,7 @@ export default function CreateSystem() {
 
                       <div   >
                         <label className="block text-sm font-medium text-gray-100">
-                          Certificate Expire Date
+                          {SECURITY_LABELS.certificateExpireDate}
                         </label>
                         <StyledWrapper  style={{ position: 'relative', zIndex: 1000 }}>
                           <CustomDatePicker
@@ -992,7 +1000,7 @@ export default function CreateSystem() {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
-                          Backup Policy
+                          {SECURITY_LABELS.backupPolicy}
                         </label>
                         <StyledWrapper>
                         <input
@@ -1013,7 +1021,7 @@ export default function CreateSystem() {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-100">
-                          Downtime Allowed
+                          {SECURITY_LABELS.downtimeAllowed}
                         </label>
                         <StyledWrapper>
                         <input
@@ -1039,7 +1047,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleSecurityChange({
                             target: { name: 'centralizeLog', value }
                           } as any, index)}
-                          label="Centralize Log"
+                          label={SECURITY_LABELS.centralizeLog}
                           required
                           placeholder="Select Option"
                         />
@@ -1052,7 +1060,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleSecurityChange({
                             target: { name: 'setupAgentPatch', value }
                           } as any, index)}
-                          label="Setup Agent Patch"
+                          label={SECURITY_LABELS.setupAgentPatch}
                           required
                           placeholder="Select Option"
                         />
@@ -1065,7 +1073,7 @@ export default function CreateSystem() {
                           onChange={(value) => handleSecurityChange({
                             target: { name: 'internetFacing', value }
                           } as any, index)}
-                          label="Internet Facing"
+                          label={SECURITY_LABELS.internetFacing}
                           required
                           placeholder="Select Option"
                         />
@@ -1099,7 +1107,7 @@ export default function CreateSystem() {
   <motion.div variants={backIconVariants}>
     <FiArrowLeft className="h-5 w-5" />
   </motion.div>
-  <span>ย้อนกลับ</span>
+  <span>{BUTTON_LABELS.back}</span>
 </motion.button>
               )}
               
@@ -1118,7 +1126,7 @@ export default function CreateSystem() {
                 currentStep={currentStep}
                 totalSteps={4}
               >
-                {currentStep === 4 ? 'บันทึกข้อมูล' : 'ถัดไป'}
+                {currentStep === 4 ? BUTTON_LABELS.save : BUTTON_LABELS.next}
               </Button>
             </motion.div>
 

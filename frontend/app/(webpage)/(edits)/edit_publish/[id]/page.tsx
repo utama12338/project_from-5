@@ -226,7 +226,14 @@ interface FilterOptions {
   searchTerm: string;
 }
 
-
+const SectionContainer = ({ title, children }: { title: string, children: React.ReactNode }) => (
+  <div className="bg-[rgb(32,32,31)] rounded-lg p-6 mb-6">
+    <h3 className="text-xl font-medium text-gray-100 mb-4 pb-3">
+      {title}
+    </h3>
+    {children}
+  </div>
+);
 
 export default function EditSystem() {
   const [activeTab, setActiveTab] = useState('system');
@@ -535,86 +542,75 @@ export default function EditSystem() {
 
 const renderEnvironmentInfo = () => (
   <div className="space-y-8">
-    {/* Filter Controls */}
-    <div className="bg-[rgb(27,27,26)] p-4 rounded-lg">
-     
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* แทนที่ search input ด้วย component Search */}
-          <Input
-            value={filterOptions.searchTerm}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
-              setFilterOptions(prev => ({
-                ...prev,
-                searchTerm: e.target.value
-              }))
-            }
-          />
-
-          {/* Environment Filter - เพิ่ม "ทั้งหมด" */}
-          <ModernDropdown
-            options={[ALL_OPTION,  ...ENVIRONMENT_OPTIONS]}
-            value={filterOptions.environment || ALL_OPTION}
-            onChange={(value) => setFilterOptions(prev => ({
+    <SectionContainer title="ตัวกรองข้อมูล">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Input
+          value={filterOptions.searchTerm}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+            setFilterOptions(prev => ({
               ...prev,
-              environment: value === ALL_OPTION ? '' : value
-            }))}
-            placeholder="กรองตาม Environment"
-          />
-
-          {/* Server Type Filter - เพิ่ม "ทั้งหมด" */}
-          <ModernDropdown
-            options={[ALL_OPTION,  ...SERVER_TYPE_OPTIONS]}
-            value={filterOptions.serverType || ALL_OPTION}
-            onChange={(value) => setFilterOptions(prev => ({
-              ...prev,
-              serverType: value === ALL_OPTION ? '' : value
-            }))}
-            placeholder="กรองตามประเภทเซิร์ฟเวอร์"
-          />
-      
+              searchTerm: e.target.value
+            }))
+          }
+        />
+        <ModernDropdown
+          options={[ALL_OPTION,  ...ENVIRONMENT_OPTIONS]}
+          value={filterOptions.environment || ALL_OPTION}
+          onChange={(value) => setFilterOptions(prev => ({
+            ...prev,
+            environment: value === ALL_OPTION ? '' : value
+          }))}
+          placeholder="กรองตาม Environment"
+        />
+        <ModernDropdown
+          options={[ALL_OPTION,  ...SERVER_TYPE_OPTIONS]}
+          value={filterOptions.serverType || ALL_OPTION}
+          onChange={(value) => setFilterOptions(prev => ({
+            ...prev,
+            serverType: value === ALL_OPTION ? '' : value
+          }))}
+          placeholder="กรองตามประเภทเซิร์ฟเวอร์"
+        />
       </div>
-
-      {/* Results Summary - เพิ่มการแสดงตัวกรองที่เลือก */}
       <div className="mt-4 text-gray-300">
-  <div className="flex flex-col mb-4">
-    <div className="flex justify-between items-center">
-      <div>พบ {filteredIndexes.length} เครื่อง จากทั้งหมด {systemData.environmentInfo.length} เครื่อง</div>
-      <AddNewEntriesButton onClick={addEnvironmentInfo} />
-    </div>
-    <div className="text-sm mt-1">
-      {filterOptions.searchTerm && (
-        <span className="mr-3">
-          🔍 ค้นหา: {filterOptions.searchTerm}
-        </span>
-      )}
-      {filterOptions.environment && (
-        <span className="mr-3">
-          🌐 Environment: {filterOptions.environment}
-        </span>
-      )}
-      {filterOptions.serverType && (
-        <span>
-          💻 Server Type: {filterOptions.serverType}
-        </span>
-      )}
-    </div>
-  </div>
-</div>
-    </div>
+        <div className="flex flex-col mb-4">
+          <div className="flex justify-between items-center">
+            <div>พบ {filteredIndexes.length} เครื่อง จากทั้งหมด {systemData.environmentInfo.length} เครื่อง</div>
+            <AddNewEntriesButton onClick={addEnvironmentInfo} />
+          </div>
+          <div className="text-sm mt-1">
+            {filterOptions.searchTerm && (
+              <span className="mr-3">
+                🔍 ค้นหา: {filterOptions.searchTerm}
+              </span>
+            )}
+            {filterOptions.environment && (
+              <span className="mr-3">
+                🌐 Environment: {filterOptions.environment}
+              </span>
+            )}
+            {filterOptions.serverType && (
+              <span>
+                💻 Server Type: {filterOptions.serverType}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    </SectionContainer>
 
-    {/* ตรวจสอบว่ามีผลการค้นหาหรือไม่ */}
     {filteredIndexes.length === 0 ? (
       <NoResultsFound />
     ) : (
       systemData.environmentInfo
         .filter((_, index) => filteredIndexes.length === 0 || filteredIndexes.includes(index))
         .map((env, index) => (
-          <div key={index} className="bg-[rgb(27,27,26)] p-6 rounded-lg shadow-sm">
-            {/* Show environment summary first */}
+          <SectionContainer 
+            key={index} 
+            title={`${env.serverName || 'เครื่องใหม่'} (${env.ip || 'ยังไม่ระบุ IP'})`}
+          >
             <div className="border-b border-gray-700 pb-4 mb-4">
-              <h3 className="text-lg font-medium text-gray-100">
-                {env.serverName} ({env.ip})
-              </h3>
+              
               <div className="grid grid-cols-3 gap-4 mt-2 text-sm text-gray-300">
                 <div>Environment: {env.environment}</div>
                 <div>Type: {env.serverType}</div>
@@ -622,7 +618,6 @@ const renderEnvironmentInfo = () => (
               </div>
             </div>
 
-            {/* Expandable Details */}
             <details className="mt-4">
               <summary className="cursor-pointer text-gray-300 hover:text-white">
                 แสดงรายละเอียดเพิ่มเติม
@@ -770,7 +765,7 @@ const renderEnvironmentInfo = () => (
                   />
                   
                 </div>
-          </div>
+          </SectionContainer>
         ))
     )}
   </div>
@@ -784,12 +779,12 @@ const renderConnectionInfo = () => (
       systemData.connectionInfo
         .filter((_, index) => filteredIndexes.includes(index))
         .map((conn, index) => (
-          <div key={index} className="bg-[rgb(27,27,26)] p-6 rounded-lg shadow-sm">
-            {/* Show summary first */}
+          <SectionContainer
+            key={index}
+            title={`การเชื่อมต่อ: ${systemData.environmentInfo[index]?.serverName || 'ไม่มีชื่อ'}`}
+          >
             <div className="border-b border-gray-700 pb-4 mb-4">
-              <h3 className="text-lg font-medium text-gray-100">
-                {systemData.environmentInfo[index]?.serverName || 'ไม่มีชื่อ'}
-              </h3>
+             
               <div className="grid grid-cols-3 gap-4 mt-2 text-sm text-gray-300">
                 <div>AD: {conn.ad}</div>
                 <div>DNS: {conn.dns}</div>
@@ -797,7 +792,6 @@ const renderConnectionInfo = () => (
               </div>
             </div>
 
-            {/* Expandable Details */}
             <details className="mt-4">
               <summary className="cursor-pointer text-gray-300 hover:text-white">
                 แสดงรายละเอียดเพิ่มเติม
@@ -817,7 +811,6 @@ const renderConnectionInfo = () => (
                   options={YES_NO}
                   error={errors[`dns-${index}`]}
                 />
-                {/* ...rest of connection fields in 2 columns... */}
                 <FormFieldOption 
                   label={CONNECTION_LABELS.tpam}
                   value={conn.tpam}
@@ -904,27 +897,26 @@ const renderConnectionInfo = () => (
                 />
               </div>
             </details>
-          </div>
+          </SectionContainer>
         ))
     )}
-    {/* ...existing summary count... */}
   </div>
 );
 
 const renderSecurityInfo = () => (
-  <div className="space-y-6">
+  <div className="space-y-8">
     {filteredIndexes.length === 0 ? (
       <NoResultsFound />
     ) : (
       systemData.securityInfo
         .filter((_, index) => filteredIndexes.includes(index))
         .map((security, index) => (
-          <div key={index} className="bg-[rgb(27,27,26)] p-6 rounded-lg shadow-sm">
-            {/* Show summary first */}
+          <SectionContainer
+            key={index}
+            title={`ความปลอดภัย: ${systemData.environmentInfo[index]?.serverName || 'ไม่มีชื่อ'}`}
+          >
             <div className="border-b border-gray-700 pb-4 mb-4">
-              <h3 className="text-lg font-medium text-gray-100">
-                {systemData.environmentInfo[index]?.serverName || 'ไม่มีชื่อ'}
-              </h3>
+             
               <div className="grid grid-cols-3 gap-4 mt-2 text-sm text-gray-300">
                 <div>URL: {security.urlWebsite}</div>
                 <div>Backup: {security.backupPolicy}</div>
@@ -932,7 +924,6 @@ const renderSecurityInfo = () => (
               </div>
             </div>
 
-            {/* Expandable Details */}
             <details className="mt-4">
               <summary className="cursor-pointer text-gray-300 hover:text-white">
                 แสดงรายละเอียดเพิ่มเติม
@@ -1000,10 +991,9 @@ const renderSecurityInfo = () => (
                 />
               </div>
             </details>
-          </div>
+          </SectionContainer>
         ))
     )}
-    {/* ...existing summary count... */}
   </div>
 );
 

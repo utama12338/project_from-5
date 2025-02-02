@@ -27,6 +27,7 @@ import {ENVIRONMENT_OPTIONS,
 }from '@/types/optionselect';
 import {SystemData,EnvironmentInfo,ConnectionInfo,SecurityInfo}from'@/types/inputform'
 import Input from '@/components/itemweb/edit_publish/search';
+import AddNewEntriesButton from '@/components/button/addNewEntries';
 
 import {
   SYSTEM_LABELS,
@@ -377,7 +378,7 @@ export default function EditSystem() {
   const addEnvironmentInfo = () => {
     setSystemData(prev => ({
       ...prev,
-      environmentInfo: [...prev.environmentInfo, {
+      environmentInfo: [{  // Changed to add at the beginning of the array
         environment: '',
         serverName: '',
         ip: '',
@@ -396,8 +397,8 @@ export default function EditSystem() {
         joinDomain: '',
         windowsCluster: '',
         productionUnit: ''
-      }],
-      connectionInfo: [...prev.connectionInfo, {
+      }, ...prev.environmentInfo],
+      connectionInfo: [{  // Changed to add at the beginning of the array
         ad: 'NO',
         adfs: 'NO',
         dns: 'NO',
@@ -412,8 +413,8 @@ export default function EditSystem() {
         apiManagement: 'NO',
         dv: 'NO',
         snmp: 'NO'
-      }],
-      securityInfo: [...prev.securityInfo, {
+      }, ...prev.connectionInfo],
+      securityInfo: [{  // Changed to add at the beginning of the array
         urlWebsite: '',
         certificateExpireDate: '',
         backupPolicy: '',
@@ -421,7 +422,7 @@ export default function EditSystem() {
         centralizeLog: '',
         setupAgentPatch: '',
         internetFacing: ''
-      }]
+      }, ...prev.securityInfo]
     }));
   };
 
@@ -536,62 +537,69 @@ const renderEnvironmentInfo = () => (
   <div className="space-y-8">
     {/* Filter Controls */}
     <div className="bg-[rgb(27,27,26)] p-4 rounded-lg">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* แทนที่ search input ด้วย component Search */}
-        <Input
-          value={filterOptions.searchTerm}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
-            setFilterOptions(prev => ({
+     
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* แทนที่ search input ด้วย component Search */}
+          <Input
+            value={filterOptions.searchTerm}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+              setFilterOptions(prev => ({
+                ...prev,
+                searchTerm: e.target.value
+              }))
+            }
+          />
+
+          {/* Environment Filter - เพิ่ม "ทั้งหมด" */}
+          <ModernDropdown
+            options={[ALL_OPTION,  ...ENVIRONMENT_OPTIONS]}
+            value={filterOptions.environment || ALL_OPTION}
+            onChange={(value) => setFilterOptions(prev => ({
               ...prev,
-              searchTerm: e.target.value
-            }))
-          }
-        />
+              environment: value === ALL_OPTION ? '' : value
+            }))}
+            placeholder="กรองตาม Environment"
+          />
 
-        {/* Environment Filter - เพิ่ม "ทั้งหมด" */}
-        <ModernDropdown
-          options={[ALL_OPTION,  ...ENVIRONMENT_OPTIONS]}
-          value={filterOptions.environment || ALL_OPTION}
-          onChange={(value) => setFilterOptions(prev => ({
-            ...prev,
-            environment: value === ALL_OPTION ? '' : value
-          }))}
-          placeholder="กรองตาม Environment"
-        />
-
-        {/* Server Type Filter - เพิ่ม "ทั้งหมด" */}
-        <ModernDropdown
-          options={[ALL_OPTION,  ...SERVER_TYPE_OPTIONS]}
-          value={filterOptions.serverType || ALL_OPTION}
-          onChange={(value) => setFilterOptions(prev => ({
-            ...prev,
-            serverType: value === ALL_OPTION ? '' : value
-          }))}
-          placeholder="กรองตามประเภทเซิร์ฟเวอร์"
-        />
+          {/* Server Type Filter - เพิ่ม "ทั้งหมด" */}
+          <ModernDropdown
+            options={[ALL_OPTION,  ...SERVER_TYPE_OPTIONS]}
+            value={filterOptions.serverType || ALL_OPTION}
+            onChange={(value) => setFilterOptions(prev => ({
+              ...prev,
+              serverType: value === ALL_OPTION ? '' : value
+            }))}
+            placeholder="กรองตามประเภทเซิร์ฟเวอร์"
+          />
+      
       </div>
 
       {/* Results Summary - เพิ่มการแสดงตัวกรองที่เลือก */}
       <div className="mt-4 text-gray-300">
-        <div>พบ {filteredIndexes.length} เครื่อง จากทั้งหมด {systemData.environmentInfo.length} เครื่อง</div>
-        <div className="text-sm mt-1">
-          {filterOptions.searchTerm && (
-            <span className="mr-3">
-              🔍 ค้นหา: {filterOptions.searchTerm}
-            </span>
-          )}
-          {filterOptions.environment && (
-            <span className="mr-3">
-              🌐 Environment: {filterOptions.environment}
-            </span>
-          )}
-          {filterOptions.serverType && (
-            <span>
-              💻 Server Type: {filterOptions.serverType}
-            </span>
-          )}
-        </div>
-      </div>
+  <div className="flex flex-col mb-4">
+    <div className="flex justify-between items-center">
+      <div>พบ {filteredIndexes.length} เครื่อง จากทั้งหมด {systemData.environmentInfo.length} เครื่อง</div>
+      <AddNewEntriesButton onClick={addEnvironmentInfo} />
+    </div>
+    <div className="text-sm mt-1">
+      {filterOptions.searchTerm && (
+        <span className="mr-3">
+          🔍 ค้นหา: {filterOptions.searchTerm}
+        </span>
+      )}
+      {filterOptions.environment && (
+        <span className="mr-3">
+          🌐 Environment: {filterOptions.environment}
+        </span>
+      )}
+      {filterOptions.serverType && (
+        <span>
+          💻 Server Type: {filterOptions.serverType}
+        </span>
+      )}
+    </div>
+  </div>
+</div>
     </div>
 
     {/* ตรวจสอบว่ามีผลการค้นหาหรือไม่ */}
@@ -765,15 +773,6 @@ const renderEnvironmentInfo = () => (
           </div>
         ))
     )}
-    <div className="flex justify-end mt-4">
-      <button
-        onClick={addEnvironmentInfo}
-        className="flex items-center justify-center w-full py-2 mb-4 bg-blue-100
-          hover:bg-blue-200 rounded-md focus:outline-none"
-      >
-        <Plus className="w-5 h-5 text-blue-600" />
-      </button>
-    </div>
   </div>
 );
 

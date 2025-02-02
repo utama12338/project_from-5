@@ -28,6 +28,15 @@ import {ENVIRONMENT_OPTIONS,
 import {SystemData,EnvironmentInfo,ConnectionInfo,SecurityInfo}from'@/types/inputform'
 import Input from '@/components/itemweb/edit_publish/search';
 
+import {
+  SYSTEM_LABELS,
+  ENVIRONMENT_LABELS,
+  CONNECTION_LABELS,
+  SECURITY_LABELS,
+  FILTER_LABELS,
+  BUTTON_LABELS,
+  ERROR_MESSAGES
+} from '@/constants/labels';
 
 
 const defaultSystemData: SystemData = {
@@ -461,9 +470,9 @@ export default function EditSystem() {
   // เพิ่ม Component สำหรับแสดงเมื่อไม่พบข้อมูล
   const NoResultsFound = () => (
     <div className="bg-[rgb(27,27,26)] p-8 rounded-lg text-center">
-      <div className="text-gray-400 text-xl mb-2">ไม่พบข้อมูลที่ค้นหา</div>
+      <div className="text-gray-400 text-xl mb-2">{ERROR_MESSAGES.noResults.title}</div>
       <div className="text-gray-500 text-sm">
-        ลองปรับเปลี่ยนคำค้นหาหรือตัวกรองใหม่
+        {ERROR_MESSAGES.noResults.suggestion}
       </div>
     </div>
   );
@@ -471,38 +480,38 @@ export default function EditSystem() {
   const renderSystemInfo = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <FormField 
-        label="ชื่อระบบ" 
+        label={SYSTEM_LABELS.systemName}
         value={systemData.systemName} 
         onChange={(value) => updateSystemField('systemName', value)}
         error={errors.systemName}
       />
       <FormFieldOption 
-        label="ประเภทการพัฒนา" 
+        label={SYSTEM_LABELS.developType}
         value={systemData.developType} 
         onChange={(value) => updateSystemField('developType', value)}
         options={DEVELOPER_TYPE}
         error={errors.developType}
       />
       <FormField 
-        label="เลขที่สัญญา" 
+        label={SYSTEM_LABELS.contractNo}
         value={systemData.contractNo} 
         onChange={(value) => updateSystemField('contractNo', value)}
         error={errors.contractNo}
       />
       <FormField 
-        label="เลขที่ติดต่อผู้ขาย" 
+        label={SYSTEM_LABELS.vendorContactNo}
         value={systemData.vendorContactNo} 
         onChange={(value) => updateSystemField('vendorContactNo', value)}
         error={errors.vendorContactNo}
       />
       <FormField 
-        label="หน่วยธุรกิจ" 
+        label={SYSTEM_LABELS.businessUnit}
         value={systemData.businessUnit} 
         onChange={(value) => updateSystemField('businessUnit', value)}
         error={errors.businessUnit}
       />
       <FormFieldOption
-        label="หน่วยพัฒนา" 
+        label={SYSTEM_LABELS.developUnit}
         value={systemData.developUnit} 
         onChange={(value) => {
           const finalValue = Array.isArray(value) ? value.join(',') : value;
@@ -513,7 +522,7 @@ export default function EditSystem() {
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormFieldOption
-          label="Computer Backup"
+          label={SYSTEM_LABELS.computerBackup}
           value={systemData.computerbackup}
           onChange={(value) => updateSystemField('computerbackup', value)}
           options={YES_NO}
@@ -612,116 +621,116 @@ const renderEnvironmentInfo = () => (
               </summary>
               <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormFieldOption
-                  label="Environment"
+                  label={ENVIRONMENT_LABELS.environment}
                   value={env.environment}
                   onChange={(value) => updateEnvironmentInfo(index, 'environment', value)}
                   options={ENVIRONMENT_OPTIONS}
                   error={errors[`environment-${index}`]}
                 />
                 <FormField 
-                  label="Server Name" 
+                  label={ENVIRONMENT_LABELS.serverName}
                   value={env.serverName}
                   onChange={(value) => updateEnvironmentInfo(index, 'serverName', value)}
                   error={errors[`serverName-${index}`]}
                 />
                 <FormField 
-                  label="IP" 
+                  label={ENVIRONMENT_LABELS.ip}
                   value={env.ip}
                   onChange={(value) => updateEnvironmentInfo(index, 'ip', value)}
                   error={errors[`ip-${index}`]}
                 />
                 <FormFieldOption
-                  label="Server Type"
+                  label={ENVIRONMENT_LABELS.serverType}
                   value={env.serverType}
                   onChange={(value) => updateEnvironmentInfo(index, 'serverType', value)}
                   options={SERVER_TYPE_OPTIONS}
                   error={errors[`serverType-${index}`]}
                 />
                 <FormFieldOption
-                  label="Server Role"
+                  label={ENVIRONMENT_LABELS.serverRole}
                   value={env.serverRole}
                   onChange={(value) => updateEnvironmentInfo(index, 'serverRole', value)}
                   options={SERVER_ROLE_OPTIONS}
                   error={errors[`serverRole-${index}`]}
                 />
                 <FormFieldOption
-                  label="Server Duty"
+                  label={ENVIRONMENT_LABELS.serverDuty}
                   value={env.serverDuty}
                   onChange={(value) => updateEnvironmentInfo(index, 'serverDuty', value)}
                   options={SERVER_DUTY_OPTIONS}
                   error={errors[`serverDuty-${index}`]}
                 />
                 <FormField 
-                  label="ฐานข้อมูล" 
+                  label={ENVIRONMENT_LABELS.database}
                   value={env.database}
                   onChange={(value) => updateEnvironmentInfo(index, 'database', value)}
                   error={errors[`database-${index}`]}
                 />
                 <FormField 
-                  label="แอปพลิเคชัน" 
+                  label={ENVIRONMENT_LABELS.application}
                   value={env.application}
                   onChange={(value) => updateEnvironmentInfo(index, 'application', value)}
                   error={errors[`application-${index}`]}
                 />
                 <FormField 
-                  label="ระบบปฏิบัติการ" 
+                  label={ENVIRONMENT_LABELS.operatingSystem}
                   value={env.operatingSystem}
                   onChange={(value) => updateEnvironmentInfo(index, 'operatingSystem', value)}
                   error={errors[`operatingSystem-${index}`]}
                 />
                 <FormField 
-                  label="Service Pack" 
+                  label={ENVIRONMENT_LABELS.servicePack}
                   value={env.servicePack}
                   onChange={(value) => updateEnvironmentInfo(index, 'servicePack', value)}
                   error={errors[`servicePack-${index}`]}
                 />
                 <FormField 
-                  label="Build" 
+                  label={ENVIRONMENT_LABELS.build}
                   value={env.build}
                   onChange={(value) => updateEnvironmentInfo(index, 'build', value)}
                   error={errors[`build-${index}`]}
                 />
                 <FormField 
-                  label="CPU" 
+                  label={ENVIRONMENT_LABELS.cpu}
                   value={env.cpu}
                   onChange={(value) => updateEnvironmentInfo(index, 'cpu', value)}
                   error={errors[`cpu-${index}`]}
                 />
                 <FormField 
-                  label="RAM" 
+                  label={ENVIRONMENT_LABELS.ram}
                   value={env.ram}
                   onChange={(value) => updateEnvironmentInfo(index, 'ram', value)}
                   error={errors[`ram-${index}`]}
                 />
                 <FormField 
-                  label="Disk" 
+                  label={ENVIRONMENT_LABELS.disk}
                   value={env.disk}
                   onChange={(value) => updateEnvironmentInfo(index, 'disk', value)}
                   error={errors[`disk-${index}`]}
                 />
                 <FormFieldOption
-                  label="DR"
+                  label={ENVIRONMENT_LABELS.dr}
                   value={env.dr}
                   onChange={(value) => updateEnvironmentInfo(index, 'dr', value)}
                   options={DR_DC}
                   error={errors[`dr-${index}`]}
                 />
                 <FormFieldOption
-                  label="Join Domain"
+                  label={ENVIRONMENT_LABELS.joinDomain}
                   value={env.joinDomain}
                   onChange={(value) => updateEnvironmentInfo(index, 'joinDomain', value)}
                   options={YES_NO}
                   error={errors[`joinDomain-${index}`]}
                 />
                 <FormFieldOption
-                  label="Windows Cluster"
+                  label={ENVIRONMENT_LABELS.windowsCluster}
                   value={env.windowsCluster}
                   onChange={(value) => updateEnvironmentInfo(index, 'windowsCluster', value)}
                   options={YES_NO}
                   error={errors[`windowsCluster-${index}`]}
                 />
                   <FormFieldOption
-                    label="Production Unit"
+                    label={ENVIRONMENT_LABELS.productionUnit}
                     value={Array.isArray(env.productionUnit) 
                       ? env.productionUnit 
                       : env.productionUnit.split(',').filter(Boolean)}
@@ -798,14 +807,14 @@ const renderConnectionInfo = () => (
               </summary>
               <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormFieldOption
-                  label="AD" 
+                  label={CONNECTION_LABELS.ad}
                   value={conn.ad}
                   onChange={(value) => updateConnectionInfo(index, 'ad', value)}
                   options={YES_NO}
                   error={errors[`ad-${index}`]}
                 />
                 <FormFieldOption 
-                  label="DNS" 
+                  label={CONNECTION_LABELS.dns}
                   value={conn.dns}
                   onChange={(value) => updateConnectionInfo(index, 'dns', value)}
                   options={YES_NO}
@@ -813,84 +822,84 @@ const renderConnectionInfo = () => (
                 />
                 {/* ...rest of connection fields in 2 columns... */}
                 <FormFieldOption 
-                  label="TPAM" 
+                  label={CONNECTION_LABELS.tpam}
                   value={conn.tpam}
                   onChange={(value) => updateConnectionInfo(index, 'tpam', value)}
                   options={YES_NO}
                   error={errors[`tpam-${index}`]}
                 />
                 <FormFieldOption 
-                  label="FIM" 
+                  label={CONNECTION_LABELS.fim}
                   value={conn.fim}
                   onChange={(value) => updateConnectionInfo(index, 'fim', value)}
                   options={YES_NO}
                   error={errors[`fim-${index}`]}
                 />
                 <FormFieldOption 
-                  label="FTP Server" 
+                  label={CONNECTION_LABELS.ftpServer}
                   value={conn.ftpServer}
                   onChange={(value) => updateConnectionInfo(index, 'ftpServer', value)}
                   options={YES_NO}
                   error={errors[`ftpServer-${index}`]}
                 />
                 <FormFieldOption 
-                  label="Email SMTP" 
+                  label={CONNECTION_LABELS.emailSmtp}
                   value={conn.emailSmtp}
                   onChange={(value) => updateConnectionInfo(index, 'emailSmtp', value)}
                   options={YES_NO}
                   error={errors[`emailSmtp-${index}`]}
                 />
                 <FormFieldOption 
-                  label="API Management" 
+                  label={CONNECTION_LABELS.apiManagement}
                   value={conn.apiManagement}
                   onChange={(value) => updateConnectionInfo(index, 'apiManagement', value)}
                   options={YES_NO}
                   error={errors[`apiManagement-${index}`]}
                 />
                 <FormFieldOption 
-                  label="SNMP" 
+                  label={CONNECTION_LABELS.snmp}
                   value={conn.snmp}
                   onChange={(value) => updateConnectionInfo(index, 'snmp', value)}
                   options={YES_NO}
                   error={errors[`snmp-${index}`]}
                 />
                 <FormFieldOption 
-                  label="ADFS" 
+                  label={CONNECTION_LABELS.adfs}
                   value={conn.adfs}
                   onChange={(value) => updateConnectionInfo(index, 'adfs', value)}
                   options={YES_NO}
                   error={errors[`adfs-${index}`]}
                 />
                 <FormFieldOption 
-                  label="NTP" 
+                  label={CONNECTION_LABELS.ntp}
                   value={conn.ntp}
                   onChange={(value) => updateConnectionInfo(index, 'ntp', value)}
                   options={YES_NO}
                   error={errors[`ntp-${index}`]}
                 />
                 <FormFieldOption 
-                  label="Netka" 
+                  label={CONNECTION_LABELS.netka}
                   value={conn.netka}
                   onChange={(value) => updateConnectionInfo(index, 'netka', value)}
                   options={YES_NO}
                   error={errors[`netka-${index}`]}
                 />
                 <FormFieldOption 
-                  label="FTP GoAnywhere MFT Server" 
+                  label={CONNECTION_LABELS.ftpGoAnywhereMFTServer}
                   value={conn.ftpGoAnywhereMFTServer}
                   onChange={(value) => updateConnectionInfo(index, 'ftpGoAnywhereMFTServer', value)}
                   options={YES_NO}
                   error={errors[`ftpGoAnywhereMFTServer-${index}`]}
                 />
                 <FormFieldOption 
-                  label="SMS" 
+                  label={CONNECTION_LABELS.sms}
                   value={conn.sms}
                   onChange={(value) => updateConnectionInfo(index, 'sms', value)}
                   options={YES_NO}
                   error={errors[`sms-${index}`]}
                 />
                 <FormFieldOption 
-                  label="DV" 
+                  label={CONNECTION_LABELS.dv}
                   value={conn.dv}
                   onChange={(value) => updateConnectionInfo(index, 'dv', value)}
                   options={YES_NO}
@@ -933,14 +942,14 @@ const renderSecurityInfo = () => (
               </summary>
               <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField 
-                  label="URL Website" 
+                  label={SECURITY_LABELS.urlWebsite}
                   value={security.urlWebsite}
                   onChange={(value) => updateSecurityInfo(index, 'urlWebsite', value)}
                   error={errors[`urlWebsite-${index}`]}
                 />
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-100 mb-2">
-                    Certificate Expire Date
+                    {SECURITY_LABELS.certificateExpireDate}
                   </label>
                   <StyledWrapper style={{ position: 'relative', zIndex: 50 }}>
                     <CustomDatePicker
@@ -960,33 +969,33 @@ const renderSecurityInfo = () => (
                   )}
                 </div>
                 <FormField 
-                  label="Backup Policy" 
+                  label={SECURITY_LABELS.backupPolicy}
                   value={security.backupPolicy}
                   onChange={(value) => updateSecurityInfo(index, 'backupPolicy', value)}
                   error={errors[`backupPolicy-${index}`]}
                 />
                 <FormField 
-                  label="Downtime Allowed" 
+                  label={SECURITY_LABELS.downtimeAllowed}
                   value={security.downtimeAllowed}
                   onChange={(value) => updateSecurityInfo(index, 'downtimeAllowed', value)}
                   error={errors[`downtimeAllowed-${index}`]}
                 />
                 <FormFieldOption
-                  label="Centralize Log"
+                  label={SECURITY_LABELS.centralizeLog}
                   value={security.centralizeLog}
                   onChange={(value) => updateSecurityInfo(index, 'centralizeLog', value)}
                   options={YES_NO}
                   error={errors[`centralizeLog-${index}`]}
                 />
                 <FormFieldOption
-                  label="Setup Agent Patch"
+                  label={SECURITY_LABELS.setupAgentPatch}
                   value={security.setupAgentPatch}
                   onChange={(value) => updateSecurityInfo(index, 'setupAgentPatch', value)}
                   options={YES_NO}
                   error={errors[`setupAgentPatch-${index}`]}
                 />
                 <FormFieldOption
-                  label="Internet Facing"
+                  label={SECURITY_LABELS.internetFacing}
                   value={security.internetFacing}
                   onChange={(value) => updateSecurityInfo(index, 'internetFacing', value)}
                   options={YES_NO}

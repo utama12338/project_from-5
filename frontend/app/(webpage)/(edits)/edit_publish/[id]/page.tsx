@@ -528,7 +528,7 @@ export default function EditSystem() {
         options={DEVELOPER_UNIT}
         error={errors.developUnit}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
         <FormFieldOption
           label={SYSTEM_LABELS.computerBackup}
           value={systemData.computerbackup}
@@ -536,7 +536,7 @@ export default function EditSystem() {
           options={YES_NO}
           error={errors.computerbackup}
         />
-      </div>
+     
     </div>
   );
 

@@ -1,6 +1,6 @@
 export const ENVIRONMENT_OPTIONS = ['DEV', 'SIT', 'UAT', 'PreProd', 'Prod',];
 export const SERVER_TYPE_OPTIONS = [
-  'Physics',
+  'Physical',
   'Network Device',
   'WorkStation PC',
   'Laptop',

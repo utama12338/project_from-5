@@ -74,7 +74,7 @@ export default function SystemList() {
     <div className="min-h-screen w-full" style={{ backgroundColor: colors.background.primary }}>
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
-          <Link href="/">
+          <Link href="/inputform">
             <AddSystemButton />
           </Link>
           <h1 className="text-2xl font-bold" style={{ color: colors.text.primary }}>ระบบทั้งหมด</h1>

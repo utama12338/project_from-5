@@ -142,10 +142,10 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                   }}
                   className="cursor-pointer p-2 rounded hover:bg-pink-500 hover:bg-opacity-10 transition-all duration-200"
                 >
-                  {section === 'basic' && 'ข้อมูลพื้นฐาน basic'}
-                  {section === 'environment' && 'สภาพแวดล้อม'}
-                  {section === 'connection' && 'การเชื่อมต่อ'}
-                  {section === 'security' && 'ความปลอดภัย'}
+                  {section === 'basic' && 'ข้อมูลพื้นฐาน Systeminfo '}
+                  {section === 'environment' && 'สภาพแวดล้อม Environment '}
+                  {section === 'connection' && 'การเชื่อมต่อ connecting'}
+                  {section === 'security' && 'ความปลอดภัย security'}
                 </div>
               ))}
             </div>

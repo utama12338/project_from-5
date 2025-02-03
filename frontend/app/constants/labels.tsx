@@ -1,5 +1,5 @@
 export const SYSTEM_LABELS = {
-  systemName: "ชื่อระบบ servername",
+  systemName: "ชื่อระบบ systemname",
   developType: "ประเภทการพัฒนา",
   contractNo: "เลขที่สัญญา Contract number", 
   vendorContactNo: "เลขที่ติดต่อผู้ขาย Contract no",

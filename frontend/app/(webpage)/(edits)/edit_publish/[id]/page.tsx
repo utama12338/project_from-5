@@ -442,38 +442,36 @@ export default function EditSystem() {
     }));
   };
 
-  // แยก filter logic ออกมา
-  const filterEnvironments = useCallback((environments: EnvironmentInfo[]) => {
-    return environments.filter((env) => {
-      const matchesSearch = 
-        env.serverName.toLowerCase().includes(filterOptions.searchTerm.toLowerCase()) ||
-        env.ip.toLowerCase().includes(filterOptions.searchTerm.toLowerCase()) ||
-        env.serverRole.toLowerCase().includes(filterOptions.searchTerm.toLowerCase());
-      
-      const matchesEnvironment = 
-        !filterOptions.environment || 
-        filterOptions.environment === ALL_OPTION ||
-        env.environment === filterOptions.environment;
-      
-      const matchesServerType = 
-        !filterOptions.serverType || 
-        filterOptions.serverType === ALL_OPTION ||
-        env.serverType === filterOptions.serverType;
-
-      return matchesSearch && matchesEnvironment && matchesServerType;
-    });
-  }, [filterOptions]);
-
-  // ใช้ useEffect ในการจัดการ filtered indexes
-  useEffect(() => {
-    const filteredEnvs = filterEnvironments(systemData.environmentInfo);
-    const indexes = systemData.environmentInfo
-      .map((env, index) => ({ env, index }))
-      .filter(({ env }) => filteredEnvs.includes(env))
-      .map(({ index }) => index);
+  // แก้ไขฟังก์ชัน filterEnvironments ให้คืนค่าทั้ง environment และ index
+const filterEnvironments = useCallback((environments: EnvironmentInfo[]) => {
+  return environments.map((env, index) => ({ env, index })).filter(({ env, index }) => {
+    const matchesSearch = 
+      env.serverName.toLowerCase().includes(filterOptions.searchTerm.toLowerCase()) ||
+      env.ip.toLowerCase().includes(filterOptions.searchTerm.toLowerCase()) ||
+      env.serverRole.toLowerCase().includes(filterOptions.searchTerm.toLowerCase()) ||
+      systemData.connectionInfo[index]?.ad.toLowerCase().includes(filterOptions.searchTerm.toLowerCase()) ||
+      systemData.connectionInfo[index]?.dns.toLowerCase().includes(filterOptions.searchTerm.toLowerCase()) ||
+      systemData.securityInfo[index]?.urlWebsite.toLowerCase().includes(filterOptions.searchTerm.toLowerCase());
     
-    setFilteredIndexes(indexes);
-  }, [filterOptions, systemData.environmentInfo, filterEnvironments]);
+    const matchesEnvironment = 
+      !filterOptions.environment || 
+      filterOptions.environment === ALL_OPTION ||
+      env.environment === filterOptions.environment;
+    
+    const matchesServerType = 
+      !filterOptions.serverType || 
+      filterOptions.serverType === ALL_OPTION ||
+      env.serverType === filterOptions.serverType;
+
+    return matchesSearch && matchesEnvironment && matchesServerType;
+  });
+}, [filterOptions, systemData.connectionInfo, systemData.securityInfo]);
+
+// แก้ไข useEffect สำหรับ filteredIndexes
+useEffect(() => {
+  const filteredResults = filterEnvironments(systemData.environmentInfo);
+  setFilteredIndexes(filteredResults.map(({ index }) => index));
+}, [filterOptions, systemData.environmentInfo, filterEnvironments]);
 
   // เพิ่ม Component สำหรับแสดงเมื่อไม่พบข้อมูล
   const NoResultsFound = () => (
@@ -777,128 +775,132 @@ const renderConnectionInfo = () => (
       <NoResultsFound />
     ) : (
       systemData.connectionInfo
-        .filter((_, index) => filteredIndexes.includes(index))
-        .map((conn, index) => (
-          <SectionContainer
-            key={index}
-            title={`การเชื่อมต่อ: ${systemData.environmentInfo[index]?.serverName || 'ไม่มีชื่อ'}`}
-          >
-            <div className="border-b border-gray-700 pb-4 mb-4">
-             
-              <div className="grid grid-cols-3 gap-4 mt-2 text-sm text-gray-300">
-                <div>AD: {conn.ad}</div>
-                <div>DNS: {conn.dns}</div>
-                <div>TPAM: {conn.tpam}</div>
+        .filter((_, i) => filteredIndexes.includes(i))
+        .map((conn, i) => {
+          // หา index ที่แท้จริงจาก filteredIndexes
+          const originalIndex = filteredIndexes[i];
+          return (
+            <SectionContainer
+              key={originalIndex}
+              title={`การเชื่อมต่อ: ${systemData.environmentInfo[originalIndex]?.serverName || 'ไม่มีชื่อ'}`}
+            >
+              <div className="border-b border-gray-700 pb-4 mb-4">
+                <div className="grid grid-cols-3 gap-4 mt-2 text-sm text-gray-300">
+                  <div>AD: {conn.ad}</div>
+                  <div>DNS: {conn.dns}</div>
+                  <div>TPAM: {conn.tpam}</div>
+                </div>
               </div>
-            </div>
 
-            <details className="mt-4">
-              <summary className="cursor-pointer text-gray-300 hover:text-white">
-                แสดงรายละเอียดเพิ่มเติม
-              </summary>
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormFieldOption
-                  label={CONNECTION_LABELS.ad}
-                  value={conn.ad}
-                  onChange={(value) => updateConnectionInfo(index, 'ad', value)}
-                  options={YES_NO}
-                  error={errors[`ad-${index}`]}
-                />
-                <FormFieldOption 
-                  label={CONNECTION_LABELS.dns}
-                  value={conn.dns}
-                  onChange={(value) => updateConnectionInfo(index, 'dns', value)}
-                  options={YES_NO}
-                  error={errors[`dns-${index}`]}
-                />
-                <FormFieldOption 
-                  label={CONNECTION_LABELS.tpam}
-                  value={conn.tpam}
-                  onChange={(value) => updateConnectionInfo(index, 'tpam', value)}
-                  options={YES_NO}
-                  error={errors[`tpam-${index}`]}
-                />
-                <FormFieldOption 
-                  label={CONNECTION_LABELS.fim}
-                  value={conn.fim}
-                  onChange={(value) => updateConnectionInfo(index, 'fim', value)}
-                  options={YES_NO}
-                  error={errors[`fim-${index}`]}
-                />
-                <FormFieldOption 
-                  label={CONNECTION_LABELS.ftpServer}
-                  value={conn.ftpServer}
-                  onChange={(value) => updateConnectionInfo(index, 'ftpServer', value)}
-                  options={YES_NO}
-                  error={errors[`ftpServer-${index}`]}
-                />
-                <FormFieldOption 
-                  label={CONNECTION_LABELS.emailSmtp}
-                  value={conn.emailSmtp}
-                  onChange={(value) => updateConnectionInfo(index, 'emailSmtp', value)}
-                  options={YES_NO}
-                  error={errors[`emailSmtp-${index}`]}
-                />
-                <FormFieldOption 
-                  label={CONNECTION_LABELS.apiManagement}
-                  value={conn.apiManagement}
-                  onChange={(value) => updateConnectionInfo(index, 'apiManagement', value)}
-                  options={YES_NO}
-                  error={errors[`apiManagement-${index}`]}
-                />
-                <FormFieldOption 
-                  label={CONNECTION_LABELS.snmp}
-                  value={conn.snmp}
-                  onChange={(value) => updateConnectionInfo(index, 'snmp', value)}
-                  options={YES_NO}
-                  error={errors[`snmp-${index}`]}
-                />
-                <FormFieldOption 
-                  label={CONNECTION_LABELS.adfs}
-                  value={conn.adfs}
-                  onChange={(value) => updateConnectionInfo(index, 'adfs', value)}
-                  options={YES_NO}
-                  error={errors[`adfs-${index}`]}
-                />
-                <FormFieldOption 
-                  label={CONNECTION_LABELS.ntp}
-                  value={conn.ntp}
-                  onChange={(value) => updateConnectionInfo(index, 'ntp', value)}
-                  options={YES_NO}
-                  error={errors[`ntp-${index}`]}
-                />
-                <FormFieldOption 
-                  label={CONNECTION_LABELS.netka}
-                  value={conn.netka}
-                  onChange={(value) => updateConnectionInfo(index, 'netka', value)}
-                  options={YES_NO}
-                  error={errors[`netka-${index}`]}
-                />
-                <FormFieldOption 
-                  label={CONNECTION_LABELS.ftpGoAnywhereMFTServer}
-                  value={conn.ftpGoAnywhereMFTServer}
-                  onChange={(value) => updateConnectionInfo(index, 'ftpGoAnywhereMFTServer', value)}
-                  options={YES_NO}
-                  error={errors[`ftpGoAnywhereMFTServer-${index}`]}
-                />
-                <FormFieldOption 
-                  label={CONNECTION_LABELS.sms}
-                  value={conn.sms}
-                  onChange={(value) => updateConnectionInfo(index, 'sms', value)}
-                  options={YES_NO}
-                  error={errors[`sms-${index}`]}
-                />
-                <FormFieldOption 
-                  label={CONNECTION_LABELS.dv}
-                  value={conn.dv}
-                  onChange={(value) => updateConnectionInfo(index, 'dv', value)}
-                  options={YES_NO}
-                  error={errors[`dv-${index}`]}
-                />
-              </div>
-            </details>
-          </SectionContainer>
-        ))
+              <details className="mt-4">
+                <summary className="cursor-pointer text-gray-300 hover:text-white">
+                  แสดงรายละเอียดเพิ่มเติม
+                </summary>
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* ใช้ originalIndex แทน index เดิม */}
+                  <FormFieldOption
+                    label={CONNECTION_LABELS.ad}
+                    value={conn.ad}
+                    onChange={(value) => updateConnectionInfo(originalIndex, 'ad', value)}
+                    options={YES_NO}
+                    error={errors[`ad-${originalIndex}`]}
+                  />
+                  <FormFieldOption 
+                    label={CONNECTION_LABELS.dns}
+                    value={conn.dns}
+                    onChange={(value) => updateConnectionInfo(originalIndex, 'dns', value)}
+                    options={YES_NO}
+                    error={errors[`dns-${originalIndex}`]}
+                  />
+                  <FormFieldOption 
+                    label={CONNECTION_LABELS.tpam}
+                    value={conn.tpam}
+                    onChange={(value) => updateConnectionInfo(originalIndex, 'tpam', value)}
+                    options={YES_NO}
+                    error={errors[`tpam-${originalIndex}`]}
+                  />
+                  <FormFieldOption 
+                    label={CONNECTION_LABELS.fim}
+                    value={conn.fim}
+                    onChange={(value) => updateConnectionInfo(originalIndex, 'fim', value)}
+                    options={YES_NO}
+                    error={errors[`fim-${originalIndex}`]}
+                  />
+                  <FormFieldOption 
+                    label={CONNECTION_LABELS.ftpServer}
+                    value={conn.ftpServer}
+                    onChange={(value) => updateConnectionInfo(originalIndex, 'ftpServer', value)}
+                    options={YES_NO}
+                    error={errors[`ftpServer-${originalIndex}`]}
+                  />
+                  <FormFieldOption 
+                    label={CONNECTION_LABELS.emailSmtp}
+                    value={conn.emailSmtp}
+                    onChange={(value) => updateConnectionInfo(originalIndex, 'emailSmtp', value)}
+                    options={YES_NO}
+                    error={errors[`emailSmtp-${originalIndex}`]}
+                  />
+                  <FormFieldOption 
+                    label={CONNECTION_LABELS.apiManagement}
+                    value={conn.apiManagement}
+                    onChange={(value) => updateConnectionInfo(originalIndex, 'apiManagement', value)}
+                    options={YES_NO}
+                    error={errors[`apiManagement-${originalIndex}`]}
+                  />
+                  <FormFieldOption 
+                    label={CONNECTION_LABELS.snmp}
+                    value={conn.snmp}
+                    onChange={(value) => updateConnectionInfo(originalIndex, 'snmp', value)}
+                    options={YES_NO}
+                    error={errors[`snmp-${originalIndex}`]}
+                  />
+                  <FormFieldOption 
+                    label={CONNECTION_LABELS.adfs}
+                    value={conn.adfs}
+                    onChange={(value) => updateConnectionInfo(originalIndex, 'adfs', value)}
+                    options={YES_NO}
+                    error={errors[`adfs-${originalIndex}`]}
+                  />
+                  <FormFieldOption 
+                    label={CONNECTION_LABELS.ntp}
+                    value={conn.ntp}
+                    onChange={(value) => updateConnectionInfo(originalIndex, 'ntp', value)}
+                    options={YES_NO}
+                    error={errors[`ntp-${originalIndex}`]}
+                  />
+                  <FormFieldOption 
+                    label={CONNECTION_LABELS.netka}
+                    value={conn.netka}
+                    onChange={(value) => updateConnectionInfo(originalIndex, 'netka', value)}
+                    options={YES_NO}
+                    error={errors[`netka-${originalIndex}`]}
+                  />
+                  <FormFieldOption 
+                    label={CONNECTION_LABELS.ftpGoAnywhereMFTServer}
+                    value={conn.ftpGoAnywhereMFTServer}
+                    onChange={(value) => updateConnectionInfo(originalIndex, 'ftpGoAnywhereMFTServer', value)}
+                    options={YES_NO}
+                    error={errors[`ftpGoAnywhereMFTServer-${originalIndex}`]}
+                  />
+                  <FormFieldOption 
+                    label={CONNECTION_LABELS.sms}
+                    value={conn.sms}
+                    onChange={(value) => updateConnectionInfo(originalIndex, 'sms', value)}
+                    options={YES_NO}
+                    error={errors[`sms-${originalIndex}`]}
+                  />
+                  <FormFieldOption 
+                    label={CONNECTION_LABELS.dv}
+                    value={conn.dv}
+                    onChange={(value) => updateConnectionInfo(originalIndex, 'dv', value)}
+                    options={YES_NO}
+                    error={errors[`dv-${originalIndex}`]}
+                  />
+                </div>
+              </details>
+            </SectionContainer>
+          );
+        })
     )}
   </div>
 );
@@ -909,90 +911,94 @@ const renderSecurityInfo = () => (
       <NoResultsFound />
     ) : (
       systemData.securityInfo
-        .filter((_, index) => filteredIndexes.includes(index))
-        .map((security, index) => (
-          <SectionContainer
-            key={index}
-            title={`ความปลอดภัย: ${systemData.environmentInfo[index]?.serverName || 'ไม่มีชื่อ'}`}
-          >
-            <div className="border-b border-gray-700 pb-4 mb-4">
-             
-              <div className="grid grid-cols-3 gap-4 mt-2 text-sm text-gray-300">
-                <div>URL: {security.urlWebsite}</div>
-                <div>Backup: {security.backupPolicy}</div>
-                <div>Centralize Log: {security.certificateExpireDate}</div>
-              </div>
-            </div>
-
-            <details className="mt-4">
-              <summary className="cursor-pointer text-gray-300 hover:text-white">
-                แสดงรายละเอียดเพิ่มเติม
-              </summary>
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField 
-                  label={SECURITY_LABELS.urlWebsite}
-                  value={security.urlWebsite}
-                  onChange={(value) => updateSecurityInfo(index, 'urlWebsite', value)}
-                  error={errors[`urlWebsite-${index}`]}
-                />
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-100 mb-2">
-                    {SECURITY_LABELS.certificateExpireDate}
-                  </label>
-                  <StyledWrapper style={{ position: 'relative', zIndex: 50 }}>
-                    <CustomDatePicker
-                      selectedDate={security.certificateExpireDate ? new Date(security.certificateExpireDate) : null}
-                      onChange={(date) => {
-                        if (date) {
-                          updateSecurityInfo(index, 'certificateExpireDate', date.toISOString().split('T')[0]);
-                        }
-                      }}
-                      placeholder="Select expiry date"
-                      required
-                      error={!!errors[`certificateExpireDate-${index}`]}
-                    />
-                  </StyledWrapper>
-                  {errors[`certificateExpireDate-${index}`] && (
-                    <p className="mt-1 text-sm text-red-500">{errors[`certificateExpireDate-${index}`]}</p>
-                  )}
+        .filter((_, i) => filteredIndexes.includes(i))
+        .map((security, i) => {
+          // หา index ที่แท้จริงจาก filteredIndexes
+          const originalIndex = filteredIndexes[i];
+          return (
+            <SectionContainer
+              key={originalIndex}
+              title={`ความปลอดภัย: ${systemData.environmentInfo[originalIndex]?.serverName || 'ไม่มีชื่อ'}`}
+            >
+              <div className="border-b border-gray-700 pb-4 mb-4">
+                <div className="grid grid-cols-3 gap-4 mt-2 text-sm text-gray-300">
+                  <div>URL: {security.urlWebsite}</div>
+                  <div>Backup: {security.backupPolicy}</div>
+                  <div>Centralize Log: {security.certificateExpireDate}</div>
                 </div>
-                <FormField 
-                  label={SECURITY_LABELS.backupPolicy}
-                  value={security.backupPolicy}
-                  onChange={(value) => updateSecurityInfo(index, 'backupPolicy', value)}
-                  error={errors[`backupPolicy-${index}`]}
-                />
-                <FormField 
-                  label={SECURITY_LABELS.downtimeAllowed}
-                  value={security.downtimeAllowed}
-                  onChange={(value) => updateSecurityInfo(index, 'downtimeAllowed', value)}
-                  error={errors[`downtimeAllowed-${index}`]}
-                />
-                <FormFieldOption
-                  label={SECURITY_LABELS.centralizeLog}
-                  value={security.centralizeLog}
-                  onChange={(value) => updateSecurityInfo(index, 'centralizeLog', value)}
-                  options={YES_NO}
-                  error={errors[`centralizeLog-${index}`]}
-                />
-                <FormFieldOption
-                  label={SECURITY_LABELS.setupAgentPatch}
-                  value={security.setupAgentPatch}
-                  onChange={(value) => updateSecurityInfo(index, 'setupAgentPatch', value)}
-                  options={YES_NO}
-                  error={errors[`setupAgentPatch-${index}`]}
-                />
-                <FormFieldOption
-                  label={SECURITY_LABELS.internetFacing}
-                  value={security.internetFacing}
-                  onChange={(value) => updateSecurityInfo(index, 'internetFacing', value)}
-                  options={YES_NO}
-                  error={errors[`internetFacing-${index}`]}
-                />
               </div>
-            </details>
-          </SectionContainer>
-        ))
+
+              <details className="mt-4">
+                <summary className="cursor-pointer text-gray-300 hover:text-white">
+                  แสดงรายละเอียดเพิ่มเติม
+                </summary>
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* ใช้ originalIndex แทน index เดิม */}
+                  <FormField 
+                    label={SECURITY_LABELS.urlWebsite}
+                    value={security.urlWebsite}
+                    onChange={(value) => updateSecurityInfo(originalIndex, 'urlWebsite', value)}
+                    error={errors[`urlWebsite-${originalIndex}`]}
+                  />
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-100 mb-2">
+                      {SECURITY_LABELS.certificateExpireDate}
+                    </label>
+                    <StyledWrapper style={{ position: 'relative', zIndex: 50 }}>
+                      <CustomDatePicker
+                        selectedDate={security.certificateExpireDate ? new Date(security.certificateExpireDate) : null}
+                        onChange={(date) => {
+                          if (date) {
+                            updateSecurityInfo(originalIndex, 'certificateExpireDate', date.toISOString().split('T')[0]);
+                          }
+                        }}
+                        placeholder="Select expiry date"
+                        required
+                        error={!!errors[`certificateExpireDate-${originalIndex}`]}
+                      />
+                    </StyledWrapper>
+                    {errors[`certificateExpireDate-${originalIndex}`] && (
+                      <p className="mt-1 text-sm text-red-500">{errors[`certificateExpireDate-${originalIndex}`]}</p>
+                    )}
+                  </div>
+                  <FormField 
+                    label={SECURITY_LABELS.backupPolicy}
+                    value={security.backupPolicy}
+                    onChange={(value) => updateSecurityInfo(originalIndex, 'backupPolicy', value)}
+                    error={errors[`backupPolicy-${originalIndex}`]}
+                  />
+                  <FormField 
+                    label={SECURITY_LABELS.downtimeAllowed}
+                    value={security.downtimeAllowed}
+                    onChange={(value) => updateSecurityInfo(originalIndex, 'downtimeAllowed', value)}
+                    error={errors[`downtimeAllowed-${originalIndex}`]}
+                  />
+                  <FormFieldOption
+                    label={SECURITY_LABELS.centralizeLog}
+                    value={security.centralizeLog}
+                    onChange={(value) => updateSecurityInfo(originalIndex, 'centralizeLog', value)}
+                    options={YES_NO}
+                    error={errors[`centralizeLog-${originalIndex}`]}
+                  />
+                  <FormFieldOption
+                    label={SECURITY_LABELS.setupAgentPatch}
+                    value={security.setupAgentPatch}
+                    onChange={(value) => updateSecurityInfo(originalIndex, 'setupAgentPatch', value)}
+                    options={YES_NO}
+                    error={errors[`setupAgentPatch-${originalIndex}`]}
+                  />
+                  <FormFieldOption
+                    label={SECURITY_LABELS.internetFacing}
+                    value={security.internetFacing}
+                    onChange={(value) => updateSecurityInfo(originalIndex, 'internetFacing', value)}
+                    options={YES_NO}
+                    error={errors[`internetFacing-${originalIndex}`]}
+                  />
+                </div>
+              </details>
+            </SectionContainer>
+          );
+        })
     )}
   </div>
 );

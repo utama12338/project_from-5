@@ -2,10 +2,10 @@ export const SYSTEM_LABELS = {
   systemName: "ชื่อระบบ systemname",
   developType: "ประเภทการพัฒนา",
   contractNo: "เลขที่สัญญา Contract number", 
-  vendorContactNo: "เลขที่ติดต่อผู้ขาย Contract no",
+  vendorContactNo: "การติดต่อ vendor",
   businessUnit: "หน่วยธุรกิจ business unit",
   developUnit: "หน่วยพัฒนา Development unit",
-  computerBackup: "คอมพิ้วเตอร์สำรอง Computer Backup"
+  computerBackup: "คอมพิวเตอร์สำรอง Computer Backup"
 };
 
 export const ENVIRONMENT_LABELS = {
@@ -26,7 +26,7 @@ export const ENVIRONMENT_LABELS = {
   dr: "DR",
   joinDomain: "Join Domain",
   windowsCluster: "Windows Cluster",
-  productionUnit: "Production Unit"
+  productionUnit: "หน่วยงานที่ดูแล"
 };
 
 export const CONNECTION_LABELS = {

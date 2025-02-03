@@ -10,11 +10,11 @@ const Button_v2: React.FC<ButtonProps> = ({ onClick }) => {
       className="group relative flex h-9 w-9 flex-col items-center justify-center overflow-hidden rounded-xl border-2"
       onClick={onClick}
       style={{
-        borderColor: "rgb(153, 27, 27)", // red-800
-        backgroundColor: "rgb(248, 113, 113)", // red-400
+        borderColor: "rgb(220, 38, 38)", // red-800
+        backgroundColor: "rgb(255, 0, 0)", // red-400
       }}
       onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgb(220, 38, 38)")} // hover:bg-red-600
-      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "rgb(248, 113, 113)")} // กลับเป็น red-400
+      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "rgb(234, 0, 0)")} // กลับเป็น red-400
     >
       {/* SVG Animation */}
       <svg

@@ -1,6 +1,9 @@
 'use client'
 import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import StyledWrapper from './neoninput';
+import { colors, shadows, transitions, line } from '../styles/theme';
+import ModernDropdown from './ModernDropdown';
 
 interface DetailViewModalProps {
   isOpen: boolean;
@@ -64,35 +67,63 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
 
   const currentSystem = systems[activeSystemIndex];
 
+  const InfoBox = ({ title, value, isStatus = false }: { title: string; value: string | null; isStatus?: boolean }) => (
+    <div style={{ 
+      backgroundColor: colors.background.tertiary,
+      transition: transitions.default
+    }} className="p-4 rounded-lg hover:shadow-lg">
+      <p className="font-semibold mb-1" style={{ color: colors.text.secondary }}>{title}</p>
+      {isStatus ? (
+        <span className={`px-3 py-1 rounded-full text-sm ${
+          value === 'YES' 
+            ? 'bg-green-500 bg-opacity-20 text-green-400' 
+            : 'bg-red-500 bg-opacity-20 text-red-400'
+        }`}>
+          {value || 'NO'}
+        </span>
+      ) : (
+        <p style={{ color: colors.text.primary }}>{value || '-'}</p>
+      )}
+    </div>
+  );
+
   return (
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-start pt-10"
+        className="fixed inset-0 z-50 flex justify-center items-start pt-10"
+        style={{ backgroundColor: 'rgba(0, 0, 0, 0.75)' }}
         onClick={onClose}
       >
         <motion.div
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -50, opacity: 0 }}
-          className="bg-white rounded-lg w-full max-w-6xl mx-4 h-[80vh] flex"
+          style={{ 
+            backgroundColor: colors.background.secondary,
+            boxShadow: shadows.primary,
+          }}
+          className="rounded-lg w-full max-w-6xl mx-4 h-[80vh] flex"
           onClick={e => e.stopPropagation()}
         >
           {/* System Selection Tabs */}
-          <div className="w-64 border-r flex flex-col">
+          <div className="w-64 border-r flex flex-col" 
+               style={{ backgroundColor: colors.background.tertiary }}>
             <div className="p-4 border-b">
-              <h3 className="font-semibold">ระบบที่เลือก ({systems.length})</h3>
+              <h3 className="font-semibold text-white">ระบบที่เลือก ({systems.length})</h3>
             </div>
             <div className="overflow-y-auto">
               {systems.map((sys, index) => (
                 <div
                   key={sys.id}
                   onClick={() => setActiveSystemIndex(index)}
-                  className={`p-4 cursor-pointer hover:bg-gray-50 ${
-                    index === activeSystemIndex ? 'bg-indigo-50 text-indigo-600' : ''
-                  }`}
+                  style={{
+                    backgroundColor: index === activeSystemIndex ? `${colors.button.primary.background}20` : 'transparent',
+                    color: index === activeSystemIndex ? colors.button.primary.background : colors.text.primary
+                  }}
+                  className="p-4 cursor-pointer hover:bg-pink-500 hover:bg-opacity-10 transition-all duration-200"
                 >
                   {sys.systemName}
                 </div>
@@ -100,38 +131,22 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
             </div>
             {/* Existing navigation */}
             <div className="border-t p-4 space-y-2">
-              <div 
-                className={`cursor-pointer p-2 rounded ${
-                  activeSection === 'basic' ? 'bg-indigo-100 text-indigo-700' : 'hover:bg-gray-100'
-                }`}
-                onClick={() => scrollToSection('basic')}
-              >
-                ข้อมูลพื้นฐาน
-              </div>
-              <div 
-                className={`cursor-pointer p-2 rounded ${
-                  activeSection === 'environment' ? 'bg-indigo-100 text-indigo-700' : 'hover:bg-gray-100'
-                }`}
-                onClick={() => scrollToSection('environment')}
-              >
-                สภาพแวดล้อม
-              </div>
-              <div 
-                className={`cursor-pointer p-2 rounded ${
-                  activeSection === 'connection' ? 'bg-indigo-100 text-indigo-700' : 'hover:bg-gray-100'
-                }`}
-                onClick={() => scrollToSection('connection')}
-              >
-                การเชื่อมต่อ
-              </div>
-              <div 
-                className={`cursor-pointer p-2 rounded ${
-                  activeSection === 'security' ? 'bg-indigo-100 text-indigo-700' : 'hover:bg-gray-100'
-                }`}
-                onClick={() => scrollToSection('security')}
-              >
-                ความปลอดภัย
-              </div>
+              {['basic', 'environment', 'connection', 'security'].map((section) => (
+                <div 
+                  key={section}
+                  onClick={() => scrollToSection(section)}
+                  style={{
+                    backgroundColor: activeSection === section ? `${colors.button.primary.background}20` : 'transparent',
+                    color: activeSection === section ? colors.button.primary.background : colors.text.primary
+                  }}
+                  className="cursor-pointer p-2 rounded hover:bg-pink-500 hover:bg-opacity-10 transition-all duration-200"
+                >
+                  {section === 'basic' && 'ข้อมูลพื้นฐาน'}
+                  {section === 'environment' && 'สภาพแวดล้อม'}
+                  {section === 'connection' && 'การเชื่อมต่อ'}
+                  {section === 'security' && 'ความปลอดภัย'}
+                </div>
+              ))}
             </div>
           </div>
 
@@ -140,213 +155,126 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
             id="modal-content" 
             ref={modalContentRef}
             className="flex-1 overflow-y-auto p-6"
+            style={{ backgroundColor: colors.background.secondary }}
           >
-            {/* Basic Info Section */}
-            <div ref={sectionRefs.basic} className="mb-8">
-              <h2 className="text-2xl font-bold mb-4 border-b pb-2">ข้อมูลพื้นฐาน</h2>
-              <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="font-semibold text-indigo-600 mb-1">ชื่อระบบ</p>
-                  <p className="text-gray-900">{currentSystem.systemName || '-'}</p>
-                </div>
-
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="font-semibold text-indigo-600 mb-1">ประเภทการพัฒนา</p>
-                  <p className="text-gray-900">{currentSystem.developType || '-'}</p>
-                </div>
-
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="font-semibold text-indigo-600 mb-1">เลขที่สัญญา</p>
-                  <p className="text-gray-900">{currentSystem.contractNo || '-'}</p>
-                </div>
-
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="font-semibold text-indigo-600 mb-1">บริษัทคู่สัญญา/ติดต่อ</p>
-                  <p className="text-gray-900">{currentSystem.vendorContactNo || '-'}</p>
-                </div>
-
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="font-semibold text-indigo-600 mb-1">หน่วยงานเจ้าของระบบงาน</p>
-                  <p className="text-gray-900">{currentSystem.businessUnit || '-'}</p>
-                </div>
-
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="font-semibold text-indigo-600 mb-1">ผู้รับผิดชอบของทีมพัฒนา</p>
-                  <p className="text-gray-900">{currentSystem.developUnit || '-'}</p>
-                </div>
-
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="font-semibold text-indigo-600 mb-1">Computer Backup</p>
-                  <span className={`px-3 py-1 rounded-full text-sm ${
-                    currentSystem.computerbackup === 'YES' 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-red-100 text-red-800'
-                  }`}>
-                    {currentSystem.computerbackup || 'NO'}
-                  </span>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              {/* Basic Info Section */}
+              <div ref={sectionRefs.basic} className="mb-8">
+                <h2 className="text-2xl font-bold mb-4 pb-2 text-white border-b" 
+                    style={{ borderImage: line.line, borderImageSlice: 1 }}>
+                  ข้อมูลพื้นฐาน
+                </h2>
+                <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                  <InfoBox title="ชื่อระบบ" value={currentSystem.systemName} />
+                  <InfoBox title="ประเภทการพัฒนา" value={currentSystem.developType} />
+                  <InfoBox title="เลขที่สัญญา" value={currentSystem.contractNo} />
+                  <InfoBox title="บริษัทคู่สัญญา/ติดต่อ" value={currentSystem.vendorContactNo} />
+                  <InfoBox title="หน่วยงานเจ้าของระบบงาน" value={currentSystem.businessUnit} />
+                  <InfoBox title="ผู้รับผิดชอบของทีมพัฒนา" value={currentSystem.developUnit} />
+                  <InfoBox title="Computer Backup" value={currentSystem.computerbackup} isStatus />
                 </div>
               </div>
-            </div>
 
-            {/* Environment Info Section */}
-            <div ref={sectionRefs.environment} className="mb-8">
-              <h2 className="text-2xl font-bold mb-4 border-b pb-2">สภาพแวดล้อม</h2>
-              {currentSystem.environmentInfo?.map((env: any, index: number) => (
-                <div key={index} className="mb-6">
-                  <h3 className="text-lg font-semibold mb-4 text-indigo-600">Environment {index + 1}</h3>
-                  <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">Environment</p>
-                      <p className="text-gray-900">{env.environment || '-'}</p>
-                    </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">Server Name</p>
-                      <p className="text-gray-900">{env.serverName || '-'}</p>
-                    </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">IP Address</p>
-                      <p className="text-gray-900">{env.ip || '-'}</p>
-                    </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">Server Type</p>
-                      <p className="text-gray-900">{env.serverType || '-'}</p>
-                    </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">Server Role</p>
-                      <p className="text-gray-900">{env.serverRole || '-'}</p>
-                    </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">Server Duty</p>
-                      <p className="text-gray-900">{env.serverDuty || '-'}</p>
-                    </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">Database</p>
-                      <p className="text-gray-900">{env.database || '-'}</p>
-                    </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">Application</p>
-                      <p className="text-gray-900">{env.application || '-'}</p>
-                    </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">Operating System</p>
-                      <p className="text-gray-900">{env.operatingSystem || '-'}</p>
-                    </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">Service Pack</p>
-                      <p className="text-gray-900">{env.servicePack || '-'}</p>
-                    </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">Build</p>
-                      <p className="text-gray-900">{env.build || '-'}</p>
-                    </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">CPU</p>
-                      <p className="text-gray-900">{env.cpu || '-'}</p>
-                    </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">RAM</p>
-                      <p className="text-gray-900">{env.ram || '-'}</p>
-                    </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">Disk</p>
-                      <p className="text-gray-900">{env.disk || '-'}</p>
-                    </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">DR</p>
-                      <p className="text-gray-900">{env.dr || '-'}</p>
-                    </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">Join Domain</p>
-                      <p className="text-gray-900">{env.joinDomain || '-'}</p>
-                    </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">Windows Cluster</p>
-                      <p className="text-gray-900">{env.windowsCluster || '-'}</p>
-                    </div>
-                    <div className="col-span-2 p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">Production Unit</p>
-                      <div className="flex flex-wrap gap-2">
-                        {env.productionUnit?.map((unit: string, i: number) => (
-                          <span key={i} className="px-2 py-1 bg-gray-100 rounded-md text-sm">
-                            {unit}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Connection Info Section */}
-            <div ref={sectionRefs.connection} className="mb-8">
-              <h2 className="text-2xl font-bold mb-4 border-b pb-2">การเชื่อมต่อ</h2>
-              {currentSystem.connectionInfo?.map((conn: any, index: number) => (
-                <div key={index} className="mb-6">
-                  <h3 className="text-lg font-semibold mb-4 text-indigo-600">
-                    Server: {currentSystem.environmentInfo[index]?.serverName || `Server ${index + 1}`}
-                  </h3>
-                  <div className="grid grid-cols-3 gap-x-8 gap-y-4">
-                    {Object.entries(conn)
-                      .filter(([key]) => !['id', 'createdAt', 'updatedAt', 'systemInfoId'].includes(key))
-                      .map(([key, value]) => (
-                        <div key={key} className="p-4 bg-gray-50 rounded-lg">
-                          <p className="font-semibold text-indigo-600 mb-1">{key}</p>
-                          <span className={`px-3 py-1 rounded-full text-sm ${
-                            value === 'YES' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                          }`}>
-                            {String(value)}
-                          </span>
+              {/* Environment Info Section */}
+              <div ref={sectionRefs.environment} className="mb-8">
+                <h2 className="text-2xl font-bold mb-4 pb-2 text-white border-b"
+                    style={{ borderImage: line.line, borderImageSlice: 1 }}>
+                  สภาพแวดล้อม
+                </h2>
+                {currentSystem.environmentInfo?.map((env: any, index: number) => (
+                  <div key={index} className="mb-6">
+                    <h3 className="text-lg font-semibold mb-4 text-indigo-600">Environment {index + 1}</h3>
+                    <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                      <InfoBox title="Environment" value={env.environment} />
+                      <InfoBox title="Server Name" value={env.serverName} />
+                      <InfoBox title="IP Address" value={env.ip} />
+                      <InfoBox title="Server Type" value={env.serverType} />
+                      <InfoBox title="Server Role" value={env.serverRole} />
+                      <InfoBox title="Server Duty" value={env.serverDuty} />
+                      <InfoBox title="Database" value={env.database} />
+                      <InfoBox title="Application" value={env.application} />
+                      <InfoBox title="Operating System" value={env.operatingSystem} />
+                      <InfoBox title="Service Pack" value={env.servicePack} />
+                      <InfoBox title="Build" value={env.build} />
+                      <InfoBox title="CPU" value={env.cpu} />
+                      <InfoBox title="RAM" value={env.ram} />
+                      <InfoBox title="Disk" value={env.disk} />
+                      <InfoBox title="DR" value={env.dr} />
+                      <InfoBox title="Join Domain" value={env.joinDomain} />
+                      <InfoBox title="Windows Cluster" value={env.windowsCluster} />
+                      
+                      <div className="col-span-2 p-4 rounded-lg" style={{ backgroundColor: colors.background.tertiary }}>
+                        <p className="font-semibold mb-1" style={{ color: colors.text.secondary }}>Production Unit</p>
+                        <div className="flex flex-wrap gap-2">
+                          {env.productionUnit?.map((unit: string, i: number) => (
+                            <span 
+                              key={i} 
+                              className="px-2 py-1 rounded-md text-sm" 
+                              style={{ 
+                                backgroundColor: `${colors.button.primary.background}20`,
+                                color: colors.text.primary
+                              }}
+                            >
+                              {unit}
+                            </span>
+                          ))}
                         </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Security Info Section */}
-            <div ref={sectionRefs.security} className="mb-8">
-              <h2 className="text-2xl font-bold mb-4 border-b pb-2">ความปลอดภัย</h2>
-              {currentSystem.securityInfo?.map((security: any, index: number) => (
-                <div key={index} className="mb-6">
-                  <h3 className="text-lg font-semibold mb-4 text-indigo-600">
-                    Server: {currentSystem.environmentInfo[index]?.serverName || `Server ${index + 1}`}
-                  </h3>
-                  <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">URL Website</p>
-                      <p className="text-gray-900">{security.urlWebsite || '-'}</p>
-                    </div>
-                    
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">Certificate Expire Date</p>
-                      <p className="text-gray-900">{security.certificateExpireDate || '-'}</p>
-                    </div>
-
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">Backup Policy</p>
-                      <p className="text-gray-900">{security.backupPolicy || '-'}</p>
-                    </div>
-
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-indigo-600 mb-1">Downtime Allowed</p>
-                      <p className="text-gray-900">{security.downtimeAllowed || '-'}</p>
-                    </div>
-
-                    {['centralizeLog', 'setupAgentPatch', 'internetFacing'].map((field) => (
-                      <div key={field} className="p-4 bg-gray-50 rounded-lg">
-                        <p className="font-semibold text-indigo-600 mb-1">{field}</p>
-                        <span className={`px-3 py-1 rounded-full text-sm ${
-                          security[field] === 'YES' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                        }`}>
-                          {security[field]}
-                        </span>
                       </div>
-                    ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+
+              {/* Connection Info Section */}
+              <div ref={sectionRefs.connection} className="mb-8">
+                <h2 className="text-2xl font-bold mb-4 pb-2 text-white border-b"
+                    style={{ borderImage: line.line, borderImageSlice: 1 }}>
+                  การเชื่อมต่อ
+                </h2>
+                {currentSystem.connectionInfo?.map((conn: any, index: number) => (
+                  <div key={index} className="mb-6">
+                    <h3 className="text-lg font-semibold mb-4 text-indigo-600">
+                      Server: {currentSystem.environmentInfo[index]?.serverName || `Server ${index + 1}`}
+                    </h3>
+                    <div className="grid grid-cols-3 gap-x-8 gap-y-4">
+                      {Object.entries(conn)
+                        .filter(([key]) => !['id', 'createdAt', 'updatedAt', 'systemInfoId'].includes(key))
+                        .map(([key, value]) => (
+                          <InfoBox key={key} title={key} value={String(value)} isStatus />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Security Info Section */}
+              <div ref={sectionRefs.security} className="mb-8">
+                <h2 className="text-2xl font-bold mb-4 pb-2 text-white border-b"
+                    style={{ borderImage: line.line, borderImageSlice: 1 }}>
+                  ความปลอดภัย
+                </h2>
+                {currentSystem.securityInfo?.map((security: any, index: number) => (
+                  <div key={index} className="mb-6">
+                    <h3 className="text-lg font-semibold mb-4 text-indigo-600">
+                      Server: {currentSystem.environmentInfo[index]?.serverName || `Server ${index + 1}`}
+                    </h3>
+                    <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                      <InfoBox title="URL Website" value={security.urlWebsite} />
+                      <InfoBox title="Certificate Expire Date" value={security.certificateExpireDate} />
+                      <InfoBox title="Backup Policy" value={security.backupPolicy} />
+                      <InfoBox title="Downtime Allowed" value={security.downtimeAllowed} />
+                      {['centralizeLog', 'setupAgentPatch', 'internetFacing'].map((field) => (
+                        <InfoBox key={field} title={field} value={security[field]} isStatus />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
           </div>
         </motion.div>
       </motion.div>

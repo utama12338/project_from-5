@@ -120,7 +120,41 @@ enum Role {
   SUPERUSER
 }
 
-enum DraftStatus {
-  DRAFT
-  PUBLISH  
+
+
+model EnvironmentOption {
+  name  String @unique
 }
+
+model ServerTypeOption {
+  name  String @unique
+}
+
+model ServerRoleOption {
+  name  String @unique
+}
+
+model ServerDutyOption {
+  name  String @unique
+}
+
+model ProductionUnitOption {
+  name  String @unique
+}
+
+model DeveloperUnitOption {
+  name  String @unique
+}
+
+model YesNoOption {
+  name  String @unique
+}
+
+model DrDcOption {
+  name  String @unique
+}
+
+model DeveloperTypeOption {
+  name  String @unique
+}
+

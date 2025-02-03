@@ -3,9 +3,11 @@ import express from "express"
 
 app.use(express.json())
 
-import userRoutes from "./routes/formeRoutes.js"
+import router from "./routes/formeRoutes.js"
+import optionRoutes from "./routes/optionselect.js"
+app.use("/from", router)
 
-app.use("/from", userRoutes)
+app.use("/option", optionRoutes)
 
 const port = process.env.port|| 4000
 app.listen(port,()=>{

@@ -1,4 +1,5 @@
 import express from "express"
+import cors from 'cors'; // นำเข้า cors
 import {  
     createfrome,
     getforme,
@@ -10,7 +11,7 @@ import {
 } from "../controllers/formeController"
 
 const router = express.Router()
-import cors from 'cors'; // นำเข้า cors
+
 router.use(cors()); //ใช้ cors สำหรับให้ prot อื่นเข้าถึง api ได้
 
 router.post("/createforme", createfrome)

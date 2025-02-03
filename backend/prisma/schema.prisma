@@ -123,38 +123,38 @@ enum Role {
 
 
 model EnvironmentOption {
-  name  String @unique
+  option  String @unique
 }
 
 model ServerTypeOption {
-  name  String @unique
+  option  String @unique
 }
 
 model ServerRoleOption {
-  name  String @unique
+  option  String @unique
 }
 
 model ServerDutyOption {
-  name  String @unique
+  option  String @unique
 }
 
 model ProductionUnitOption {
-  name  String @unique
+  option  String @unique
 }
 
 model DeveloperUnitOption {
-  name  String @unique
+  option  String @unique
 }
 
 model YesNoOption {
-  name  String @unique
+  option  String @unique
 }
 
 model DrDcOption {
-  name  String @unique
+  option  String @unique
 }
 
 model DeveloperTypeOption {
-  name  String @unique
+  option  String @unique
 }
 

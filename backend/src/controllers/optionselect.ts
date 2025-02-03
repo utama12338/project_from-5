@@ -93,3 +93,4 @@ export const getDeveloperTypeOptions = async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Failed to fetch developer type options' });
     }
 }
+

@@ -19,7 +19,8 @@
       "restart": true,
       "sourceMaps": true,
       "timeout": 30000,
-      "outFiles": ["${workspaceFolder}/.next/**/*.js"]
+      "outFiles": ["${workspaceFolder}/.next/**/*.js"],
+      "autoAttachChildProcesses": true
     }
   ]
 }

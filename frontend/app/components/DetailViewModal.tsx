@@ -142,7 +142,7 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                   }}
                   className="cursor-pointer p-2 rounded hover:bg-pink-500 hover:bg-opacity-10 transition-all duration-200"
                 >
-                  {section === 'basic' && 'ข้อมูลพื้นฐาน'}
+                  {section === 'basic' && 'ข้อมูลพื้นฐาน basic'}
                   {section === 'environment' && 'สภาพแวดล้อม'}
                   {section === 'connection' && 'การเชื่อมต่อ'}
                   {section === 'security' && 'ความปลอดภัย'}
@@ -169,6 +169,7 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                     style={{ borderImage: line.line, borderImageSlice: 1 }}>
                   ข้อมูลพื้นฐาน
                 </h2>
+                <h3 className="text-lg font-semibold mb-4 text-indigo-600">Systeminfo </h3>
                 <div className="grid grid-cols-2 gap-x-8 gap-y-4">
                   <InfoBox title={SYSTEM_LABELS.systemName} value={currentSystem.systemName} />
                   <InfoBox title={SYSTEM_LABELS.developType} value={currentSystem.developType} />

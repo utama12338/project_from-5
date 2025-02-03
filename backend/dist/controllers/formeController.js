@@ -394,24 +394,51 @@ const searchSystems = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         //     securityInfo: true,
         //   }
         // });
+        // const systems = await prisma.systemInfo.findMany({
+        //   where: {
+        //     AND: [
+        //       systemName ? { systemName: { equals: systemName as string } } : {},
+        //       developType ? { developType: { equals: developType as string } } : {},
+        //       businessUnit ? { businessUnit: { equals: businessUnit as string } } : {},
+        //       environment && serverName && ip ? {
+        //         environmentInfo: {
+        //           some: {
+        //             AND: [
+        //               environment ? { environment: { equals: environment as string } } : {},
+        //               serverName ? { serverName: { equals: serverName as string } } : {},
+        //               ip ? { ip: { equals: ip as string } } : {},
+        //             ]
+        //           }
+        //         }
+        //       } : {}
+        //     ]
+        //   },
+        //   include: {
+        //     environmentInfo: true,
+        //     connectionInfo: true,
+        //     securityInfo: true,
+        //   }
+        // });
         const systems = yield prisma.systemInfo.findMany({
             where: {
                 AND: [
-                    systemName ? { systemName: { equals: systemName } } : {},
-                    developType ? { developType: { equals: developType } } : {},
-                    businessUnit ? { businessUnit: { equals: businessUnit } } : {},
-                    environment && serverName && ip ? {
+                    // เงื่อนไขสำหรับ systemInfo
+                    systemName ? { systemName: { equals: systemName } } : undefined,
+                    developType ? { developType: { equals: developType } } : undefined,
+                    businessUnit ? { businessUnit: { equals: businessUnit } } : undefined,
+                    // เงื่อนไขสำหรับ environmentInfo ถ้ามีการระบุเงื่อนไขใด ๆ ใน environment, serverName หรือ ip
+                    (environment || serverName || ip) ? {
                         environmentInfo: {
                             some: {
                                 AND: [
-                                    environment ? { environment: { equals: environment } } : {},
-                                    serverName ? { serverName: { equals: serverName } } : {},
-                                    ip ? { ip: { equals: ip } } : {},
-                                ]
+                                    environment ? { environment: { equals: environment } } : undefined,
+                                    serverName ? { serverName: { equals: serverName } } : undefined,
+                                    ip ? { ip: { equals: ip } } : undefined,
+                                ].filter(condition => condition !== undefined)
                             }
                         }
-                    } : {}
-                ]
+                    } : undefined,
+                ].filter(condition => condition !== undefined)
             },
             include: {
                 environmentInfo: true,

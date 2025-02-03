@@ -386,24 +386,53 @@ const searchSystems = async (req: Request, res: Response) => {
     //   }
     // });
 
+    // const systems = await prisma.systemInfo.findMany({
+    //   where: {
+    //     AND: [
+    //       systemName ? { systemName: { equals: systemName as string } } : {},
+    //       developType ? { developType: { equals: developType as string } } : {},
+    //       businessUnit ? { businessUnit: { equals: businessUnit as string } } : {},
+    //       environment && serverName && ip ? {
+    //         environmentInfo: {
+    //           some: {
+    //             AND: [
+    //               environment ? { environment: { equals: environment as string } } : {},
+    //               serverName ? { serverName: { equals: serverName as string } } : {},
+    //               ip ? { ip: { equals: ip as string } } : {},
+    //             ]
+    //           }
+    //         }
+    //       } : {}
+    //     ]
+    //   },
+    //   include: {
+    //     environmentInfo: true,
+    //     connectionInfo: true,
+    //     securityInfo: true,
+    //   }
+    // });
+    
     const systems = await prisma.systemInfo.findMany({
       where: {
         AND: [
-          systemName ? { systemName: { equals: systemName as string } } : {},
-          developType ? { developType: { equals: developType as string } } : {},
-          businessUnit ? { businessUnit: { equals: businessUnit as string } } : {},
-          environment && serverName && ip ? {
+          // เงื่อนไขสำหรับ systemInfo
+          systemName ? { systemName: { equals: systemName as string } } : undefined,
+          developType ? { developType: { equals: developType as string } } : undefined,
+          businessUnit ? { businessUnit: { equals: businessUnit as string } } : undefined,
+          
+          // เงื่อนไขสำหรับ environmentInfo ถ้ามีการระบุเงื่อนไขใด ๆ ใน environment, serverName หรือ ip
+          (environment || serverName || ip) ? {
             environmentInfo: {
               some: {
                 AND: [
-                  environment ? { environment: { equals: environment as string } } : {},
-                  serverName ? { serverName: { equals: serverName as string } } : {},
-                  ip ? { ip: { equals: ip as string } } : {},
-                ]
+                  environment ? { environment: { equals: environment as string } } : undefined,
+                  serverName ? { serverName: { equals: serverName as string } } : undefined,
+                  ip ? { ip: { equals: ip as string } } : undefined,
+                ].filter(condition => condition !== undefined)
               }
             }
-          } : {}
-        ]
+          } : undefined,
+        ].filter(condition => condition !== undefined)
       },
       include: {
         environmentInfo: true,
@@ -412,7 +441,6 @@ const searchSystems = async (req: Request, res: Response) => {
       }
     });
     
-
     res.json(systems);
   } catch (error) {
     console.error('Error searching systems:', error);

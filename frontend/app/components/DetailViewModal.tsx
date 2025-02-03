@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import StyledWrapper from './neoninput';
 import { colors, shadows, transitions, line } from '../styles/theme';
 import ModernDropdown from './ModernDropdown';
+import { SYSTEM_LABELS, ENVIRONMENT_LABELS, CONNECTION_LABELS, SECURITY_LABELS } from '../constants/labels';
 
 interface DetailViewModalProps {
   isOpen: boolean;
@@ -169,13 +170,13 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                   ข้อมูลพื้นฐาน
                 </h2>
                 <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                  <InfoBox title="ชื่อระบบ" value={currentSystem.systemName} />
-                  <InfoBox title="ประเภทการพัฒนา" value={currentSystem.developType} />
-                  <InfoBox title="เลขที่สัญญา" value={currentSystem.contractNo} />
-                  <InfoBox title="บริษัทคู่สัญญา/ติดต่อ" value={currentSystem.vendorContactNo} />
-                  <InfoBox title="หน่วยงานเจ้าของระบบงาน" value={currentSystem.businessUnit} />
-                  <InfoBox title="ผู้รับผิดชอบของทีมพัฒนา" value={currentSystem.developUnit} />
-                  <InfoBox title="Computer Backup" value={currentSystem.computerbackup} isStatus />
+                  <InfoBox title={SYSTEM_LABELS.systemName} value={currentSystem.systemName} />
+                  <InfoBox title={SYSTEM_LABELS.developType} value={currentSystem.developType} />
+                  <InfoBox title={SYSTEM_LABELS.contractNo} value={currentSystem.contractNo} />
+                  <InfoBox title={SYSTEM_LABELS.vendorContactNo} value={currentSystem.vendorContactNo} />
+                  <InfoBox title={SYSTEM_LABELS.businessUnit} value={currentSystem.businessUnit} />
+                  <InfoBox title={SYSTEM_LABELS.developUnit} value={currentSystem.developUnit} />
+                  <InfoBox title={SYSTEM_LABELS.computerBackup} value={currentSystem.computerbackup} isStatus />
                 </div>
               </div>
 
@@ -187,28 +188,28 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                 </h2>
                 {currentSystem.environmentInfo?.map((env: any, index: number) => (
                   <div key={index} className="mb-6">
-                    <h3 className="text-lg font-semibold mb-4 text-indigo-600">Environment {index + 1}</h3>
+                    <h3 className="text-lg font-semibold mb-4 text-indigo-600">Environment {currentSystem.systemName}</h3>
                     <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                      <InfoBox title="Environment" value={env.environment} />
-                      <InfoBox title="Server Name" value={env.serverName} />
-                      <InfoBox title="IP Address" value={env.ip} />
-                      <InfoBox title="Server Type" value={env.serverType} />
-                      <InfoBox title="Server Role" value={env.serverRole} />
-                      <InfoBox title="Server Duty" value={env.serverDuty} />
-                      <InfoBox title="Database" value={env.database} />
-                      <InfoBox title="Application" value={env.application} />
-                      <InfoBox title="Operating System" value={env.operatingSystem} />
-                      <InfoBox title="Service Pack" value={env.servicePack} />
-                      <InfoBox title="Build" value={env.build} />
-                      <InfoBox title="CPU" value={env.cpu} />
-                      <InfoBox title="RAM" value={env.ram} />
-                      <InfoBox title="Disk" value={env.disk} />
-                      <InfoBox title="DR" value={env.dr} />
-                      <InfoBox title="Join Domain" value={env.joinDomain} />
-                      <InfoBox title="Windows Cluster" value={env.windowsCluster} />
+                      <InfoBox title={ENVIRONMENT_LABELS.environment} value={env.environment} />
+                      <InfoBox title={ENVIRONMENT_LABELS.serverName} value={env.serverName} />
+                      <InfoBox title={ENVIRONMENT_LABELS.ip} value={env.ip} />
+                      <InfoBox title={ENVIRONMENT_LABELS.serverType} value={env.serverType} />
+                      <InfoBox title={ENVIRONMENT_LABELS.serverRole} value={env.serverRole} />
+                      <InfoBox title={ENVIRONMENT_LABELS.serverDuty} value={env.serverDuty} />
+                      <InfoBox title={ENVIRONMENT_LABELS.database} value={env.database} />
+                      <InfoBox title={ENVIRONMENT_LABELS.application} value={env.application} />
+                      <InfoBox title={ENVIRONMENT_LABELS.operatingSystem} value={env.operatingSystem} />
+                      <InfoBox title={ENVIRONMENT_LABELS.servicePack} value={env.servicePack} />
+                      <InfoBox title={ENVIRONMENT_LABELS.build} value={env.build} />
+                      <InfoBox title={ENVIRONMENT_LABELS.cpu} value={env.cpu} />
+                      <InfoBox title={ENVIRONMENT_LABELS.ram} value={env.ram} />
+                      <InfoBox title={ENVIRONMENT_LABELS.disk} value={env.disk} />
+                      <InfoBox title={ENVIRONMENT_LABELS.dr} value={env.dr} />
+                      <InfoBox title={ENVIRONMENT_LABELS.joinDomain} value={env.joinDomain} />
+                      <InfoBox title={ENVIRONMENT_LABELS.windowsCluster} value={env.windowsCluster} />
                       
                       <div className="col-span-2 p-4 rounded-lg" style={{ backgroundColor: colors.background.tertiary }}>
-                        <p className="font-semibold mb-1" style={{ color: colors.text.secondary }}>Production Unit</p>
+                        <p className="font-semibold mb-1" style={{ color: colors.text.secondary }}>{ENVIRONMENT_LABELS.productionUnit}</p>
                         <div className="flex flex-wrap gap-2">
                           {env.productionUnit?.map((unit: string, i: number) => (
                             <span 
@@ -244,7 +245,12 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                       {Object.entries(conn)
                         .filter(([key]) => !['id', 'createdAt', 'updatedAt', 'systemInfoId'].includes(key))
                         .map(([key, value]) => (
-                          <InfoBox key={key} title={key} value={String(value)} isStatus />
+                          <InfoBox 
+                            key={key} 
+                            title={CONNECTION_LABELS[key as keyof typeof CONNECTION_LABELS] || key} 
+                            value={String(value)} 
+                            isStatus 
+                          />
                       ))}
                     </div>
                   </div>
@@ -263,13 +269,13 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                       Server: {currentSystem.environmentInfo[index]?.serverName || `Server ${index + 1}`}
                     </h3>
                     <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                      <InfoBox title="URL Website" value={security.urlWebsite} />
-                      <InfoBox title="Certificate Expire Date" value={security.certificateExpireDate} />
-                      <InfoBox title="Backup Policy" value={security.backupPolicy} />
-                      <InfoBox title="Downtime Allowed" value={security.downtimeAllowed} />
-                      {['centralizeLog', 'setupAgentPatch', 'internetFacing'].map((field) => (
-                        <InfoBox key={field} title={field} value={security[field]} isStatus />
-                      ))}
+                      <InfoBox title={SECURITY_LABELS.urlWebsite} value={security.urlWebsite} />
+                      <InfoBox title={SECURITY_LABELS.certificateExpireDate} value={security.certificateExpireDate} />
+                      <InfoBox title={SECURITY_LABELS.backupPolicy} value={security.backupPolicy} />
+                      <InfoBox title={SECURITY_LABELS.downtimeAllowed} value={security.downtimeAllowed} />
+                      <InfoBox title={SECURITY_LABELS.centralizeLog} value={security.centralizeLog} isStatus />
+                      <InfoBox title={SECURITY_LABELS.setupAgentPatch} value={security.setupAgentPatch} isStatus />
+                      <InfoBox title={SECURITY_LABELS.internetFacing} value={security.internetFacing} isStatus />
                     </div>
                   </div>
                 ))}

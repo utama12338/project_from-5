@@ -1,4 +1,48 @@
-export const colors = {
+// เพิ่ม interface สำหรับ theme
+export interface ThemeColors {
+  background: {
+    primary: string;
+    secondary: string;
+    tertiary: string;
+  };
+  text: {
+    primary: string;
+    secondary: string;
+    muted: string;
+  };
+  border: {
+    primary: string;
+    focused: string;
+  };
+  button: {
+    primary: {
+      background: string;
+      hover: string;
+      active: string;
+    };
+    secondary: {
+      background: string;
+      hover: string;
+    };
+    danger: {
+      background: string;
+      hover: string;
+    };
+  };
+  input: {
+    background: string;
+    placeholder: string;
+    border: string;
+  };
+  gradient: {
+    primary: string;
+    secondary: string;
+    completed: string;
+  };
+}
+
+// ระบุ type ให้กับ colors object
+export const colors: ThemeColors = {
   background: {
     primary: 'rgb(17,17,16)',
     secondary: 'rgb(27,27,26)',

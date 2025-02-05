@@ -14,9 +14,9 @@ import CustomDatePicker from '../../../components/CustomDatePicker';
 // 
 // steper
 
-import {iconstrper} from './iconstrper'
-import {ColorlibConnector,ColorlibStepIconRoot,CustomStepLabel} from './color' 
-import {colors,shadows,line} from '@/styles/theme'
+import {iconstrper}from './iconstrper'
+import {ColorlibConnector,ColorlibStepIconRoot,CustomStepLabel}from './color' 
+import {colors,shadows,line}from '@/styles/theme'
 // 
 import Stack from '@mui/material/Stack';
 import Stepper from '@mui/material/Stepper';
@@ -88,7 +88,8 @@ export default function CreateSystem() {
 
 
   return (
-    <div className="min-h-screen bg-[rgb(17,17,16)] py-8">
+    // แก้ไขจาก bg-[rgb(17,17,16)] เป็นการใช้ style จาก theme
+    <div className="min-h-screen py-8" style={{ background: colors.background.primary }}>
       <motion.div 
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
         initial={{ opacity: 0 }}
@@ -165,7 +166,9 @@ export default function CreateSystem() {
 
         {/* Form Content */}
         <motion.div 
-          className="bg-[rgb(27,27,26)] shadow-2xl rounded-2xl p-8 text-white"
+          // แก้ไขจาก bg-[rgb(27,27,26)] เป็นการใช้ style จาก theme
+          className="shadow-2xl rounded-2xl p-8 text-white"
+          style={{ background: colors.background.secondary }}
           variants={fadeInUp}
           initial="initial"
           animate="animate"
@@ -323,7 +326,9 @@ export default function CreateSystem() {
                   <AddNewEntriesButton onClick={addNewEntries} />
                 </div>
                 {formData.environmentInfo.map((env, index) => (
-                  <div key={index} className="space-y-4 bg-[rgb(32,32,31)] p-4 rounded-lg">
+                  // แก้ไข background ของ cards จาก bg-[rgb(32,32,31)] เป็น
+                  <div key={index} className="space-y-4 p-4 rounded-lg" 
+                       style={{ background: colors.background.tertiary }}>
                     <div className="flex justify-between items-center">
                       <h4 className="font-medium">ข้อมูลชุดที่ {index + 1}</h4>
                                               
@@ -717,7 +722,9 @@ export default function CreateSystem() {
                   </h3>
                 </div>
                 {formData.connectionInfo.map((conn, index) => (
-                  <div key={index} className="space-y-4 bg-[rgb(32,32,31)] p-4 rounded-lg">
+                  // แก้ไข background ของ cards จาก bg-[rgb(32,32,31)] เป็น
+                  <div key={index} className="space-y-4 p-4 rounded-lg" 
+                       style={{ background: colors.background.tertiary }}>
                     <div className="flex justify-between items-center">
                       <h4 className="font-medium text-gray-100">
                         Server Name: {formData.environmentInfo[index]?.serverName || 'N/A'}
@@ -921,7 +928,9 @@ export default function CreateSystem() {
                   </h3>
                 </div>
                 {formData.securityInfo.map((security, index) => (
-                  <div key={index} className="space-y-4 bg-[rgb(32,32,31)] p-4 rounded-lg">
+                  // แก้ไข background ของ cards จาก bg-[rgb(32,32,31)] เป็น
+                  <div key={index} className="space-y-4 p-4 rounded-lg" 
+                       style={{ background: colors.background.tertiary }}>
                     <div className="flex justify-between items-center">
                       <h4 className="font-medium text-gray-100">
                         Server Name: {formData.environmentInfo[index]?.serverName || 'N/A'}

@@ -103,9 +103,62 @@ export const transitions = {
   default: 'all 0.2s ease-in-out'
 };
 
-
 export const line = {
   line:'linear-gradient(to right, rgb(236, 72, 153), rgb(168, 85, 247), rgb(59, 130, 246))'
+};
 
+
+// detail model ดูรายระเอียด
+// Add new theme elements
+export const layout = {
+  borderRadius: {
+    small: '4px',
+    medium: '8px',
+    large: '12px',
+    xl: '16px'
+  },
+  spacing: {
+    small: '8px',
+    medium: '16px',
+    large: '24px',
+    xl: '32px'
+  }
+};
+
+export const animation = {
+  fadeIn: {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 }
+  },
+  slideIn: {
+    initial: { y: -50, opacity: 0 },
+    animate: { y: 0, opacity: 1 },
+    exit: { y: -50, opacity: 0 }
+  }
+};
+
+export const menu = {
+  icons: {
+    expand: '▼',
+    collapse: '▲',
+  },
+  text: {
+    active: '#FFFFFF',
+    inactive: 'rgba(255, 255, 255, 0.7)',
+    hover: 'rgb(236,72,153)',
+  }
+};
+
+export const labels = {
+  section: {
+    background: `${colors.button.primary.background}20`,
+    text: colors.button.primary.background,
+    activeBackground: `${colors.button.primary.background}40`,
+    activeText: colors.text.primary,
+    padding: '0.75rem 1rem',
+    border: `1px solid ${colors.button.primary.background}20`,
+    borderRadius: '8px',
+  }
 };
 

@@ -1,9 +1,16 @@
 'use client'
 import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import StyledWrapper from './neoninput';
-import { colors, shadows, transitions, line } from '../styles/theme';
-import ModernDropdown from './ModernDropdown';
+import { 
+  colors, 
+  shadows, 
+  transitions, 
+  line, 
+  layout,
+  animation,
+  menu,
+  labels
+} from '../styles/theme';
 import { SYSTEM_LABELS, ENVIRONMENT_LABELS, CONNECTION_LABELS, SECURITY_LABELS } from '../constants/labels';
 
 interface DetailViewModalProps {
@@ -15,6 +22,8 @@ interface DetailViewModalProps {
 export default function DetailViewModal({ isOpen, onClose, systems }: DetailViewModalProps) {
   const [activeSection, setActiveSection] = useState('basic');
   const [activeSystemIndex, setActiveSystemIndex] = useState(0);
+  const [activeEnvironmentIndex, setActiveEnvironmentIndex] = useState(0);
+  const [isEnvironmentExpanded, setIsEnvironmentExpanded] = useState(false);
   const modalContentRef = useRef<HTMLDivElement>(null);
   const sectionRefs = {
     basic: useRef<HTMLDivElement>(null),
@@ -58,7 +67,10 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
     }
   }, [isOpen]); // Add isOpen as dependency
 
-  const scrollToSection = (sectionId: string) => {
+  const scrollToSection = (sectionId: string, envIndex?: number) => {
+    if (envIndex !== undefined) {
+      setActiveEnvironmentIndex(envIndex);
+    }
     sectionRefs[sectionId as keyof typeof sectionRefs].current?.scrollIntoView({
       behavior: 'smooth'
     });
@@ -91,27 +103,28 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+        {...animation.fadeIn}
         className="fixed inset-0 z-50 flex justify-center items-start pt-10"
         style={{ backgroundColor: 'rgba(0, 0, 0, 0.75)' }}
         onClick={onClose}
       >
         <motion.div
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -50, opacity: 0 }}
+          {...animation.slideIn}
           style={{ 
             backgroundColor: colors.background.secondary,
             boxShadow: shadows.primary,
+            borderRadius: layout.borderRadius.large
           }}
-          className="rounded-lg w-full max-w-6xl mx-4 h-[80vh] flex"
+          className="w-full max-w-6xl mx-4 h-[80vh] flex"
           onClick={e => e.stopPropagation()}
         >
           {/* System Selection Tabs */}
           <div className="w-64 border-r flex flex-col" 
-               style={{ backgroundColor: colors.background.tertiary }}>
+               style={{ 
+                 backgroundColor: colors.background.tertiary,
+                 borderTopLeftRadius: layout.borderRadius.large,
+                 borderBottomLeftRadius: layout.borderRadius.large
+               }}>
             <div className="p-4 border-b">
               <h3 className="font-semibold text-white">ระบบที่เลือก ({systems.length})</h3>
             </div>
@@ -132,20 +145,71 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
             </div>
             {/* Existing navigation */}
             <div className="border-t p-4 space-y-2">
-              {['basic', 'environment', 'connection', 'security'].map((section) => (
-                <div 
-                  key={section}
-                  onClick={() => scrollToSection(section)}
-                  style={{
-                    backgroundColor: activeSection === section ? `${colors.button.primary.background}20` : 'transparent',
-                    color: activeSection === section ? colors.button.primary.background : colors.text.primary
-                  }}
-                  className="cursor-pointer p-2 rounded hover:bg-pink-500 hover:bg-opacity-10 transition-all duration-200"
-                >
-                  {section === 'basic' && 'ข้อมูลพื้นฐาน Systeminfo '}
-                  {section === 'environment' && 'สภาพแวดล้อม Environment '}
-                  {section === 'connection' && 'การเชื่อมต่อ connecting'}
-                  {section === 'security' && 'ความปลอดภัย security'}
+              {/* Basic Info */}
+              <div 
+                onClick={() => scrollToSection('basic')}
+                style={{
+                  backgroundColor: activeSection === 'basic' 
+                    ? `${colors.button.primary.background}20` 
+                    : 'transparent',
+                  color: activeSection === 'basic' 
+                    ? colors.button.primary.background 
+                    : colors.text.primary,
+                  padding: labels.section.padding,
+                  borderRadius: labels.section.borderRadius,
+                }}
+                className="cursor-pointer mb-2 transition-all duration-200"
+              >
+                <span className="font-semibold">ข้อมูลพื้นฐาน Systeminfo</span>
+              </div>
+
+              {/* Environments Section */}
+              {currentSystem.environmentInfo?.map((env: any, index: number) => (
+                <div key={index} className="ml-4">
+                  <div
+                    onClick={() => {
+                      setIsEnvironmentExpanded(prev => !prev);
+                      scrollToSection('environment', index);
+                    }}
+                    style={{
+                      backgroundColor: activeSection === 'environment' && activeEnvironmentIndex === index
+                        ? `${colors.button.primary.background}20`
+                        : 'transparent',
+                      color: activeSection === 'environment' && activeEnvironmentIndex === index
+                        ? menu.text.active
+                        : menu.text.inactive
+                    }}
+                    className="cursor-pointer p-2 rounded hover:bg-pink-500 hover:bg-opacity-10 transition-all duration-200 flex justify-between items-center"
+                  >
+                    <span>{env.environment || `Environment ${index + 1}`}</span>
+                    <span className="text-xs">
+                      {isEnvironmentExpanded && activeEnvironmentIndex === index ? menu.icons.collapse : menu.icons.expand}
+                    </span>
+                  </div>
+
+                  {isEnvironmentExpanded && activeEnvironmentIndex === index && (
+                    <div className="ml-4 space-y-2">
+                      {[
+                        { id: 'environment', text: 'สภาพแวดล้อม Environment' },
+                        { id: 'connection', text: 'การเชื่อมต่อ connecting' },
+                        { id: 'security', text: 'ความปลอดภัย security' }
+                      ].map((item) => (
+                        <div
+                          key={item.id}
+                          onClick={() => scrollToSection(item.id, index)}
+                          style={{
+                            color: activeSection === item.id 
+                              ? menu.text.hover 
+                              : menu.text.inactive
+                          }}
+                          className="cursor-pointer p-2 rounded hover:bg-pink-500 hover:bg-opacity-10 flex items-center"
+                        >
+                          <span className="text-xs mr-2">●</span>
+                          <span>{item.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -156,7 +220,11 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
             id="modal-content" 
             ref={modalContentRef}
             className="flex-1 overflow-y-auto p-6"
-            style={{ backgroundColor: colors.background.secondary }}
+            style={{ 
+              backgroundColor: colors.background.secondary,
+              borderTopRightRadius: layout.borderRadius.large,
+              borderBottomRightRadius: layout.borderRadius.large
+            }}
           >
             <motion.div
               initial={{ opacity: 0 }}
@@ -182,37 +250,37 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
               </div>
 
               {/* Environment Info Section */}
-              <div ref={sectionRefs.environment} className="mb-8">
-                <h2 className="text-2xl font-bold mb-4 pb-2 text-white border-b"
-                    style={{ borderImage: line.line, borderImageSlice: 1 }}>
-                  สภาพแวดล้อม
-                </h2>
-                {currentSystem.environmentInfo?.map((env: any, index: number) => (
-                  <div key={index} className="mb-6">
+              {currentSystem.environmentInfo?.[activeEnvironmentIndex] && (
+                <div ref={sectionRefs.environment} className="mb-8">
+                  <h2 className="text-2xl font-bold mb-4 pb-2 text-white border-b"
+                      style={{ borderImage: line.line, borderImageSlice: 1 }}>
+                    สภาพแวดล้อม
+                  </h2>
+                  <div className="mb-6">
                     <h3 className="text-lg font-semibold mb-4 text-indigo-600">Environment {currentSystem.systemName}</h3>
                     <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                      <InfoBox title={ENVIRONMENT_LABELS.environment} value={env.environment} />
-                      <InfoBox title={ENVIRONMENT_LABELS.serverName} value={env.serverName} />
-                      <InfoBox title={ENVIRONMENT_LABELS.ip} value={env.ip} />
-                      <InfoBox title={ENVIRONMENT_LABELS.serverType} value={env.serverType} />
-                      <InfoBox title={ENVIRONMENT_LABELS.serverRole} value={env.serverRole} />
-                      <InfoBox title={ENVIRONMENT_LABELS.serverDuty} value={env.serverDuty} />
-                      <InfoBox title={ENVIRONMENT_LABELS.database} value={env.database} />
-                      <InfoBox title={ENVIRONMENT_LABELS.application} value={env.application} />
-                      <InfoBox title={ENVIRONMENT_LABELS.operatingSystem} value={env.operatingSystem} />
-                      <InfoBox title={ENVIRONMENT_LABELS.servicePack} value={env.servicePack} />
-                      <InfoBox title={ENVIRONMENT_LABELS.build} value={env.build} />
-                      <InfoBox title={ENVIRONMENT_LABELS.cpu} value={env.cpu} />
-                      <InfoBox title={ENVIRONMENT_LABELS.ram} value={env.ram} />
-                      <InfoBox title={ENVIRONMENT_LABELS.disk} value={env.disk} />
-                      <InfoBox title={ENVIRONMENT_LABELS.dr} value={env.dr} />
-                      <InfoBox title={ENVIRONMENT_LABELS.joinDomain} value={env.joinDomain} />
-                      <InfoBox title={ENVIRONMENT_LABELS.windowsCluster} value={env.windowsCluster} />
+                      <InfoBox title={ENVIRONMENT_LABELS.environment} value={currentSystem.environmentInfo[activeEnvironmentIndex].environment} />
+                      <InfoBox title={ENVIRONMENT_LABELS.serverName} value={currentSystem.environmentInfo[activeEnvironmentIndex].serverName} />
+                      <InfoBox title={ENVIRONMENT_LABELS.ip} value={currentSystem.environmentInfo[activeEnvironmentIndex].ip} />
+                      <InfoBox title={ENVIRONMENT_LABELS.serverType} value={currentSystem.environmentInfo[activeEnvironmentIndex].serverType} />
+                      <InfoBox title={ENVIRONMENT_LABELS.serverRole} value={currentSystem.environmentInfo[activeEnvironmentIndex].serverRole} />
+                      <InfoBox title={ENVIRONMENT_LABELS.serverDuty} value={currentSystem.environmentInfo[activeEnvironmentIndex].serverDuty} />
+                      <InfoBox title={ENVIRONMENT_LABELS.database} value={currentSystem.environmentInfo[activeEnvironmentIndex].database} />
+                      <InfoBox title={ENVIRONMENT_LABELS.application} value={currentSystem.environmentInfo[activeEnvironmentIndex].application} />
+                      <InfoBox title={ENVIRONMENT_LABELS.operatingSystem} value={currentSystem.environmentInfo[activeEnvironmentIndex].operatingSystem} />
+                      <InfoBox title={ENVIRONMENT_LABELS.servicePack} value={currentSystem.environmentInfo[activeEnvironmentIndex].servicePack} />
+                      <InfoBox title={ENVIRONMENT_LABELS.build} value={currentSystem.environmentInfo[activeEnvironmentIndex].build} />
+                      <InfoBox title={ENVIRONMENT_LABELS.cpu} value={currentSystem.environmentInfo[activeEnvironmentIndex].cpu} />
+                      <InfoBox title={ENVIRONMENT_LABELS.ram} value={currentSystem.environmentInfo[activeEnvironmentIndex].ram} />
+                      <InfoBox title={ENVIRONMENT_LABELS.disk} value={currentSystem.environmentInfo[activeEnvironmentIndex].disk} />
+                      <InfoBox title={ENVIRONMENT_LABELS.dr} value={currentSystem.environmentInfo[activeEnvironmentIndex].dr} />
+                      <InfoBox title={ENVIRONMENT_LABELS.joinDomain} value={currentSystem.environmentInfo[activeEnvironmentIndex].joinDomain} />
+                      <InfoBox title={ENVIRONMENT_LABELS.windowsCluster} value={currentSystem.environmentInfo[activeEnvironmentIndex].windowsCluster} />
                       
                       <div className="col-span-2 p-4 rounded-lg" style={{ backgroundColor: colors.background.tertiary }}>
                         <p className="font-semibold mb-1" style={{ color: colors.text.secondary }}>{ENVIRONMENT_LABELS.productionUnit}</p>
                         <div className="flex flex-wrap gap-2">
-                          {env.productionUnit?.map((unit: string, i: number) => (
+                          {currentSystem.environmentInfo[activeEnvironmentIndex].productionUnit?.map((unit: string, i: number) => (
                             <span 
                               key={i} 
                               className="px-2 py-1 rounded-md text-sm" 
@@ -228,22 +296,22 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
 
               {/* Connection Info Section */}
-              <div ref={sectionRefs.connection} className="mb-8">
-                <h2 className="text-2xl font-bold mb-4 pb-2 text-white border-b"
-                    style={{ borderImage: line.line, borderImageSlice: 1 }}>
-                  การเชื่อมต่อ
-                </h2>
-                {currentSystem.connectionInfo?.map((conn: any, index: number) => (
-                  <div key={index} className="mb-6">
+              {currentSystem.connectionInfo?.[activeEnvironmentIndex] && (
+                <div ref={sectionRefs.connection} className="mb-8">
+                  <h2 className="text-2xl font-bold mb-4 pb-2 text-white border-b"
+                      style={{ borderImage: line.line, borderImageSlice: 1 }}>
+                    การเชื่อมต่อ
+                  </h2>
+                  <div className="mb-6">
                     <h3 className="text-lg font-semibold mb-4 text-indigo-600">
-                      Server: {currentSystem.environmentInfo[index]?.serverName || `Server ${index + 1}`}
+                      Server: {currentSystem.environmentInfo[activeEnvironmentIndex]?.serverName || `Server ${activeEnvironmentIndex + 1}`}
                     </h3>
                     <div className="grid grid-cols-3 gap-x-8 gap-y-4">
-                      {Object.entries(conn)
+                      {Object.entries(currentSystem.connectionInfo[activeEnvironmentIndex])
                         .filter(([key]) => !['id', 'createdAt', 'updatedAt', 'systemInfoId'].includes(key))
                         .map(([key, value]) => (
                           <InfoBox 
@@ -255,32 +323,32 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                       ))}
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
 
               {/* Security Info Section */}
-              <div ref={sectionRefs.security} className="mb-8">
-                <h2 className="text-2xl font-bold mb-4 pb-2 text-white border-b"
-                    style={{ borderImage: line.line, borderImageSlice: 1 }}>
-                  ความปลอดภัย
-                </h2>
-                {currentSystem.securityInfo?.map((security: any, index: number) => (
-                  <div key={index} className="mb-6">
+              {currentSystem.securityInfo?.[activeEnvironmentIndex] && (
+                <div ref={sectionRefs.security} className="mb-8">
+                  <h2 className="text-2xl font-bold mb-4 pb-2 text-white border-b"
+                      style={{ borderImage: line.line, borderImageSlice: 1 }}>
+                    ความปลอดภัย
+                  </h2>
+                  <div className="mb-6">
                     <h3 className="text-lg font-semibold mb-4 text-indigo-600">
-                      Server: {currentSystem.environmentInfo[index]?.serverName || `Server ${index + 1}`}
+                      Server: {currentSystem.environmentInfo[activeEnvironmentIndex]?.serverName || `Server ${activeEnvironmentIndex + 1}`}
                     </h3>
                     <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                      <InfoBox title={SECURITY_LABELS.urlWebsite} value={security.urlWebsite} />
-                      <InfoBox title={SECURITY_LABELS.certificateExpireDate} value={security.certificateExpireDate} />
-                      <InfoBox title={SECURITY_LABELS.backupPolicy} value={security.backupPolicy} />
-                      <InfoBox title={SECURITY_LABELS.downtimeAllowed} value={security.downtimeAllowed} />
-                      <InfoBox title={SECURITY_LABELS.centralizeLog} value={security.centralizeLog} isStatus />
-                      <InfoBox title={SECURITY_LABELS.setupAgentPatch} value={security.setupAgentPatch} isStatus />
-                      <InfoBox title={SECURITY_LABELS.internetFacing} value={security.internetFacing} isStatus />
+                      <InfoBox title={SECURITY_LABELS.urlWebsite} value={currentSystem.securityInfo[activeEnvironmentIndex].urlWebsite} />
+                      <InfoBox title={SECURITY_LABELS.certificateExpireDate} value={currentSystem.securityInfo[activeEnvironmentIndex].certificateExpireDate} />
+                      <InfoBox title={SECURITY_LABELS.backupPolicy} value={currentSystem.securityInfo[activeEnvironmentIndex].backupPolicy} />
+                      <InfoBox title={SECURITY_LABELS.downtimeAllowed} value={currentSystem.securityInfo[activeEnvironmentIndex].downtimeAllowed} />
+                      <InfoBox title={SECURITY_LABELS.centralizeLog} value={currentSystem.securityInfo[activeEnvironmentIndex].centralizeLog} isStatus />
+                      <InfoBox title={SECURITY_LABELS.setupAgentPatch} value={currentSystem.securityInfo[activeEnvironmentIndex].setupAgentPatch} isStatus />
+                      <InfoBox title={SECURITY_LABELS.internetFacing} value={currentSystem.securityInfo[activeEnvironmentIndex].internetFacing} isStatus />
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
             </motion.div>
           </div>
         </motion.div>

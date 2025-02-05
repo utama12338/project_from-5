@@ -85,9 +85,9 @@ export const colors: ThemeColors = {
     border: 'rgb(75, 85, 99)'
   },
   gradient: {
-    primary: 'linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%)',
-    secondary: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
-    completed: 'linear-gradient(45deg, #4CAF50 30%, #8BC34A 90%)'
+    primary: 'linear-gradient( 95deg,rgb(236,72,153) 0%,rgb(244,114,182) 50%,rgb(255, 0, 144) 100%)',
+    secondary: 'linear-gradient( 136deg, rgb(236,72,153) 0%, rgb(244,114,182) 50%, rgb(126, 0, 71) 100%)',
+    completed: 'linear-gradient( 136deg, rgb(236,72,153) 0%, rgb(244,114,182) 50%, rgb(170, 0, 96) 100%)'
   },
   shadows: {
     primary: '0 4px 6px rgba(0, 0, 0, 0.1)'

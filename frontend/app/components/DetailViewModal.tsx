@@ -23,7 +23,7 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
   const [activeSection, setActiveSection] = useState('basic');
   const [activeSystemIndex, setActiveSystemIndex] = useState(0);
   const [activeEnvironmentIndex, setActiveEnvironmentIndex] = useState(0);
-  const [isEnvironmentExpanded, setIsEnvironmentExpanded] = useState(false);
+  const [expandedEnvironments, setExpandedEnvironments] = useState<number[]>([]); // Replace isEnvironmentExpanded
   const modalContentRef = useRef<HTMLDivElement>(null);
   const sectionRefs = {
     basic: useRef<HTMLDivElement>(null),
@@ -70,6 +70,8 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
   const scrollToSection = (sectionId: string, envIndex?: number) => {
     if (envIndex !== undefined) {
       setActiveEnvironmentIndex(envIndex);
+      // When scrolling to a new environment section, expand it and collapse others
+      setExpandedEnvironments([envIndex]);
     }
     sectionRefs[sectionId as keyof typeof sectionRefs].current?.scrollIntoView({
       behavior: 'smooth'
@@ -168,7 +170,11 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                 <div key={index} className="ml-4">
                   <div
                     onClick={() => {
-                      setIsEnvironmentExpanded(prev => !prev);
+                      setExpandedEnvironments(prev => 
+                        prev.includes(index) 
+                          ? prev.filter(i => i !== index) 
+                          : [index]
+                      );
                       scrollToSection('environment', index);
                     }}
                     style={{
@@ -183,11 +189,11 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                   >
                     <span>{env.environment || `Environment ${index + 1}`}</span>
                     <span className="text-xs">
-                      {isEnvironmentExpanded && activeEnvironmentIndex === index ? menu.icons.collapse : menu.icons.expand}
+                      {expandedEnvironments.includes(index) ? menu.icons.collapse : menu.icons.expand}
                     </span>
                   </div>
 
-                  {isEnvironmentExpanded && activeEnvironmentIndex === index && (
+                  {expandedEnvironments.includes(index) && (
                     <div className="ml-4 space-y-2">
                       {[
                         { id: 'environment', text: 'สภาพแวดล้อม Environment' },

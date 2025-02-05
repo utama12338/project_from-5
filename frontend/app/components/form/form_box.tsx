@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styled from 'styled-components';
+import { colors } from '@/styles/theme';
 
 interface FormBoxProps {
   children: React.ReactNode;
@@ -82,11 +83,11 @@ const FormBox: React.FC<FormBoxProps> = ({
 
 const StyledWrapper = styled.div`
   .box-container {
-    background-color: rgb(32, 32, 31);
+    background-color: ${colors.background.secondary};
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 1rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: ${colors.shadows?.primary || '0 4px 6px rgba(0, 0, 0, 0.1)'};
   }
 
   .box-header {
@@ -94,14 +95,14 @@ const StyledWrapper = styled.div`
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.5rem;
-    background-color: rgb(27, 27, 26);
+    background-color: ${colors.background.tertiary};
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .header-text {
     font-size: 1rem;
     font-weight: 500;
-    color: white;
+    color: ${colors.text.primary};
   }
 
   .header-right {
@@ -112,30 +113,30 @@ const StyledWrapper = styled.div`
 
   .box-content {
     padding: 1.5rem;
-    background-color: rgb(32, 32, 31);
+    background-color: ${colors.background.secondary};
   }
 
   .expand-button {
     display: flex;
-    margin:  auto; // Center the button
+    margin: auto; // Center the button
     justify-content: center;
     align-items: center;
     padding: 0.5rem 1rem;
-    color: #60a5fa;
+    color: ${colors.text.primary};
     font-size: 0.875rem;
     font-weight: 500;
     transition: all 0.2s ease;
-    background: rgba(96, 165, 250, 0.1);
+    background: ${colors.background.tertiary};
     border: none;
     border-radius: 6px;
     cursor: pointer;
     width: fit-content;
     
     &:hover {
-      color: #93c5fd;
-      background: rgba(96, 165, 250, 0.15);
+      background: ${colors.background.hover || 'rgba(96, 165, 250, 0.15)'};
+      color: ${colors.text.hover || '#93c5fd'};
     }
-}
+  }
 `;
 
 export default FormBox;

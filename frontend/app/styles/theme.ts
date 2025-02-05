@@ -4,11 +4,13 @@ export interface ThemeColors {
     primary: string;
     secondary: string;
     tertiary: string;
+    hover: string;
   };
   text: {
     primary: string;
     secondary: string;
     muted: string;
+    hover: string;
   };
   border: {
     primary: string;
@@ -39,19 +41,24 @@ export interface ThemeColors {
     secondary: string;
     completed: string;
   };
+  shadows: {
+    primary: string;
+  };
 }
 
 // ระบุ type ให้กับ colors object
 export const colors: ThemeColors = {
   background: {
-    primary: 'rgb(17,17,16)',
-    secondary: 'rgb(27,27,26)',
-    tertiary: 'rgb(32,32,31)'
+    primary: 'rgb(18, 18, 18)',
+    secondary: 'rgb(32, 32, 31)',
+    tertiary: 'rgb(27, 27, 26)',
+    hover: 'rgba(96, 165, 250, 0.15)'
   },
   text: {
-    primary: '#fff',
+    primary: '#FFFFFF',
     secondary: 'rgba(255, 255, 255, 0.7)',
-    muted: '#9CA3AF'
+    muted: '#9CA3AF',
+    hover: '#93c5fd'
   },
   border: {
     primary: 'rgb(75, 85, 99)',
@@ -78,9 +85,12 @@ export const colors: ThemeColors = {
     border: 'rgb(75, 85, 99)'
   },
   gradient: {
-    primary: 'linear-gradient( 95deg,rgb(236,72,153) 0%,rgb(244,114,182) 50%,rgb(255, 0, 144) 100%)',
-    secondary: 'linear-gradient( 136deg, rgb(236,72,153) 0%, rgb(244,114,182) 50%, rgb(126, 0, 71) 100%)',
-    completed: 'linear-gradient( 136deg, rgb(236,72,153) 0%, rgb(244,114,182) 50%, rgb(170, 0, 96) 100%)'
+    primary: 'linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%)',
+    secondary: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+    completed: 'linear-gradient(45deg, #4CAF50 30%, #8BC34A 90%)'
+  },
+  shadows: {
+    primary: '0 4px 6px rgba(0, 0, 0, 0.1)'
   }
 };
 

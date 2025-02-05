@@ -68,25 +68,24 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
   }, [isOpen]); // Add isOpen as dependency
 
   const scrollToSection = (sectionId: string, envIndex?: number) => {
-    if (envIndex !== undefined) {
-      // If clicking the same environment, just toggle it
-      if (envIndex === activeEnvironmentIndex) {
-        setExpandedEnvironments(prev => 
-          prev.includes(envIndex) ? [] : [envIndex]
-        );
-      } else {
-        // If clicking a different environment, always expand it
-        setActiveEnvironmentIndex(envIndex);
-        setExpandedEnvironments([envIndex]);
-        sectionRefs[sectionId as keyof typeof sectionRefs].current?.scrollIntoView({
+    const offset = 80; // Add offset to account for sticky header if any
+    
+    if (sectionId && sectionRefs[sectionId as keyof typeof sectionRefs].current) {
+      const element = sectionRefs[sectionId as keyof typeof sectionRefs].current;
+      const modalContent = modalContentRef.current;
+      
+      if (element && modalContent) {
+        const elementPosition = element.offsetTop - offset;
+        modalContent.scrollTo({
+          top: elementPosition,
           behavior: 'smooth'
         });
       }
-    } else {
-      // For non-environment sections, just scroll
-      sectionRefs[sectionId as keyof typeof sectionRefs].current?.scrollIntoView({
-        behavior: 'smooth'
-      });
+    }
+
+    if (envIndex !== undefined) {
+      setActiveEnvironmentIndex(envIndex);
+      setExpandedEnvironments([envIndex]);
     }
   };
 
@@ -221,11 +220,14 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                           key={item.id}
                           onClick={() => scrollToSection(item.id, index)}
                           style={{
-                            color: activeSection === item.id 
+                            color: activeSection === item.id && activeEnvironmentIndex === index
                               ? menu.text.hover 
-                              : menu.text.inactive
+                              : menu.text.inactive,
+                            backgroundColor: activeSection === item.id && activeEnvironmentIndex === index
+                              ? `${colors.button.primary.background}10`
+                              : 'transparent'
                           }}
-                          className="cursor-pointer p-2 rounded hover:bg-pink-500 hover:bg-opacity-10 flex items-center"
+                          className="cursor-pointer p-2 rounded hover:bg-pink-500 hover:bg-opacity-10 flex items-center transition-all duration-200"
                         >
                           <span className="text-xs mr-2">●</span>
                           <span>{item.text}</span>

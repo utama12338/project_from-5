@@ -131,17 +131,18 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
           className="w-full max-w-6xl mx-4 h-[80vh] flex"
           onClick={e => e.stopPropagation()}
         >
-          {/* System Selection Tabs */}
-          <div className="w-64 border-r flex flex-col" 
+          {/* System Selection Tabs - Update styling */}
+          <div className="w-64 border-r flex flex-col sticky top-0 h-[80vh]" 
                style={{ 
                  backgroundColor: colors.background.tertiary,
                  borderTopLeftRadius: layout.borderRadius.large,
                  borderBottomLeftRadius: layout.borderRadius.large
                }}>
-            <div className="p-4 border-b">
-              <h3 className="font-semibold text-white">ระบบที่เลือก ({systems.length})</h3>
+            <div className="p-4 border-b sticky top-0 bg-inherit z-10">
+              <h3 className="font-semibold text-white text-center">ระบบที่เลือก ({systems.length})</h3>
             </div>
-            <div className="overflow-y-auto">
+            <div className="overflow-y-auto flex-1">
+              {/* Systems list - Add text truncation and padding */}
               {systems.map((sys, index) => (
                 <div
                   key={sys.id}
@@ -150,15 +151,15 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                     backgroundColor: index === activeSystemIndex ? `${colors.button.primary.background}20` : 'transparent',
                     color: index === activeSystemIndex ? colors.button.primary.background : colors.text.primary
                   }}
-                  className="p-4 cursor-pointer hover:bg-pink-500 hover:bg-opacity-10 transition-all duration-200"
+                  className="px-4 py-3 cursor-pointer hover:bg-pink-500 hover:bg-opacity-10 transition-all duration-200"
                 >
-                  {sys.systemName}
+                  <div className="truncate text-center">{sys.systemName}</div>
                 </div>
               ))}
             </div>
-            {/* Existing navigation */}
-            <div className="border-t p-4 space-y-2">
-              {/* Basic Info */}
+            {/* Navigation menu - Update styling */}
+            <div className="border-t p-4 space-y-2 sticky bottom-0 bg-inherit max-h-[50vh] overflow-y-auto">
+              {/* Basic Info - Center text and improve padding */}
               <div 
                 onClick={() => scrollToSection('basic')}
                 style={{
@@ -168,17 +169,16 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                   color: activeSection === 'basic' 
                     ? colors.button.primary.background 
                     : colors.text.primary,
-                  padding: labels.section.padding,
                   borderRadius: labels.section.borderRadius,
                 }}
-                className="cursor-pointer mb-2 transition-all duration-200"
+                className="cursor-pointer px-3 py-2 transition-all duration-200 text-center"
               >
-                <span className="font-semibold">ข้อมูลพื้นฐาน Systeminfo</span>
+                <span className="font-semibold truncate block">ข้อมูลพื้นฐาน Systeminfo</span>
               </div>
 
-              {/* Environments Section */}
+              {/* Environments Section - Update container and spacing */}
               {currentSystem.environmentInfo?.map((env: any, index: number) => (
-                <div key={index} className="ml-4">
+                <div key={index} className="ml-2">
                   <div
                     onClick={() => {
                       if (index === activeEnvironmentIndex) {
@@ -201,16 +201,16 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                         ? menu.text.active
                         : menu.text.inactive
                     }}
-                    className="cursor-pointer p-2 rounded hover:bg-pink-500 hover:bg-opacity-10 transition-all duration-200 flex justify-between items-center"
+                    className="cursor-pointer px-3 py-2 rounded hover:bg-pink-500 hover:bg-opacity-10 transition-all duration-200 flex justify-between items-center"
                   >
-                    <span>{env.environment || `Environment ${index + 1}`}</span>
-                    <span className="text-xs">
+                    <span className="truncate flex-1 pr-2">{env.environment || `Environment ${index + 1}`}</span>
+                    <span className="text-xs flex-shrink-0">
                       {expandedEnvironments.includes(index) ? menu.icons.collapse : menu.icons.expand}
                     </span>
                   </div>
 
                   {expandedEnvironments.includes(index) && (
-                    <div className="ml-4 space-y-2">
+                    <div className="ml-3 space-y-1 mt-1">
                       {[
                         { id: 'environment', text: 'สภาพแวดล้อม Environment' },
                         { id: 'connection', text: 'การเชื่อมต่อ connecting' },
@@ -227,10 +227,10 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                               ? `${colors.button.primary.background}10`
                               : 'transparent'
                           }}
-                          className="cursor-pointer p-2 rounded hover:bg-pink-500 hover:bg-opacity-10 flex items-center transition-all duration-200"
+                          className="cursor-pointer px-3 py-1.5 rounded hover:bg-pink-500 hover:bg-opacity-10 flex items-center transition-all duration-200"
                         >
-                          <span className="text-xs mr-2">●</span>
-                          <span>{item.text}</span>
+                          <span className="text-xs mr-2 flex-shrink-0">●</span>
+                          <span className="truncate">{item.text}</span>
                         </div>
                       ))}
                     </div>
@@ -240,15 +240,16 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
             </div>
           </div>
 
-          {/* Content Area - Use currentSystem instead of system */}
+          {/* Content Area - Add separate scrolling */}
           <div 
             id="modal-content" 
             ref={modalContentRef}
-            className="flex-1 overflow-y-auto p-6"
+            className="flex-1 overflow-y-auto p-6 relative"
             style={{ 
               backgroundColor: colors.background.secondary,
               borderTopRightRadius: layout.borderRadius.large,
-              borderBottomRightRadius: layout.borderRadius.large
+              borderBottomRightRadius: layout.borderRadius.large,
+              height: '80vh'
             }}
           >
             <motion.div

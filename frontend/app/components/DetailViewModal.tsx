@@ -69,13 +69,25 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
 
   const scrollToSection = (sectionId: string, envIndex?: number) => {
     if (envIndex !== undefined) {
-      setActiveEnvironmentIndex(envIndex);
-      // When scrolling to a new environment section, expand it and collapse others
-      setExpandedEnvironments([envIndex]);
+      // If clicking the same environment, just toggle it
+      if (envIndex === activeEnvironmentIndex) {
+        setExpandedEnvironments(prev => 
+          prev.includes(envIndex) ? [] : [envIndex]
+        );
+      } else {
+        // If clicking a different environment, always expand it
+        setActiveEnvironmentIndex(envIndex);
+        setExpandedEnvironments([envIndex]);
+        sectionRefs[sectionId as keyof typeof sectionRefs].current?.scrollIntoView({
+          behavior: 'smooth'
+        });
+      }
+    } else {
+      // For non-environment sections, just scroll
+      sectionRefs[sectionId as keyof typeof sectionRefs].current?.scrollIntoView({
+        behavior: 'smooth'
+      });
     }
-    sectionRefs[sectionId as keyof typeof sectionRefs].current?.scrollIntoView({
-      behavior: 'smooth'
-    });
   };
 
   if (!isOpen) return null;
@@ -170,12 +182,17 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                 <div key={index} className="ml-4">
                   <div
                     onClick={() => {
-                      setExpandedEnvironments(prev => 
-                        prev.includes(index) 
-                          ? prev.filter(i => i !== index) 
-                          : [index]
-                      );
-                      scrollToSection('environment', index);
+                      if (index === activeEnvironmentIndex) {
+                        // If clicking the same environment, toggle it
+                        setExpandedEnvironments(prev => 
+                          prev.includes(index) ? [] : [index]
+                        );
+                      } else {
+                        // If clicking a different environment, expand it and close others
+                        setActiveEnvironmentIndex(index);
+                        setExpandedEnvironments([index]);
+                        scrollToSection('environment', index);
+                      }
                     }}
                     style={{
                       backgroundColor: activeSection === 'environment' && activeEnvironmentIndex === index

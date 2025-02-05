@@ -151,30 +151,30 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                     backgroundColor: index === activeSystemIndex ? `${colors.button.primary.background}20` : 'transparent',
                     color: index === activeSystemIndex ? colors.button.primary.background : colors.text.primary
                   }}
-                  className="px-4 py-3 cursor-pointer hover:bg-pink-500 hover:bg-opacity-10 transition-all duration-200"
+                  className="px-1 py-1 cursor-pointer hover:bg-pink-500 hover:bg-opacity-10 transition-all duration-200"
                 >
                   <div className="truncate text-center">{sys.systemName}</div>
                 </div>
               ))}
             </div>
             {/* Navigation menu - Update styling */}
-            <div className="border-t p-4 space-y-2 sticky bottom-0 bg-inherit max-h-[50vh] overflow-y-auto">
-              {/* Basic Info - Center text and improve padding */}
-              <div 
-                onClick={() => scrollToSection('basic')}
-                style={{
-                  backgroundColor: activeSection === 'basic' 
-                    ? `${colors.button.primary.background}20` 
-                    : 'transparent',
-                  color: activeSection === 'basic' 
-                    ? colors.button.primary.background 
-                    : colors.text.primary,
-                  borderRadius: labels.section.borderRadius,
-                }}
-                className="cursor-pointer px-3 py-2 transition-all duration-200 text-center"
-              >
-                <span className="font-semibold truncate block">ข้อมูลพื้นฐาน Systeminfo</span>
-              </div>
+            <div className="border-t p-1 space-y-2 sticky bottom-0 bg-inherit h-[300px] min-h-[300px] overflow-y-auto">
+  {/* Basic Info - Center text and improve padding */}
+  <div 
+    onClick={() => scrollToSection('basic')}
+    style={{
+      backgroundColor: activeSection === 'basic' 
+        ? `${colors.button.primary.background}20` 
+        : 'transparent',
+      color: activeSection === 'basic' 
+        ? colors.button.primary.background 
+        : colors.text.primary,
+      borderRadius: labels.section.borderRadius,
+    }}
+    className="cursor-pointer px-3 py-2 transition-all duration-200 text-center"
+  >
+    <span className="font-semibold truncate block">ข้อมูลพื้นฐาน Systeminfo</span>
+  </div>
 
               {/* Environments Section - Update container and spacing */}
               {currentSystem.environmentInfo?.map((env: any, index: number) => (
@@ -229,7 +229,7 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                           }}
                           className="cursor-pointer px-3 py-1.5 rounded hover:bg-pink-500 hover:bg-opacity-10 flex items-center transition-all duration-200"
                         >
-                          <span className="text-xs mr-2 flex-shrink-0">●</span>
+                          {/* <span className="text-xs mr-2 flex-shrink-0">●</span> */}
                           <span className="truncate">{item.text}</span>
                         </div>
                       ))}

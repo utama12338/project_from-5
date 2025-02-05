@@ -10,9 +10,13 @@ import {
   getDeveloperTypeOptions
 } from '../services/apioption';
 
+// DEV SIT 
 export let ENVIRONMENT_OPTIONS = await getEnvironmentOptions().then(data => data.map(item => item.option));
+// Physical
 export let SERVER_TYPE_OPTIONS = await getServerTypeOptions().then(data => data.map(item => item.option));
+// Database Server
 export let SERVER_ROLE_OPTIONS = await getServerRoleOptions().then(data => data.map(item => item.option));
+
 export let SERVER_DUTY_OPTIONS = await getServerDutyOptions().then(data => data.map(item => item.option));
 export let PRODUCTION_UNIT_OPTIONS = await getProductionUnitOptions().then(data => data.map(item => item.option));
 export let DEVELOPER_UNIT = await getDeveloperUnitOptions().then(data => data.map(item => item.option));

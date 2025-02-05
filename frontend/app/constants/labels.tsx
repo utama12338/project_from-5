@@ -1,3 +1,16 @@
+import {
+  ENVIRONMENT_OPTIONS,
+  SERVER_TYPE_OPTIONS,
+  SERVER_ROLE_OPTIONS,
+  SERVER_DUTY_OPTIONS,
+  PRODUCTION_UNIT_OPTIONS,
+  DEVELOPER_UNIT,
+  YES_NO,
+  DR_DC,
+  DEVELOPER_TYPE
+} from '../types/optionselect';
+
+
 export const SYSTEM_LABELS = {
   systemName: "ชื่อระบบ systemname",
   developType: "ประเภทการพัฒนา",

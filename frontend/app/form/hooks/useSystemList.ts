@@ -3,10 +3,10 @@ import Swal from 'sweetalert2';
 import { fetchSystems, deleteSystem, bulkDeleteSystems } from '@/services/api';
 import { transformDataForCSV } from '../utils/dataTransformers';
 import { downloadCSV } from '../utils/fileOperations';
-import { SystemInfo } from '../../types/forme';
-
+// import { SystemInfo } from '../../types/forme';
+import { SystemData } from '@/types/inputform';
 export const useSystemList = () => {
-  const [systems, setSystems] = useState<SystemInfo[]>([]);
+  const [systems, setSystems] = useState<SystemData[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [showAlert, setShowAlert] = useState(false);
@@ -65,6 +65,7 @@ export const useSystemList = () => {
         await showSuccessMessage('ลบข้อมูลสำเร็จ!', 'ข้อมูลถูกลบเรียบร้อยแล้ว.');
         window.location.reload();
       } catch (error) {
+        console.error('Error deleting system:', error);
         showErrorMessage();
       }
     }
@@ -88,6 +89,7 @@ export const useSystemList = () => {
         await showSuccessMessage('สำเร็จ!', 'ลบข้อมูลเรียบร้อยแล้ว');
         window.location.reload();
       } catch (error) {
+        console.error('Error bulk deleting systems:', error);
         showErrorMessage();
       }
     }

@@ -93,7 +93,7 @@ const ModernDropdown: React.FC<DropdownProps> = ({
   onChange,
   placeholder = 'Select an option',
   label,
-  name,
+ 
   required = false,
   className = '',
 }) => {

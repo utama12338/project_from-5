@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   colors, 
@@ -12,7 +12,7 @@ import {
   labels
 } from '../styles/theme';
 import { SYSTEM_LABELS, ENVIRONMENT_LABELS, CONNECTION_LABELS, SECURITY_LABELS } from '../constants/labels';
-import { SystemData, EnvironmentInfo, ConnectionInfo, SecurityInfo } from '../types/inputform';
+import { SystemData, EnvironmentInfo, ConnectionInfo } from '../types/inputform';
 
 interface DetailViewModalProps {
   isOpen: boolean;
@@ -26,12 +26,20 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
   const [activeEnvironmentIndex, setActiveEnvironmentIndex] = useState(0);
   const [expandedEnvironments, setExpandedEnvironments] = useState<number[]>([]); // Replace isEnvironmentExpanded
   const modalContentRef = useRef<HTMLDivElement>(null);
-  const sectionRefs = {
-    basic: useRef<HTMLDivElement>(null),
-    environment: useRef<HTMLDivElement>(null),
-    connection: useRef<HTMLDivElement>(null),
-    security: useRef<HTMLDivElement>(null)
-  };
+  
+  // Create refs outside useMemo
+  const basicRef = useRef<HTMLDivElement>(null);
+  const environmentRef = useRef<HTMLDivElement>(null);
+  const connectionRef = useRef<HTMLDivElement>(null);
+  const securityRef = useRef<HTMLDivElement>(null);
+
+  // Use the created refs in useMemo
+  const sectionRefs = useMemo(() => ({
+    basic: basicRef,
+    environment: environmentRef,
+    connection: connectionRef,
+    security: securityRef
+  }), []); // Empty dependency array since refs don't need to change
 
   // Reset active section and scroll position when modal opens
   useEffect(() => {
@@ -66,7 +74,7 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
       modalContent.addEventListener('scroll', handleScroll);
       return () => modalContent.removeEventListener('scroll', handleScroll);
     }
-  }, [isOpen]); // Add isOpen as dependency
+  }, [isOpen, sectionRefs]); // Added sectionRefs to dependency array
 
   const scrollToSection = (sectionId: string, envIndex?: number) => {
     const offset = 80; // Add offset to account for sticky header if any

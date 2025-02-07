@@ -3,11 +3,11 @@ import Swal from 'sweetalert2';
 import { fetchSystems, deleteSystem, bulkDeleteSystems, searchSystems } from '@/services/api';
 import { transformDataForCSV } from './utils/dataTransformers';
 import { downloadCSV } from './utils/fileOperations';
-import { SystemInfo } from '../types/forme';
+// import { SystemInfo } from '../types/forme';
 import { SearchCriteria } from './components/SearchModal';
-
+import { SystemData } from '@/types/inputform';
 export const useSystemListViewModel = () => {
-  const [systems, setSystems] = useState<SystemInfo[]>([]);
+  const [systems, setSystems] = useState<SystemData[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [showAlert, setShowAlert] = useState(false);
@@ -15,7 +15,7 @@ export const useSystemListViewModel = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8); // Show 8 items per page
   const [showSearchModal, setShowSearchModal] = useState(false);
-  const [filteredSystems, setFilteredSystems] = useState<SystemInfo[]>([]);
+  const [filteredSystems, setFilteredSystems] = useState<SystemData[]>([]);
   const [isFiltering, setIsFiltering] = useState(false);
   const [lastSearchCriteria, setLastSearchCriteria] = useState<SearchCriteria>({
     systemName: '',
@@ -76,6 +76,7 @@ export const useSystemListViewModel = () => {
         await loadSystems(); // Replace window.location.reload() with loadSystems
         setSelectedItems([]); // Clear selections after deletion
       } catch (error) {
+        console.error('ลบข้อมูลไม่สำเร็จ:', error);
         showErrorMessage();
       }
     }

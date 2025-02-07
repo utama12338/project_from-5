@@ -1,9 +1,20 @@
-export const transformDataForCSV = (data: any[], selectedItems: number[], keysToRemove: string[]) => {
+import { SystemData } from '@/types/inputform';
+
+type PrimitiveTypes = string | number | boolean | null | undefined;
+type AllowedTypes = PrimitiveTypes | PrimitiveTypes[] | Record<string, PrimitiveTypes>;
+type ObjectValue = Record<string, PrimitiveTypes> | IndexableSystemData;
+type IndexableSystemData = SystemData & {
+  [key: string]: AllowedTypes;
+};
+type Row = { [key: string]: string };
+
+export const transformDataForCSV = (data: SystemData[], selectedItems: number[], keysToRemove: string[]) => {
   const dataToDownload = data.filter(item => selectedItems.includes(item.id));
   const transformedData: { [key: string]: string }[] = [];
   
   dataToDownload.forEach(item => {
-    const processArrays = (obj: any, prefix = '', baseRow: { [key: string]: string } = {}) => {
+    // Add type assertion here to treat item as IndexableSystemData
+    const processArrays = (obj: IndexableSystemData, prefix = '', baseRow: { [key: string]: string } = {}) => {
       let rows: { [key: string]: string }[] = [{ ...baseRow }];
       
       for (const key in obj) {
@@ -25,7 +36,7 @@ export const transformDataForCSV = (data: any[], selectedItems: number[], keysTo
       return rows;
     };
     
-    const itemRows = processArrays(item);
+    const itemRows = processArrays(item as IndexableSystemData);
     transformedData.push(...itemRows);
   });
   
@@ -33,12 +44,17 @@ export const transformDataForCSV = (data: any[], selectedItems: number[], keysTo
 };
 
 // Helper functions
-const handleArrayData = (value: any[], rows: any[], newKey: string, processArrays: Function) => {
-  const newRows: { [key: string]: string }[] = [];
+const handleArrayData = (
+  value: PrimitiveTypes[] | IndexableSystemData[],
+  rows: Row[],
+  newKey: string,
+  processArrays: (obj: IndexableSystemData, prefix: string, baseRow: Row) => Row[]
+): Row[] => {
+  const newRows: Row[] = [];
   value.forEach(arrayItem => {
     if (typeof arrayItem === 'object' && arrayItem !== null) {
       rows.forEach(existingRow => {
-        const arrayRows = processArrays(arrayItem, newKey, { ...existingRow });
+        const arrayRows = processArrays(arrayItem as IndexableSystemData, newKey, { ...existingRow });
         newRows.push(...arrayRows);
       });
     } else {
@@ -53,14 +69,25 @@ const handleArrayData = (value: any[], rows: any[], newKey: string, processArray
   return newRows;
 };
 
-const handleObjectData = (value: any, rows: any[], newKey: string, processArrays: Function) => {
+const handleObjectData = (
+  value: ObjectValue,
+  rows: Row[],
+  newKey: string,
+  processArrays: (obj: IndexableSystemData, prefix: string, baseRow: Row) => Row[]
+): Row[] => {
   return rows.map(existingRow => {
-    const nestedRows = processArrays(value, newKey, existingRow);
+    // Handle both types of objects
+    const processableObject = value as IndexableSystemData;
+    const nestedRows = processArrays(processableObject, newKey, existingRow);
     return nestedRows[0];
   });
 };
 
-const handlePrimitiveData = (rows: any[], newKey: string, value: any) => {
+const handlePrimitiveData = (
+  rows: Row[],
+  newKey: string,
+  value: PrimitiveTypes
+): void => {
   rows.forEach(row => {
     row[newKey] = String(value);
   });

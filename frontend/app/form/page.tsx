@@ -1,11 +1,11 @@
 'use client'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { motion } from "framer-motion";
 import Link from 'next/link';
 import { useSystemListViewModel } from './useSystemListViewModel';
 import SearchModal from './components/SearchModal';
 import DetailViewModal from '../components/DetailViewModal';
-import { colors, shadows, transitions } from '../styles/theme';
+import { colors, transitions } from '../styles/theme';
 import AddSystemButton from '../components/button/addsystem';
 import SearchButton from '../components/button/search';
 import EditButton from '../components/button/edite';
@@ -13,20 +13,22 @@ import DetailButton from '../components/button/detail';
 import FormBox from '../components/form/form_box';
 import Checkbox3d from '@/components/checkbox3d';
 import Button_v2 from '@/components/button/delete._v2';
+import { SystemData } from '../types/inputform';
+
 export default function SystemList() {
   const {
     systems,
-    fetchSystems, // Make sure this is exposed from the view model
+    // fetchSystems, // Make sure this is exposed from the view model
     loading,
     selectedItems,
-    showAlert,
-    alertType,
+    // showAlert,
+    // alertType,
     handleSelectItem,
     handleBulkDelete,
     handleDownloadCSV,
-    setShowAlert,
-    setAlertType,
-    handleBulkView,
+    // setShowAlert,
+    // setAlertType,
+    // handleBulkView,
     handleDelete,
     currentSystems,
     currentPage,
@@ -41,11 +43,11 @@ export default function SystemList() {
     lastSearchCriteria,
   } = useSystemListViewModel();
 
-  const [selectedSystems, setSelectedSystems] = useState<any[]>([]);
+  const [selectedSystems, setSelectedSystems] = useState<SystemData[]>([]);
   const [showDetailModal, setShowDetailModal] = useState(false);
 
   // Add helper function to get selected systems
-  const getSelectedSystems = () => {
+  const getSelectedSystems = (): SystemData[] => {
     return systems.filter(system => selectedItems.includes(system.id));
   };
 
@@ -57,7 +59,7 @@ export default function SystemList() {
   };
 
   // Add handler for single system view
-  const handleSingleSystemView = (system: any) => {
+  const handleSingleSystemView = (system: SystemData) => {
     setSelectedSystems([system]); // Put single system in array
     setShowDetailModal(true);
   };

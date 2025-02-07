@@ -24,7 +24,7 @@ const Button: React.FC<ButtonProps> = ({
     if (onClick) {
       if (currentStep === totalSteps) {
         // เมื่อถึงขั้นตอนสุดท้ายจึงจะทำการ submit
-        const result = onClick(e as any);
+        const result = onClick(e);
         if (result instanceof Promise) {
           result.catch(console.error);
         }

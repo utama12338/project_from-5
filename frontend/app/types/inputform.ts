@@ -19,7 +19,7 @@ export interface EnvironmentInfo {
   dr: string;
   joinDomain: string;
   windowsCluster: string;
-  productionUnit: string | string[];// เปลี่ยนเป็นรับได้ทั้ง string และ array
+  productionUnit:  string[];// เปลี่ยนเป็นรับได้ทั้ง string และ array
 }
 
 export interface ConnectionInfo {
@@ -55,7 +55,7 @@ export interface SystemData {
   contractNo: string;
   vendorContactNo: string;
   businessUnit: string;
-  developUnit: string | string[];
+  developUnit: string ;
   computerbackup: string;
   environmentInfo: EnvironmentInfo[];
   connectionInfo: ConnectionInfo[];
@@ -111,6 +111,7 @@ export type FormChangeEvent = HTMLInputEvent | HTMLSelectEvent;
 
 export interface ValidationErrors {
   [key: string]: string;
+
 }
 
 

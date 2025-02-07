@@ -91,7 +91,7 @@ export default function CreateSystem() {
       addNewEntries,
       removeEntries
     } = useFormHandlers();
- 
+
 
   // Return null or loading state while client-side rendering is not ready
   if (!isClient) {
@@ -219,7 +219,7 @@ export default function CreateSystem() {
                       value={formData.developType}
                       onChange={(value) => handleChange({
                         target: { name: 'developType', value }
-                      } as any)}
+                      } )}
                       label={SYSTEM_LABELS.developType}
                       required
                       placeholder="เลือกประเภทการพัฒนา"
@@ -298,7 +298,7 @@ export default function CreateSystem() {
                       value={formData.developUnit}
                       onChange={(value) => handleChange({
                         target: { name: 'developUnit', value }
-                      } as any)}
+                      } )}
                       label={SYSTEM_LABELS.developUnit}
                       required
                       placeholder="เลือกผู้รับผิดชอบ"
@@ -314,7 +314,7 @@ export default function CreateSystem() {
                       value={formData.computerbackup}
                       onChange={(value) => handleChange({
                         target: { name: 'computerbackup', value }
-                      } as any)}
+                      } )}
                       label={SYSTEM_LABELS.computerBackup}
                       required
                       placeholder="Select Option"
@@ -749,7 +749,7 @@ export default function CreateSystem() {
                           value={conn.ad}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'ad', value }
-                          } as any, index)}
+                          } , index)}
                           label={CONNECTION_LABELS.ad}
                           required
                           placeholder="Select Option"
@@ -762,7 +762,7 @@ export default function CreateSystem() {
                           value={conn.adfs}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'adfs', value }
-                          } as any, index)}
+                          } , index)}
                           label={CONNECTION_LABELS.adfs}
                           required
                           placeholder="Select Option"
@@ -775,7 +775,7 @@ export default function CreateSystem() {
                           value={conn.dns}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'dns', value }
-                          } as any, index)}
+                          } , index)}
                           label={CONNECTION_LABELS.dns}
                           required
                           placeholder="Select Option"
@@ -788,7 +788,7 @@ export default function CreateSystem() {
                           value={conn.ntp}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'ntp', value }
-                          } as any, index)}
+                          } , index)}
                           label={CONNECTION_LABELS.ntp}
                           required
                           placeholder="Select Option"
@@ -801,7 +801,7 @@ export default function CreateSystem() {
                           value={conn.tpam}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'tpam', value }
-                          } as any, index)}
+                          } , index)}
                           label={CONNECTION_LABELS.tpam}
                           required
                           placeholder="Select Option"
@@ -814,7 +814,7 @@ export default function CreateSystem() {
                           value={conn.netka}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'netka', value }
-                          } as any, index)}
+                          } , index)}
                           label={CONNECTION_LABELS.netka}
                           required
                           placeholder="Select Option"
@@ -827,7 +827,7 @@ export default function CreateSystem() {
                           value={conn.fim}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'fim', value }
-                          } as any, index)}
+                          } , index)}
                           label={CONNECTION_LABELS.fim}
                           required
                           placeholder="Select Option"
@@ -840,7 +840,7 @@ export default function CreateSystem() {
                           value={conn.ftpServer}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'ftpServer', value }
-                          } as any, index)}
+                          } , index)}
                           label={CONNECTION_LABELS.ftpServer}
                           required
                           placeholder="Select Option"
@@ -853,7 +853,7 @@ export default function CreateSystem() {
                           value={conn.ftpGoAnywhereMFTServer}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'ftpGoAnywhereMFTServer', value }
-                          } as any, index)}
+                          } , index)}
                           label={CONNECTION_LABELS.ftpGoAnywhereMFTServer}
                           required
                           placeholder="Select Option"
@@ -866,7 +866,7 @@ export default function CreateSystem() {
                           value={conn.emailSmtp}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'emailSmtp', value }
-                          } as any, index)}
+                          } , index)}
                           label={CONNECTION_LABELS.emailSmtp}
                           required
                           placeholder="Select Option"
@@ -879,7 +879,7 @@ export default function CreateSystem() {
                           value={conn.sms}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'sms', value }
-                          } as any, index)}
+                          } , index)}
                           label={CONNECTION_LABELS.sms}
                           required
                           placeholder="Select Option"
@@ -892,7 +892,7 @@ export default function CreateSystem() {
                           value={conn.apiManagement}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'apiManagement', value }
-                          } as any, index)}
+                          } , index)}
                           label={CONNECTION_LABELS.apiManagement}
                           required
                           placeholder="Select Option"
@@ -905,7 +905,7 @@ export default function CreateSystem() {
                           value={conn.dv}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'dv', value }
-                          } as any, index)}
+                          } , index)}
                           label={CONNECTION_LABELS.dv}
                           required
                           placeholder="Select Option"
@@ -918,7 +918,7 @@ export default function CreateSystem() {
                           value={conn.snmp}
                           onChange={(value) => handleConnectionChange({
                             target: { name: 'snmp', value }
-                          } as any, index)}
+                          } , index)}
                           label={CONNECTION_LABELS.snmp}
                           required
                           placeholder="Select Option"
@@ -1037,7 +1037,7 @@ export default function CreateSystem() {
                           value={security.centralizeLog}
                           onChange={(value) => handleSecurityChange({
                             target: { name: 'centralizeLog', value }
-                          } as any, index)}
+                          } , index)}
                           label={SECURITY_LABELS.centralizeLog}
                           required
                           placeholder="Select Option"
@@ -1050,7 +1050,7 @@ export default function CreateSystem() {
                           value={security.setupAgentPatch}
                           onChange={(value) => handleSecurityChange({
                             target: { name: 'setupAgentPatch', value }
-                          } as any, index)}
+                          } , index)}
                           label={SECURITY_LABELS.setupAgentPatch}
                           required
                           placeholder="Select Option"
@@ -1063,7 +1063,7 @@ export default function CreateSystem() {
                           value={security.internetFacing}
                           onChange={(value) => handleSecurityChange({
                             target: { name: 'internetFacing', value }
-                          } as any, index)}
+                          } , index)}
                           label={SECURITY_LABELS.internetFacing}
                           required
                           placeholder="Select Option"

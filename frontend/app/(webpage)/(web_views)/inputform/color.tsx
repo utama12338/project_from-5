@@ -3,7 +3,7 @@ import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector
 import { styled } from '@mui/material/styles';
 import {colors,shadows} from '@/styles/theme';
 import StepLabel from '@mui/material/StepLabel';
-export const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
+export const ColorlibConnector = styled(StepConnector)(() => ({
     [`&.${stepConnectorClasses.alternativeLabel}`]: {
       top: 22,
     },
@@ -27,7 +27,7 @@ export const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   
   export const ColorlibStepIconRoot = styled('div')<{
     ownerState: { completed?: boolean; active?: boolean };
-  }>(({ theme, ownerState }) => ({
+  }>(({  ownerState }) => ({
     backgroundColor: colors.background.tertiary,
     zIndex: 1,
     color: colors.text.primary,

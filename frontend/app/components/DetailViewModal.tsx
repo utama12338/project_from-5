@@ -12,11 +12,12 @@ import {
   labels
 } from '../styles/theme';
 import { SYSTEM_LABELS, ENVIRONMENT_LABELS, CONNECTION_LABELS, SECURITY_LABELS } from '../constants/labels';
+import { SystemData, EnvironmentInfo, ConnectionInfo, SecurityInfo } from '../types/inputform';
 
 interface DetailViewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  systems: any[]; // Changed from single system to array of systems
+  systems: SystemData[]; // Changed from any[] to SystemData[]
 }
 
 export default function DetailViewModal({ isOpen, onClose, systems }: DetailViewModalProps) {
@@ -91,7 +92,7 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
 
   if (!isOpen) return null;
 
-  const currentSystem = systems[activeSystemIndex];
+  const currentSystem: SystemData = systems[activeSystemIndex];
 
   const InfoBox = ({ title, value, isStatus = false }: { title: string; value: string | null; isStatus?: boolean }) => (
     <div style={{ 
@@ -177,7 +178,7 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
   </div>
 
               {/* Environments Section - Update container and spacing */}
-              {currentSystem.environmentInfo?.map((env: any, index: number) => (
+              {currentSystem.environmentInfo?.map((env: EnvironmentInfo, index: number) => (
                 <div key={index} className="ml-2">
                   <div
                     onClick={() => {
@@ -337,7 +338,7 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                       Server: {currentSystem.environmentInfo[activeEnvironmentIndex]?.serverName || `Server ${activeEnvironmentIndex + 1}`}
                     </h3>
                     <div className="grid grid-cols-3 gap-x-8 gap-y-4">
-                      {Object.entries(currentSystem.connectionInfo[activeEnvironmentIndex])
+                      {Object.entries(currentSystem.connectionInfo[activeEnvironmentIndex] as ConnectionInfo)
                         .filter(([key]) => !['id', 'createdAt', 'updatedAt', 'systemInfoId'].includes(key))
                         .map(([key, value]) => (
                           <InfoBox 

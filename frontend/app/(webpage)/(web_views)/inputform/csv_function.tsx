@@ -86,10 +86,10 @@ export const useCSVImport = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    Papa.parse(file, {
+    Papa.parse<CSVRowData>(file, {
       header: true,
       complete: async (results) => {
-        const validationPromises = results.data.map((row: any, index: number) => 
+        const validationPromises = results.data.map((row: CSVRowData, index: number) => 
           validateCSVRow(row, index)
         );
 

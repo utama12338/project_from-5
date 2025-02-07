@@ -66,14 +66,7 @@ import { useState } from 'react';
     const [errors, setErrors] = useState<ValidationErrors>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
-  // ฟังก์ชันจัดการการเปลี่ยนแปลงข้อมูล (เหมือนเดิม)
-  const handleChange = (e: FormChangeEvent) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+
 
   // ฟังก์ชันสำหรับไปขั้นตอนถัดไป
   const nextStep = () => {
@@ -146,8 +139,7 @@ import { useState } from 'react';
   };
 
   const handleEnvironmentChange = (
-    e: { target: { name: string; value: string | string[] } },
-    index: number
+    e: { target: { name: string; value: string | string[] } },index: number
   ) => {
     const { name, value } = e.target;
   
@@ -168,7 +160,15 @@ import { useState } from 'react';
       }));
     }
   };
-
+  // ฟังก์ชันจัดการการเปลี่ยนแปลงข้อมูล (เหมือนเดิม)
+  const handleChange = (e: FormChangeEvent | { target: { name: string; value: string } }, 
+    ) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
   const handleConnectionChange = (e: { target: { name: string; value: string } }, index: number) => {
     const { name, value } = e.target;
     setFormData(prev => {

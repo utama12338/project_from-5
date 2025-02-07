@@ -68,7 +68,7 @@ const defaultSystemData: SystemData = {
     dr: '',
     joinDomain: '',
     windowsCluster: '',
-    productionUnit: ''
+    productionUnit: []
   }],
   connectionInfo: [{
     ad: '',
@@ -115,7 +115,7 @@ const FormField = ({
       <input 
         type="text"
         className={`w-full rounded-md border-none bg-transparent text-white p-2 
-                focus:ring-2 focus:ring-pink-500 
+                focus:ring-2 focus:ring-ppink-500 
                 hover:border-gray-400 transition-colors
                 ${error ? 'border-red-500 ring-1 ring-red-500' : ''}`}
         value={value || ''}
@@ -199,23 +199,8 @@ const FormFieldOption = ({
 //   businessUnit?: string | string[];
 //   [key: string]: string | string[] | undefined;
 // }
-const updateArrayItemField = <T extends Record<string, any>>(
-  array: T[],
-  index: number,
-  field: keyof T,
-  value: string | string[]
-): T[] => {
-  return array.map((item, i) => {
-    if (i === index) {
-      if (field === 'developUnit' || field === 'businessUnit') {
-        return { ...item, [field]: value };
-      }
-      const finalValue = Array.isArray(value) ? value.join(',') : value;
-      return { ...item, [field]: finalValue } as T;
-    }
-    return item;
-  });
-};
+
+
 
 const FormContainer = ({ children }: { children: React.ReactNode }) => (
   <div style={{ 
@@ -315,7 +300,7 @@ export default function EditSystem() {
 
       if (Object.keys(allErrors).length > 0) {
         // Group errors by section for better user feedback
-        const errorSections = [];
+        const errorSections: string[] = [];
         if (Object.keys(systemErrors).length > 0) errorSections.push('ข้อมูลระบบ');
         if (Object.keys(environmentErrors).length > 0) errorSections.push('สภาพแวดล้อม');
         if (Object.keys(connectionErrors).length > 0) errorSections.push('การเชื่อมต่อ');
@@ -354,6 +339,8 @@ export default function EditSystem() {
     }
   };
 
+
+
   const updateSystemField = (field: keyof SystemData, value: string | string[]) => {
     setSystemData(prev => ({
       ...prev,
@@ -366,9 +353,13 @@ export default function EditSystem() {
       ...prev,
       environmentInfo: prev.environmentInfo.map((item, i) => {
         if (i === index) {
+          // Special handling for productionUnit that can be string or string[]
           if (field === 'productionUnit') {
-            return { ...item, [field]: value };
+            // If value is array, use it directly, otherwise convert string to array
+            const finalValue = Array.isArray(value) ? value : [value].filter(Boolean);
+            return { ...item, [field]: finalValue };
           }
+          // For other fields, keep existing behavior
           const finalValue = Array.isArray(value) ? value.join(',') : value;
           return { ...item, [field]: finalValue };
         }
@@ -377,19 +368,41 @@ export default function EditSystem() {
     }));
   };
 
-  const updateConnectionInfo = (index: number, field: keyof ConnectionInfo, value: string | string[]) => {
-    setSystemData(prev => ({
-      ...prev,
-      connectionInfo: updateArrayItemField(prev.connectionInfo, index, field, value)
-    }));
+// Define valid field types
+type ValidArrayItem = ConnectionInfo | SecurityInfo;
+type ValidField<T> = keyof T;
+
+const updateArrayItemField = <T extends ValidArrayItem>(
+    array: T[],
+    index: number,
+    field: ValidField<T>,
+    value: string | string[]
+  ): T[] => {
+    return array.map((item, i) => {
+      if (i === index) {
+        if (field === 'developUnit' || field === 'businessUnit') {
+          return { ...item, [field]: value } as T;
+        }
+        const finalValue = Array.isArray(value) ? value.join(',') : value;
+        return { ...item, [field]: finalValue } as T;
+      }
+      return item;
+    });
   };
 
-  const updateSecurityInfo = (index: number, field: keyof SecurityInfo, value: string | string[]) => {
-    setSystemData(prev => ({
-      ...prev,
-      securityInfo: updateArrayItemField(prev.securityInfo, index, field, value)
-    }));
-  };
+const updateConnectionInfo = (index: number, field: keyof ConnectionInfo, value: string | string[]) => {
+  setSystemData(prev => ({
+    ...prev,
+    connectionInfo: updateArrayItemField<ConnectionInfo>(prev.connectionInfo, index, field, value)
+  }));
+};
+
+const updateSecurityInfo = (index: number, field: keyof SecurityInfo, value: string | string[]) => {
+  setSystemData(prev => ({
+    ...prev,
+    securityInfo: updateArrayItemField<SecurityInfo>(prev.securityInfo, index, field, value)
+  }));
+};
 
   const addEnvironmentInfo = () => {
     setSystemData(prev => ({
@@ -412,7 +425,7 @@ export default function EditSystem() {
         dr: '',
         joinDomain: '',
         windowsCluster: '',
-        productionUnit: ''
+        productionUnit: []
       }, ...prev.environmentInfo],
       connectionInfo: [{  // Changed to add at the beginning of the array
         ad: 'NO',
@@ -743,9 +756,11 @@ const renderEnvironmentInfo = () => (
                     label={ENVIRONMENT_LABELS.productionUnit}
                     value={Array.isArray(env.productionUnit) 
                       ? env.productionUnit 
-                      : env.productionUnit.split(',').filter(Boolean)}
+                      : typeof env.productionUnit === 'string'
+                        ? (env.productionUnit as string).split(',').filter(Boolean)
+                        : []}
                     onChange={(value) => {
-                      if (value && value.length > 0) {
+                      if (value && Array.isArray(value) && value.length > 0) {
                         updateEnvironmentInfo(index, 'productionUnit', value);
                         // Clear error if exists
                         const newErrors = {...errors};
@@ -1011,6 +1026,36 @@ const renderSecurityInfo = () => (
     )}
   </div>
 );
+
+if (loading) {
+  return (
+    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.background.primary }}>
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-pink-500 mx-auto"></div>
+        <p className="mt-4 text-white text-xl">กำลังโหลดข้อมูล...</p>
+      </div>
+    </div>
+  );
+}
+
+if (error) {
+  return (
+    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.background.primary }}>
+      <div className="text-center p-8 rounded-lg" style={{ backgroundColor: colors.background.secondary }}>
+        <div className="text-red-500 text-4xl mb-4">⚠️</div>
+        <h2 className="text-2xl text-white mb-4">เกิดข้อผิดพลาด</h2>
+        <p className="text-gray-300 mb-4">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-6 py-2 rounded-full text-white"
+          style={{ backgroundColor: colors.button.primary.background }}
+        >
+          ลองใหม่อีกครั้ง
+        </button>
+      </div>
+    </div>
+  );
+}
 
   return (
     <div style={{ backgroundColor: colors.background.primary }} className="min-h-screen py-8">

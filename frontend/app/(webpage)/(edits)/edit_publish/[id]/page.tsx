@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Share2, Save, Plus, Search } from 'lucide-react';
+import { Share2, Save } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import StyledWrapper from '../../../../components/neoninput';
@@ -14,7 +14,18 @@ import Swal from 'sweetalert2';
 import { colors, shadows, transitions,line } from '../../../../styles/theme';
 import DeleteButton from '../../../../components/button/delete';
 import Agenda from '@/components/itemweb/edit_publish/agenda';
-import {ENVIRONMENT_OPTIONS,
+import {
+  SYSTEM_LABELS,
+  ENVIRONMENT_LABELS,
+  CONNECTION_LABELS,
+  SECURITY_LABELS,
+  // FILTER_LABELS,
+  // BUTTON_LABELS,
+  ERROR_MESSAGES
+} from '@/constants/labels';
+
+import {
+  ENVIRONMENT_OPTIONS,
   SERVER_TYPE_OPTIONS,
   SERVER_ROLE_OPTIONS,
   SERVER_DUTY_OPTIONS,
@@ -24,21 +35,11 @@ import {ENVIRONMENT_OPTIONS,
   DR_DC,
   DEVELOPER_TYPE,
   ALL_OPTION
-}from '@/types/optionselect';
+} from '@/types/optionselect';
+
 import {SystemData,EnvironmentInfo,ConnectionInfo,SecurityInfo}from'@/types/inputform'
 import Input from '@/components/itemweb/edit_publish/search';
 import AddNewEntriesButton from '@/components/button/addNewEntries';
-
-import {
-  SYSTEM_LABELS,
-  ENVIRONMENT_LABELS,
-  CONNECTION_LABELS,
-  SECURITY_LABELS,
-  FILTER_LABELS,
-  BUTTON_LABELS,
-  ERROR_MESSAGES
-} from '@/constants/labels';
-
 
 const defaultSystemData: SystemData = {
   id: 0,
@@ -189,7 +190,15 @@ const FormFieldOption = ({
     {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
   </div>
 );
-
+// 
+// 
+// 
+// 
+// interface ItemType {
+//   developUnit?: string | string[];
+//   businessUnit?: string | string[];
+//   [key: string]: string | string[] | undefined;
+// }
 const updateArrayItemField = <T extends Record<string, any>>(
   array: T[],
   index: number,

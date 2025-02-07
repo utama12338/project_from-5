@@ -1,9 +1,9 @@
 'use client';
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState , FormEvent} from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import type { Engine } from "@tsparticles/engine";
 import { loadFull } from "tsparticles";
-import logo from "./logo.svg";
+
 import "./App.css";
 import particlesOptions from "./particles.json";
 import { ISourceOptions } from "@tsparticles/engine";
@@ -22,7 +22,7 @@ function App() {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const handleLogin = (e:any) => {
+    const handleLogin = (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       // Handle login logic here, such as validating inputs and making API calls
       console.log('Logging in with:', username, password);

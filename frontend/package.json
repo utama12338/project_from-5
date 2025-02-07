@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-     "dev:debug": "NODE_OPTIONS='--inspect' next dev",
+    "dev:debug": "NODE_OPTIONS='--inspect' next dev",
     "dev:debug-win": "set NODE_OPTIONS=--inspect && next dev"
   },
   "dependencies": {
@@ -36,7 +36,8 @@
     "react-icons": "^5.4.0",
     "react-router-dom": "^7.1.1",
     "styled-components": "^6.1.14",
-    "sweetalert2": "^11.15.10"
+    "sweetalert2": "^11.15.10",
+    "web-vitals": "^4.2.4"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

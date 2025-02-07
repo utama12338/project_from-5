@@ -1,4 +1,5 @@
-import {ColorlibConnector,ColorlibStepIconRoot,CustomStepLabel} from './color' 
+"use client"
+import {ColorlibStepIconRoot} from './color' 
 import { StepIconProps } from '@mui/material/StepIcon';
 import DescriptionIcon from '@mui/icons-material/Description';
 import StorageIcon from '@mui/icons-material/Storage';

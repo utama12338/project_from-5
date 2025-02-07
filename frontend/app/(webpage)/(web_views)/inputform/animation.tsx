@@ -1,4 +1,5 @@
-import { motion, type Variants } from 'framer-motion';
+"use client"
+import { type Variants } from 'framer-motion';
 // 
 export const backButtonVariants = {
     initial: {

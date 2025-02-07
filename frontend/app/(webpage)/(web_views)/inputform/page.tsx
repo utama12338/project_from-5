@@ -1,11 +1,11 @@
 "use client"
-import { useRouter } from 'next/navigation';
+
 import CSVPreviewModal from '../../../components/CSVPreviewModal';
-import { FiServer, FiShield, FiDatabase, FiLink,FiArrowLeft } from 'react-icons/fi';
+import { FiDatabase,FiArrowLeft } from 'react-icons/fi';
 import {useCSVImport} from './csv_function';
 // 
 import StyledWrapper  from '../../../components/neoninput';
-import {backButtonVariants,backIconVariants,buttonVariants,iconVariants,fadeInUp} from './animation'
+import {backButtonVariants,backIconVariants,fadeInUp}from './animation'
 import Checkbox3d from '../../../components/checkbox3d'
 // 
 import ModernDropdown from '../../../components/ModernDropdown';
@@ -15,8 +15,8 @@ import CustomDatePicker from '../../../components/CustomDatePicker';
 // steper
 
 import {iconstrper}from './iconstrper'
-import {ColorlibConnector,ColorlibStepIconRoot,CustomStepLabel}from './color' 
-import {colors,shadows,line}from '@/styles/theme'
+import {ColorlibConnector,CustomStepLabel}from './color' 
+import {colors,line}from '@/styles/theme'
 // 
 import Stack from '@mui/material/Stack';
 import Stepper from '@mui/material/Stepper';
@@ -49,7 +49,15 @@ import {
   BUTTON_LABELS 
 } from '@/constants/labels';
 
+import { useEffect, useState } from 'react';
+
 export default function CreateSystem() {
+  // Add state to control client-side rendering
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const { 
     showPreview, 
@@ -85,7 +93,10 @@ export default function CreateSystem() {
     } = useFormHandlers();
  
 
-
+  // Return null or loading state while client-side rendering is not ready
+  if (!isClient) {
+    return <div className="min-h-screen py-8" style={{ background: colors.background.primary }} />;
+  }
 
   return (
     // แก้ไขจาก bg-[rgb(17,17,16)] เป็นการใช้ style จาก theme

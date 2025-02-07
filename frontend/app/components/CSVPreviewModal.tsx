@@ -1,5 +1,5 @@
 'use client'
-import { PreviewModalProps, CSVValidationResult } from '../types/csv';
+import { PreviewModalProps} from '../types/csv';
 
 export default function CSVPreviewModal({ isOpen, onClose, data, onConfirm }: PreviewModalProps) {
   if (!isOpen) return null;

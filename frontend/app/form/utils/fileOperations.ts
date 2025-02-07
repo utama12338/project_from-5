@@ -1,6 +1,9 @@
 import Papa from 'papaparse';
 
-export const downloadCSV = (data: any[], filename: string) => {
+
+type CSVData = Record<string, string | number | boolean>;
+
+export const downloadCSV = (data: CSVData[], filename: string) => {
   const csv = Papa.unparse(data);
   const csvWithBOM = '\uFEFF' + csv;
   const blob = new Blob([csvWithBOM], { type: 'text/csv;charset=utf-8;' });

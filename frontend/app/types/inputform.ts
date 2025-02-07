@@ -48,7 +48,7 @@ export interface SecurityInfo {
   setupAgentPatch: string;
   internetFacing: string;
 }
-export interface SystemData {
+export interface SystemData { //สำหรับสร้าง creat system
   id: number;
   systemName: string;
   developType: string;
@@ -62,7 +62,7 @@ export interface SystemData {
   securityInfo: SecurityInfo[];
 }
 
-export interface FormData {
+export interface FormData { //สำหรับสร้าง get มา
   systemName: string;
   developType: string;
   contractNo: string;
@@ -75,23 +75,15 @@ export interface FormData {
   securityInfo: SecurityInfo[];
 }
 
-export interface CSVRowData {
-  systemName: string;
-  developType: string;
-  contractNo: string;
-  vendorContactNo: string;
-  businessUnit: string;
-  developUnit: string;
-  [key: string]: string; // For dynamic CSV fields
-}
 
-export interface CSVValidationResult {
-  row: number;
-  data: CSVRowData;
-  status: 'invalid' | 'incomplete' | 'update' | 'create';
-  errors: string[];
-  systemName: string;
-}
+
+// export interface CSVValidationResults {
+//   row: number;
+//   data: CSVRowData;
+//   status: 'invalid' | 'incomplete' | 'update' | 'create';
+//   errors: string[];
+//   systemName: string;
+// }
 
 export interface HTMLInputEvent extends React.ChangeEvent<HTMLInputElement> {
   target: HTMLInputElement & {

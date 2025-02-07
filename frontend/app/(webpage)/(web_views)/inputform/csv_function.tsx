@@ -4,10 +4,14 @@ import Papa from 'papaparse';
 import { api } from '@/services/api';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+// import { 
+//   CSVValidationResults,
+//   CSVRowData 
+// } from '@/types/inputform';
 import { 
-  CSVValidationResult, 
+  CSVValidationResult,
   CSVRowData 
-} from '@/types/inputform';
+} from '@/types/csv';
 
 export const useCSVImport = () => {
   const [showPreview, setShowPreview] = useState(false);

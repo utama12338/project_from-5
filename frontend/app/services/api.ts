@@ -1,14 +1,14 @@
 import axios from 'axios';
 // import SystemData from '@/types/inputform'
 const BASE_URL = 'http://localhost:4000/from';
-
-export interface SystemData {
-  // ...existing interfaces from page.tsx...
-}
+import { FormData,SystemData } from '../types/inputform';
+// export interface SystemData {
+//   // ...existing interfaces from page.tsx...
+// }
 
 export const api = {
   // Create system
-  createSystem: async (data: SystemData) => {
+  createSystem: async (data: FormData) => {
     const response = await axios.post(`${BASE_URL}/createforme`, data);
     return response.data;
   },

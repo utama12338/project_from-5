@@ -3,7 +3,8 @@
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaServer, FaDatabase, FaNetworkWired, FaShieldAlt, FaPlus, FaSearch } from 'react-icons/fa';
+// import { FaServer, FaDatabase, FaNetworkWired, FaShieldAlt, FaPlus, FaSearch } from 'react-icons/fa';
+import { FaServer,  FaPlus  } from 'react-icons/fa';
 import { colors } from '../app/styles/theme';
 
 const pageTitles: { [key: string]: string } = {

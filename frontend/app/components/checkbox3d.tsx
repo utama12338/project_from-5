@@ -16,7 +16,7 @@ const Checkbox3d = styled.div`
 
   .path {
     fill: none;
-    stroke: white;
+    stroke: var(--text-primary);
     stroke-width: 6;
     stroke-linecap: round;
     stroke-linejoin: round;

@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
-import { colors } from '../../styles/theme';
+// import { colors } from '../../styles/theme';
 
 type ThemeContextType = {
   isDark: boolean;

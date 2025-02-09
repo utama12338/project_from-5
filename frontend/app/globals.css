@@ -4,23 +4,42 @@
 
 :root {
   /* Light theme default variables */
-  --background-primary: #ffffff;
-  --background-secondary: #f3f4f6;
-  --background-tertiary: #e5e7eb;
+  /* --background-primary: linear-gradient(135deg, #6EC3F4 0%, #E573C0 100%); */
+/* พื้นหลังหลัก */
+--background-primary: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+
+/* พื้นหลังรอง */
+--background-secondary: #f3f4f6;
+
+/* พื้นหลังรองที่สอง */
+--background-tertiary: #e5e7eb;
   --text-primary: #171717;
   --text-secondary: #4b5563;
   --text-muted: #6b7280;
+
   --border-primary: #e5e7eb;
   --border-focused: #ec4899;
+
   --button-primary: #ec4899;
   --button-primary-hover: #f472b6;
   --button-secondary: #6366f1;
+  --button-secondary-hover: #818cf8;
   --button-danger: #dc2626;
+
   --input-bg: #f9fafb;
   --input-border: #d1d5db;
-  --shadow-primary: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  --shadow-primary: 0 4px 6px rgba(177, 177, 177, 0.5);
   --gradient-primary: linear-gradient(95deg, #ec4899 0%, #f472b6 50%, #ff0090 100%);
   --transition-duration: 0.3s;
+
+/* New active state variables for dark theme */
+--active-primary: #d5006a;    /* GSB Pink */
+--active-secondary: #e5007f;  /* GSB Pink Variant */
+--active-gradient: linear-gradient(135deg, #d5006a 0%, #e5007f 50%, #d5006a 100%);
+--active-hover: rgba(213, 0, 106, 0.2);   /* GSB Pink with opacity */
+--active-bg: rgba(213, 0, 106, 0.1);      /* Lighter GSB Pink background */
+
 }
 
 :root.dark {
@@ -38,6 +57,7 @@
   --button-primary: #2a2a2a;        /* Primary button background */
   --button-primary-hover: #3a3a3a;  /* Hover state */
   --button-secondary: #222222;      /* Secondary button background */
+  --button-secondary-hover: #222222;
   --button-danger: #3f1f1f;        /* Danger button with red tint */
   
   /* Form elements */
@@ -45,8 +65,15 @@
   --input-border: #2f2f2f;         /* Input borders */
   
   /* Effects */
-  --shadow-primary: 0 4px 6px rgba(0, 0, 0, 0.5);
+  --shadow-primary: 0 4px 6px rgba(150, 2, 187, 0.5);
   --gradient-primary: linear-gradient(135deg, #222222 0%, #2a2a2a 50%, #333333 100%);
+
+  /* New active state variables for dark theme */
+  --active-primary: #7c3aed;    /* Violet-600 */
+  --active-secondary: #8b5cf6;  /* Violet-500 */
+  --active-gradient: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 50%, #a78bfa 100%);
+  --active-hover: rgba(124, 58, 237, 0.2);   /* Violet-600 with opacity */
+  --active-bg: rgba(124, 58, 237, 0.1);      /* Lighter violet background */
 }
 
 body {

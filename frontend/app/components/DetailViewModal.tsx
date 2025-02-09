@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import { useEffect, useState, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -16,7 +16,7 @@ import { SystemData, EnvironmentInfo, ConnectionInfo } from '../types/inputform'
 
 interface DetailViewModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   systems: SystemData[]; // Changed from any[] to SystemData[]
 }
 
@@ -148,7 +148,9 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                  borderBottomLeftRadius: layout.borderRadius.large
                }}>
             <div className="p-4 border-b sticky top-0 bg-inherit z-10">
-              <h3 className="font-semibold text-white text-center">ระบบที่เลือก ({systems.length})</h3>
+              <h3 className="font-semibold text-center" style={{ color: 'var(--text-primary)' }}>
+                ระบบที่เลือก ({systems.length})
+              </h3>
             </div>
             <div className="overflow-y-auto flex-1">
               {/* Systems list - Add text truncation and padding */}
@@ -157,10 +159,14 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                   key={sys.id}
                   onClick={() => setActiveSystemIndex(index)}
                   style={{
-                    backgroundColor: index === activeSystemIndex ? `${colors.button.primary.background}20` : 'transparent',
-                    color: index === activeSystemIndex ? colors.button.primary.background : colors.text.primary
+                    backgroundColor: index === activeSystemIndex 
+                      ? 'var(--active-bg)'
+                      : 'transparent',
+                    color: index === activeSystemIndex 
+                      ? 'var(--active-primary)'
+                      : 'var(--text-secondary)'
                   }}
-                  className="px-1 py-1 cursor-pointer hover:bg-pink-500 hover:bg-opacity-10 transition-all duration-200"
+                  className="px-1 py-1 cursor-pointer hover:bg-violet-500 hover:bg-opacity-10 transition-all duration-200"
                 >
                   <div className="truncate text-center">{sys.systemName}</div>
                 </div>
@@ -168,22 +174,22 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
             </div>
             {/* Navigation menu - Update styling */}
             <div className="border-t p-1 space-y-2 sticky bottom-0 bg-inherit h-[300px] min-h-[300px] overflow-y-auto">
-  {/* Basic Info - Center text and improve padding */}
-  <div 
-    onClick={() => scrollToSection('basic')}
-    style={{
-      backgroundColor: activeSection === 'basic' 
-        ? `${colors.button.primary.background}20` 
-        : 'transparent',
-      color: activeSection === 'basic' 
-        ? colors.button.primary.background 
-        : colors.text.primary,
-      borderRadius: labels.section.borderRadius,
-    }}
-    className="cursor-pointer px-3 py-2 transition-all duration-200 text-center"
-  >
-    <span className="font-semibold truncate block">ข้อมูลพื้นฐาน Systeminfo</span>
-  </div>
+{/* Basic Info - Center text and improve padding */}
+<div 
+  onClick={() => scrollToSection('basic')}
+  style={{
+    backgroundColor: activeSection === 'basic' 
+      ? 'var(--active-bg)'
+      : 'transparent',
+    color: activeSection === 'basic' 
+      ? 'var(--active-primary)'
+      : 'var(--text-secondary)',
+    borderRadius: labels.section.borderRadius,
+  }}
+  className="cursor-pointer px-3 py-2 transition-all duration-200 text-center hover:bg-violet-500 hover:bg-opacity-10"
+>
+  <span className="font-semibold truncate block">ข้อมูลพื้นฐาน Systeminfo</span>
+</div>
 
               {/* Environments Section - Update container and spacing */}
               {currentSystem.environmentInfo?.map((env: EnvironmentInfo, index: number) => (
@@ -204,11 +210,11 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                     }}
                     style={{
                       backgroundColor: activeSection === 'environment' && activeEnvironmentIndex === index
-                        ? `${colors.button.primary.background}20`
+                        ? 'var(--active-bg)'
                         : 'transparent',
                       color: activeSection === 'environment' && activeEnvironmentIndex === index
-                        ? menu.text.active
-                        : menu.text.inactive
+                        ? 'var(--active-primary)'
+                        : 'var(--text-secondary)'
                     }}
                     className="cursor-pointer px-3 py-2 rounded hover:bg-pink-500 hover:bg-opacity-10 transition-all duration-200 flex justify-between items-center"
                   >
@@ -230,10 +236,10 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
                           onClick={() => scrollToSection(item.id, index)}
                           style={{
                             color: activeSection === item.id && activeEnvironmentIndex === index
-                              ? menu.text.hover 
-                              : menu.text.inactive,
+                              ? 'var(--active-primary)'
+                              : 'var(--text-secondary)',
                             backgroundColor: activeSection === item.id && activeEnvironmentIndex === index
-                              ? `${colors.button.primary.background}10`
+                              ? 'var(--active-bg)'
                               : 'transparent'
                           }}
                           className="cursor-pointer px-3 py-1.5 rounded hover:bg-pink-500 hover:bg-opacity-10 flex items-center transition-all duration-200"
@@ -268,11 +274,18 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
             >
               {/* Basic Info Section */}
               <div ref={sectionRefs.basic} className="mb-8">
-                <h2 className="text-2xl font-bold mb-4 pb-2 text-white border-b" 
-                    style={{ borderImage: line.line, borderImageSlice: 1 }}>
+                <h2 className="text-2xl font-bold mb-4 pb-2 border-b" 
+                    style={{ 
+                      color: 'var(--text-primary)',
+                      borderImage: line.line, 
+                      borderImageSlice: 1 
+                    }}>
                   ข้อมูลพื้นฐาน
                 </h2>
-                <h3 className="text-lg font-semibold mb-4 text-indigo-600">Systeminfo </h3>
+                <h3 className="text-lg font-semibold mb-4" 
+                    style={{ color: 'var(--active-primary)' }}>
+                  Systeminfo 
+                </h3>
                 <div className="grid grid-cols-2 gap-x-8 gap-y-4">
                   <InfoBox title={SYSTEM_LABELS.systemName} value={currentSystem.systemName} />
                   <InfoBox title={SYSTEM_LABELS.developType} value={currentSystem.developType} />
@@ -287,12 +300,19 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
               {/* Environment Info Section */}
               {currentSystem.environmentInfo?.[activeEnvironmentIndex] && (
                 <div ref={sectionRefs.environment} className="mb-8">
-                  <h2 className="text-2xl font-bold mb-4 pb-2 text-white border-b"
-                      style={{ borderImage: line.line, borderImageSlice: 1 }}>
+                  <h2 className="text-2xl font-bold mb-4 pb-2 border-b"
+                      style={{ 
+                        color: 'var(--text-primary)',
+                        borderImage: line.line, 
+                        borderImageSlice: 1 
+                      }}>
                     สภาพแวดล้อม
                   </h2>
                   <div className="mb-6">
-                    <h3 className="text-lg font-semibold mb-4 text-indigo-600">Environment {currentSystem.systemName}</h3>
+                    <h3 className="text-lg font-semibold mb-4" 
+                        style={{ color: 'var(--active-primary)' }}>
+                      Environment {currentSystem.systemName}
+                    </h3>
                     <div className="grid grid-cols-2 gap-x-8 gap-y-4">
                       <InfoBox title={ENVIRONMENT_LABELS.environment} value={currentSystem.environmentInfo[activeEnvironmentIndex].environment} />
                       <InfoBox title={ENVIRONMENT_LABELS.serverName} value={currentSystem.environmentInfo[activeEnvironmentIndex].serverName} />
@@ -337,12 +357,17 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
               {/* Connection Info Section */}
               {currentSystem.connectionInfo?.[activeEnvironmentIndex] && (
                 <div ref={sectionRefs.connection} className="mb-8">
-                  <h2 className="text-2xl font-bold mb-4 pb-2 text-white border-b"
-                      style={{ borderImage: line.line, borderImageSlice: 1 }}>
+                  <h2 className="text-2xl font-bold mb-4 pb-2 border-b"
+                      style={{ 
+                        color: 'var(--text-primary)',
+                        borderImage: line.line, 
+                        borderImageSlice: 1 
+                      }}>
                     การเชื่อมต่อ
                   </h2>
                   <div className="mb-6">
-                    <h3 className="text-lg font-semibold mb-4 text-indigo-600">
+                    <h3 className="text-lg font-semibold mb-4" 
+                        style={{ color: 'var(--active-primary)' }}>
                       Server: {currentSystem.environmentInfo[activeEnvironmentIndex]?.serverName || `Server ${activeEnvironmentIndex + 1}`}
                     </h3>
                     <div className="grid grid-cols-3 gap-x-8 gap-y-4">
@@ -364,12 +389,17 @@ export default function DetailViewModal({ isOpen, onClose, systems }: DetailView
               {/* Security Info Section */}
               {currentSystem.securityInfo?.[activeEnvironmentIndex] && (
                 <div ref={sectionRefs.security} className="mb-8">
-                  <h2 className="text-2xl font-bold mb-4 pb-2 text-white border-b"
-                      style={{ borderImage: line.line, borderImageSlice: 1 }}>
+                  <h2 className="text-2xl font-bold mb-4 pb-2 border-b"
+                      style={{ 
+                        color: 'var(--text-primary)',
+                        borderImage: line.line, 
+                        borderImageSlice: 1 
+                      }}>
                     ความปลอดภัย
                   </h2>
                   <div className="mb-6">
-                    <h3 className="text-lg font-semibold mb-4 text-indigo-600">
+                    <h3 className="text-lg font-semibold mb-4" 
+                        style={{ color: 'var(--active-primary)' }}>
                       Server: {currentSystem.environmentInfo[activeEnvironmentIndex]?.serverName || `Server ${activeEnvironmentIndex + 1}`}
                     </h3>
                     <div className="grid grid-cols-2 gap-x-8 gap-y-4">

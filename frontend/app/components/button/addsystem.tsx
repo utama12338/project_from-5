@@ -22,14 +22,14 @@ const StyledWrapper = styled.div`
     height: 45px;
     border-radius: 12px;
     border: none;
-    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    background: var(--button-secondary);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.5s ease;
+    // transition: all 0.5s ease;
     overflow: hidden;
-    box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2);
+    box-shadow: 0 10px 20px var(--shadow-primary);
     position: relative;
   }
 
@@ -55,8 +55,8 @@ const StyledWrapper = styled.div`
 
   .CartBtn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 15px 30px rgba(34, 197, 94, 0.3);
-    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+    box-shadow: 0 15px 30px var(--shadow-primary);
+    background: var(--button-secondary-hover);
   }
 
   .IconContainer {
@@ -73,7 +73,7 @@ const StyledWrapper = styled.div`
   }
 
   .cart {
-    fill: white;
+    fill: var(--text-primary);
     transition: transform 0.5s ease;
   }
 

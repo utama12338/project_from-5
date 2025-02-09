@@ -141,13 +141,13 @@ export default function SystemList() {
             
             const initialContent = envInfo.length > 0 && (
               <div className="space-y-2 mb-4">
-                <p className="text-sm text-gray-300">
+                <p className="text-sm" style={{ color: colors.text.secondary }}>
                   <span className="font-medium">Servername:</span> {envInfo[0].serverName}
                 </p>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm" style={{ color: colors.text.secondary }}>
                   <span className="font-medium">Environment:</span> {envInfo[0].environment}
                 </p>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm" style={{ color: colors.text.secondary }}>
                   <span className="font-medium">IP server:</span> {envInfo[0].ip}
                 </p>
               </div>
@@ -155,13 +155,13 @@ export default function SystemList() {
 
             const expandableContent = envInfo.slice(1).map((env, index) => (
               <div key={index} className="space-y-2 mb-4">
-                <p className="text-sm text-gray-300">
+                <p key={index} className="text-sm" style={{ color: colors.text.secondary }}>
                   <span className="font-medium">Servername:</span> {env.serverName}
                 </p>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm" style={{ color: colors.text.secondary }}>
                   <span className="font-medium">Environment:</span> {env.environment}
                 </p>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm" style={{ color: colors.text.secondary }}>
                   <span className="font-medium">IP server:</span> {env.ip}
                 </p>
               </div>

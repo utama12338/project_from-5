@@ -1,5 +1,4 @@
 import type { Config } from "tailwindcss";
-
 export default {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -7,25 +6,27 @@ export default {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./Navbar/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
         primary: '#5161ce',
         gsb: {
-          50: '#fdf2fa',
-          100: '#fbe5f5',
-          200: '#f7cbec',
-          300: '#f2a7e3',
-          400: '#ec80d6',
-          500: '#e45bc7',
-          600: '#bc4ca0',
-          700: '#9a3d7f',
-          800: '#7b2f61',
-          900: '#61244b',
+          // ...existing gsb colors...
+        },
+        // Add dark mode colors
+        dark: {
+          bg: '#1a1a1a',
+          text: '#ffffff',
+          primary: '#6172df'
+        },
+        light: {
+          bg: '#ffffff',
+          text: '#000000',
+          primary: '#5161ce'
         }
       },
     },
-    
   },
   plugins: [
     require('@tailwindcss/forms'),

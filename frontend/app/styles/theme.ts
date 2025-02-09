@@ -44,53 +44,77 @@ export interface ThemeColors {
   shadows: {
     primary: string;
   };
+  themes: {
+    light: {
+      background: string;
+      text: string;
+      primary: string;
+    };
+    dark: {
+      background: string;
+      text: string;
+      primary: string;
+    };
+  };
 }
 
 // ระบุ type ให้กับ colors object
 export const colors: ThemeColors = {
   background: {
-    primary: 'rgb(18, 18, 18)',
-    secondary: 'rgb(32, 32, 31)',
-    tertiary: 'rgb(27, 27, 26)',
-    hover: 'rgba(96, 165, 250, 0.15)'
+    primary: 'var(--background-primary)',
+    secondary: 'var(--background-secondary)',
+    tertiary: 'var(--background-tertiary)',
+    hover: 'var(--background-hover)'
   },
   text: {
-    primary: '#FFFFFF',
-    secondary: 'rgba(255, 255, 255, 0.7)',
-    muted: '#9CA3AF',
-    hover: '#93c5fd'
+    primary: 'var(--text-primary)',
+    secondary: 'var(--text-secondary)',
+    muted: 'var(--text-muted)',
+    hover: 'var(--text-hover)'
   },
   border: {
-    primary: 'rgb(75, 85, 99)',
-    focused: 'rgb(236,72,153)'
+    primary: 'var(--border-primary)',
+    focused: 'var(--border-focused)'
   },
   button: {
     primary: {
-      background: 'rgb(236,72,153)',
-      hover: 'rgb(244,114,182)',
-      active: 'rgb(255, 0, 144)'
+      background: 'var(--button-primary)',
+      hover: 'var(--button-primary-hover)',
+      active: 'var(--button-primary)'
     },
     secondary: {
-      background: 'rgb(99, 102, 241)',
-      hover: 'rgba(99, 102, 241, 0.05)'
+      background: 'var(--button-secondary)',
+      hover: 'var(--button-secondary-hover)'
     },
     danger: {
-      background: 'rgb(220, 38, 38)',
-      hover: 'rgb(185, 28, 28)'
+      background: 'var(--button-danger)',
+      hover: 'var(--button-danger-hover)'
     }
   },
   input: {
-    background: 'rgb(55, 65, 81)',
-    placeholder: 'rgb(156, 163, 175)',
-    border: 'rgb(75, 85, 99)'
+    background: 'var(--input-bg)',
+    placeholder: 'var(--text-muted)',
+    border: 'var(--input-border)'
   },
   gradient: {
-    primary: 'linear-gradient( 95deg,rgb(236,72,153) 0%,rgb(244,114,182) 50%,rgb(255, 0, 144) 100%)',
-    secondary: 'linear-gradient( 136deg, rgb(236,72,153) 0%, rgb(244,114,182) 50%, rgb(126, 0, 71) 100%)',
-    completed: 'linear-gradient( 136deg, rgb(236,72,153) 0%, rgb(244,114,182) 50%, rgb(170, 0, 96) 100%)'
+    primary: 'var(--gradient-primary)',
+    secondary: 'var(--gradient-primary)',
+    completed: 'var(--gradient-primary)'
   },
   shadows: {
-    primary: '0 4px 6px rgba(0, 0, 0, 0.1)'
+    primary: 'var(--shadow-primary)'
+  },
+  themes: {
+    light: {
+      background: '#ffffff',
+      text: '#171717',
+      primary: 'rgb(236,72,153)',
+    },
+    dark: {
+      background: 'rgb(18, 18, 18)',
+      text: '#ffffff',
+      primary: 'rgb(244,114,182)',
+    }
   }
 };
 

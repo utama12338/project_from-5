@@ -7,7 +7,7 @@ interface EditButtonProps {
 
 const EditButton: React.FC<EditButtonProps> = ({ onClick }) => {
     return (
-      <StyledWrapper>
+      <StyledWrapper className="theme-transition">
         <button className="EditBtn" onClick={onClick}>
           <span className="IconContainer"> 
             <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512" className="edit-icon">
@@ -26,15 +26,15 @@ const StyledWrapper = styled.div`
     height: 45px;
     border-radius: 12px;
     border: none;
-    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+    background-color: var(--background-tertiary);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     cursor: pointer;
-    transition: all 0.5s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
     overflow: hidden;
-    box-shadow: 0 10px 20px rgba(251, 191, 36, 0.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     position: relative;
   }
 
@@ -47,56 +47,61 @@ const StyledWrapper = styled.div`
     align-items: center;
     justify-content: center;
     z-index: 2;
-    transition: 0.5s ease;
   }
 
   .edit-icon {
-    fill: white;
+    fill: var(--text-primary);
     width: 20px;
     height: 20px;
-    transition: transform 0.5s ease;
+    transition: transform 0.2s ease;
   }
 
   .text {
-    color: white;
+    color: var(--text-primary);
     font-size: 1.04em;
     font-weight: 600;
     z-index: 1;
-    transition: 0.5s ease;
-  }
-
-  .EditBtn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.2),
-      transparent
-    );
-    transition: 0.5s;
-  }
-
-  .EditBtn:hover::before {
-    left: 100%;
   }
 
   .EditBtn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 30px rgba(251, 191, 36, 0.3);
-    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
-  }
+    background-color: var(--background-secondary);
+    transform: translateY(-4px);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 
-  .EditBtn:hover .edit-icon {
-    transform: rotate(15deg) scale(1.2);
+    .edit-icon {
+      fill: var(--text-secondary);
+      transform: rotate(-12deg) scale(1.1);
+    }
   }
 
   .EditBtn:active {
-    transform: scale(0.95) translateY(-2px);
+    transform: translateY(-2px) scale(0.98);
+  }
+  
+  /* Dark mode specific styles */
+  :root.dark & {
+    .EditBtn {
+      background-color: var(--background-secondary);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .EditBtn:hover {
+      background-color: var(--background-tertiary);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+
+      .edit-icon {
+        fill: var(--text-hover, var(--text-primary));
+        transform: rotate(-12deg) scale(1.1);
+      }
+    }
+
+    .edit-icon {
+      fill: var(--text-primary);
+    }
+
+    .text {
+      color: var(--text-primary);
+    }
   }
 `;
 

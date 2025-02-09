@@ -1,13 +1,5 @@
 import { Request, Response } from 'express'
-import { PrismaClient, EnvironmentOption,
-    ServerTypeOption,
-    ServerRoleOption,
-    ServerDutyOption,
-    ProductionUnitOption,
-    DeveloperUnitOption,
-    YesNoOption,
-    DrDcOption,
-    DeveloperTypeOption
+import { PrismaClient
 } from '@prisma/client'
 
 

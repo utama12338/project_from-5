@@ -3,25 +3,63 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light theme default variables */
+  --background-primary: #ffffff;
+  --background-secondary: #f3f4f6;
+  --background-tertiary: #e5e7eb;
+  --text-primary: #171717;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --border-primary: #e5e7eb;
+  --border-focused: #ec4899;
+  --button-primary: #ec4899;
+  --button-primary-hover: #f472b6;
+  --button-secondary: #6366f1;
+  --button-danger: #dc2626;
+  --input-bg: #f9fafb;
+  --input-border: #d1d5db;
+  --shadow-primary: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --gradient-primary: linear-gradient(95deg, #ec4899 0%, #f472b6 50%, #ff0090 100%);
+  --transition-duration: 0.3s;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root.dark {
+  /* Dark theme variables with monochromatic scheme */
+  --background-primary: #111111;    /* Darkest - Main background */
+  --background-secondary: #1a1a1a;  /* Slightly lighter - Component background */
+  --background-tertiary: #222222;   /* Even lighter - Interactive elements */
+  --text-primary: #ffffff;          /* Brightest - Primary text */
+  --text-secondary: #e0e0e0;        /* Slightly dimmed - Secondary text */
+  --text-muted: #a0a0a0;           /* More dimmed - Tertiary text */
+  --border-primary: #333333;        /* Subtle borders */
+  --border-focused: #444444;        /* Focused element borders */
+  
+  /* Button colors */
+  --button-primary: #2a2a2a;        /* Primary button background */
+  --button-primary-hover: #3a3a3a;  /* Hover state */
+  --button-secondary: #222222;      /* Secondary button background */
+  --button-danger: #3f1f1f;        /* Danger button with red tint */
+  
+  /* Form elements */
+  --input-bg: #1f1f1f;             /* Input background */
+  --input-border: #2f2f2f;         /* Input borders */
+  
+  /* Effects */
+  --shadow-primary: 0 4px 6px rgba(0, 0, 0, 0.5);
+  --gradient-primary: linear-gradient(135deg, #222222 0%, #2a2a2a 50%, #333333 100%);
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  color: var(--text-primary);
+  background: var(--background-primary);
   font-family: Arial, Helvetica, sans-serif;
+  /* Remove transition */
 }
 
-
-
+/* Remove theme transition utilities */
+.theme-transition {
+  /* Remove all transitions */
+}
 
 /* Custom Scrollbar Styles
 .scrollbar-thin::-webkit-scrollbar {

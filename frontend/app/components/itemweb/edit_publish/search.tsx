@@ -38,77 +38,7 @@ const StyledWrapper = styled.div`
     --size-button: 40px;
   }
 
-  .input {
-    padding-left: var(--size-button);
-    height: var(--size-button);
-    font-size: 15px;
-    border: none;
-    outline: none;
-    width: var(--size-button);
-    transition: all ease 0.3s;
-    border-radius: 50px;
-    cursor: pointer;
-
-    /* Light theme styles */
-    .light & {
-      color: var(--text-primary);
-      background-color: var(--card-background);
-      box-shadow: var(--shadow-primary);
-      
-      &::placeholder {
-        color: var(--text-muted);
-      }
-
-      &:focus,
-      &:not(:invalid) {
-        background-color: var(--background-secondary);
-        box-shadow: 0 0 15px rgba(236, 72, 153, 0.2);
-      }
-    }
-
-    /* Dark theme styles */
-    .dark & {
-      color: var(--text-primary);
-      background-color: var(--card-background);
-      box-shadow: var(--shadow-primary);
-      
-      &::placeholder {
-        color: var(--text-muted);
-      }
-
-      &:focus,
-      &:not(:invalid) {
-        background-color: var(--background-secondary);
-        box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
-      }
-    }
-  }
-
-  .input:focus,
-  .input:not(:invalid) {
-    width: 360px;
-    cursor: text;
-  }
-
-  .input:hover {
-    /* Common hover effect for both themes */
-    transform: translateY(-1px);
-    box-shadow: 0 0 20px rgba(236, 72, 153, 0.25);
-  }
-
-  /* Remove theme-specific animations and use consistent effects */
-  .input:focus {
-    box-shadow: 0 0 25px rgba(236, 72, 153, 0.35);
-  }
-
-  .input:focus + .icon,
-  .input:not(:invalid) + .icon {
-    pointer-events: all;
-    cursor: pointer;
-    color: var(--button-primary);
-  }
-
-  .container .icon {
+  .container .icon {  
     position: absolute;
     width: var(--size-button);
     height: var(--size-button);
@@ -123,6 +53,88 @@ const StyledWrapper = styled.div`
   .container .icon svg {
     width: 100%;
     height: 100%;
+  }
+
+  /* Dark theme styles */
+  .dark & .input {
+    background-color: rgb(20, 20, 19);
+    border: none;
+    padding: 10px;
+    padding-left: var(--size-button);
+    border-radius: 50px;
+    outline: none;
+    color: white;
+    height: var(--size-button);
+    font-size: 15px;
+    width: var(--size-button);
+    transition: all ease 0.3s;
+    cursor: pointer;
+  }
+
+  .dark & .input:hover {
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .dark & .input:focus,
+  .dark & .input:not(:invalid) {
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+    transform: translateY(-1px);
+    width: 360px;
+    cursor: text;
+  }
+
+  .dark & .input:focus {
+    animation: rgbShadow 2s infinite linear;
+    transform: translateY(-2px);
+  }
+
+  @keyframes rgbShadow {
+    0% { box-shadow: -2px -2px 15px #ff0000, 2px 2px 15px #0000ff; }
+    33% { box-shadow: -2px -2px 15px #00ff00, 2px 2px 15px #ff0000; }
+    66% { box-shadow: -2px -2px 15px #0000ff, 2px 2px 15px #00ff00; }
+    100% { box-shadow: -2px -2px 15px #ff0000, 2px 2px 15px #0000ff; }
+  }
+
+  /* Light theme styles */
+  .light & .input {
+    background-color: #F4F4F4;
+    border: none;
+    border-radius: 50px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    color: #333;
+    font-family: "Helvetica Neue", sans-serif;
+    padding: 10px;
+    padding-left: var(--size-button);
+    outline: none;
+    height: var(--size-button);
+    font-size: 15px;
+    width: var(--size-button);
+    transition: all ease 0.3s;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  .light & .input:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .light & .input:focus,
+  .light & .input:not(:invalid) {
+    background-color: #EAEAEA;
+    width: 360px;
+    cursor: text;
+    transform: translateY(-1px);
+  }
+
+  .input:focus + .icon,
+  .input:not(:invalid) + .icon {
+    pointer-events: all;
+    cursor: pointer;
+    color: var(--button-primary);
   }
 `;
 

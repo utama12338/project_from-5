@@ -162,17 +162,17 @@ export const animation = {
   }
 };
 
-// export const menu = {
-//   icons: {
-//     expand: '▼',
-//     collapse: '▲',
-//   },
-//   text: {
-//     active: '#FFFFFF',
-//     inactive: 'rgba(255, 255, 255, 0.7)',
-//     hover: 'rgb(236,72,153)',
-//   }
-// };
+export const menu = {
+  icons: {
+    expand: '▼',
+    collapse: '▲',
+  },
+  text: {
+    active: '#FFFFFF',
+    inactive: 'rgba(255, 255, 255, 0.7)',
+    hover: 'rgb(236,72,153)',
+  }
+};
 
 export const labels = {
   section: {

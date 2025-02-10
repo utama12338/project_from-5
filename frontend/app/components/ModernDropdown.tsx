@@ -4,13 +4,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiChevronDown } from 'react-icons/fi';
 import styled from 'styled-components';
 
-// Add styled component for neon effect
 const NeonWrapper = styled.div`
-  .dropdown-trigger {
+  /* Dark theme styles */
+  .dark & .dropdown-trigger {
     background-color: rgb(20, 20, 19);
     border: none;
     border-radius: 10px;
-    transition: all 0.3s ease;
+   
     
     &:hover {
       box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
@@ -23,22 +23,81 @@ const NeonWrapper = styled.div`
     }
   }
 
-  .dropdown-options {
+  .dark & .dropdown-options {
     background-color: rgb(20, 20, 19);
     border: none;
     border-radius: 10px;
-    position: absolute;
-    z-index: 100;
-    width: 100%;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
 
-  .dropdown-option {
-    transition: all 0.3s ease;
-    
+  .dark & .dropdown-option {
     &:hover {
       background: linear-gradient(45deg, #ff00ff20, #00ffff20);
       box-shadow: inset 0 0 15px rgba(255, 0, 255, 0.2);
+    }
+  }
+
+  /* Light theme styles (modified) */
+  .light & .dropdown-trigger {
+    background-color: #F4F4F4;
+    border: none;
+    border-radius: 10px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    color: #333;
+    padding: 8px;  /* ลดขนาด padding */
+    outline: none;
+    
+    
+    /* ควบคุมขนาดของ trigger container */
+    & > div {
+      padding: 0;  /* ลบ padding เดิม */
+      
+      /* จัดการกับ flex container */
+      & > div {
+        padding: 0 8px;  /* ใส่ padding แค่ซ้าย-ขวา */
+        min-height: unset;  /* ลบความสูงขั้นต่ำ */
+        height: 24px;  /* กำหนดความสูงแน่นอน */
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    /* จัดการสีข้อความใน trigger */
+    span {
+      color: #333;
+      &.placeholder {
+        color: #666;
+      }
+    }
+    
+    /* ปรับสีไอคอน */
+    svg {
+      color: #666;
+    }
+  }
+
+  .light & .dropdown-options {
+    background-color: #F4F4F4;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2);
+    margin-top: 4px;  /* ลดระยะห่างระหว่าง trigger กับ options */
+    
+    /* ควบคุมขนาดของ options */
+    & > div {
+      max-height: 300px;  /* จำกัดความสูงสูงสุด */
+    }
+  }
+
+  .light & .dropdown-option {
+    color: #333;
+    padding: 8px 12px;  /* ลด padding */
+    font-size: 16px;  /* ควบคุมขนาดตัวอักษร */
+    height: 40px;  /* กำหนดความสูงแน่นอน */
+    display: flex;
+    align-items: center;
+    
+    &:hover {
+      background-color: #EAEAEA;
     }
   }
 
@@ -93,7 +152,6 @@ const ModernDropdown: React.FC<DropdownProps> = ({
   onChange,
   placeholder = 'Select an option',
   label,
- 
   required = false,
   className = '',
 }) => {
@@ -154,7 +212,7 @@ const ModernDropdown: React.FC<DropdownProps> = ({
     <NeonWrapper>
       <div ref={dropdownRef} className="dropdown-container">
         {label && (
-          <label className="block text-sm font-medium text-gray-100 mb-1">
+          <label className={`block text-sm font-medium mb-1 ${className}`}>
             {label}
             {required && <span className="text-pink-500 ml-1">*</span>}
           </label>
@@ -167,14 +225,14 @@ const ModernDropdown: React.FC<DropdownProps> = ({
           >
             <div className="dropdown-trigger">
               <div className="flex items-center justify-between px-4 py-2">
-                <span className={`block truncate ${value ? 'text-gray-100' : 'text-gray-400'}`}>
+                <span className={`block truncate ${value ? '' : 'placeholder'}`}>
                   {value || placeholder}
                 </span>
                 <motion.div
                   animate={{ rotate: isOpen ? 180 : 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <FiChevronDown className="w-5 h-5 text-gray-400" />
+                  <FiChevronDown className="w-5 h-5" />
                 </motion.div>
               </div>
             </div>
@@ -207,7 +265,7 @@ const ModernDropdown: React.FC<DropdownProps> = ({
                         onChange(option);
                         setIsOpen(false);
                       }}
-                      className="dropdown-option px-4 py-2 cursor-pointer text-gray-100 hover:text-white"
+                      className="dropdown-option px-4 py-2 cursor-pointer"
                     >
                       {option}
                     </motion.div>

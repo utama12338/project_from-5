@@ -73,7 +73,7 @@ const StyledWrapper = styled.div`
   }
 
   .cart {
-    fill: var(--text-primary);
+    fill: white;
     transition: transform 0.5s ease;
   }
 

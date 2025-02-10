@@ -5,14 +5,17 @@
 :root {
   /* Light theme default variables */
   /* --background-primary: linear-gradient(135deg, #6EC3F4 0%, #E573C0 100%); */
-/* พื้นหลังหลัก */
---background-primary: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  /* พื้นหลังหลัก */
+  --background-primary: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
 
-/* พื้นหลังรอง */
---background-secondary: #f3f4f6;
+  /* พื้นหลังรอง */
+  --background-secondary: #f3f4f6;
 
-/* พื้นหลังรองที่สอง */
---background-tertiary: #e5e7eb;
+  /* พื้นหลังรองที่สอง */
+  --background-tertiary: #e5e7eb;
+
+  --card-background: #eeeeee;
+
   --text-primary: #171717;
   --text-secondary: #4b5563;
   --text-muted: #6b7280;
@@ -31,15 +34,22 @@
 
   --shadow-primary: 0 4px 6px rgba(177, 177, 177, 0.5);
   --gradient-primary: linear-gradient(95deg, #ec4899 0%, #f472b6 50%, #ff0090 100%);
-  --transition-duration: 0.3s;
+  /* --transition-duration: 0.3s; */
 
-/* New active state variables for dark theme */
---active-primary: #d5006a;    /* GSB Pink */
---active-secondary: #e5007f;  /* GSB Pink Variant */
---active-gradient: linear-gradient(135deg, #d5006a 0%, #e5007f 50%, #d5006a 100%);
---active-hover: rgba(213, 0, 106, 0.2);   /* GSB Pink with opacity */
---active-bg: rgba(213, 0, 106, 0.1);      /* Lighter GSB Pink background */
+  /* New active state variables for dark theme */
+  --active-primary: #d5006a;    /* GSB Pink */
+  --active-secondary: #e5007f;  /* GSB Pink Variant */
+  --active-gradient: linear-gradient(135deg, #d5006a 0%, #e5007f 50%, #d5006a 100%);
+  --active-hover: rgba(213, 0, 106, 0.2);   /* GSB Pink with opacity */
+  --active-bg: rgba(213, 0, 106, 0.1);      /* Lighter GSB Pink background */
 
+  /* Add new agenda specific colors */
+  --agenda-bg: rgba(255, 255, 255, 0.05);
+  --agenda-hover: rgba(255, 255, 255, 0.1);
+  --agenda-text-inactive: #6B7280;
+  --agenda-text-active: #EC4899;
+  --agenda-active-bg: rgba(236, 72, 153, 0.1);
+  --agenda-backdrop: rgba(31, 41, 55, 0.5);
 }
 
 :root.dark {
@@ -47,23 +57,27 @@
   --background-primary: #111111;    /* Darkest - Main background */
   --background-secondary: #1a1a1a;  /* Slightly lighter - Component background */
   --background-tertiary: #222222;   /* Even lighter - Interactive elements */
+
+  /* ... other variables ... */
+  --card-background: #202020;
+
   --text-primary: #ffffff;          /* Brightest - Primary text */
   --text-secondary: #e0e0e0;        /* Slightly dimmed - Secondary text */
   --text-muted: #a0a0a0;           /* More dimmed - Tertiary text */
   --border-primary: #333333;        /* Subtle borders */
   --border-focused: #444444;        /* Focused element borders */
-  
+
   /* Button colors */
   --button-primary: #2a2a2a;        /* Primary button background */
   --button-primary-hover: #3a3a3a;  /* Hover state */
   --button-secondary: #222222;      /* Secondary button background */
   --button-secondary-hover: #222222;
   --button-danger: #3f1f1f;        /* Danger button with red tint */
-  
+
   /* Form elements */
   --input-bg: #1f1f1f;             /* Input background */
   --input-border: #2f2f2f;         /* Input borders */
-  
+
   /* Effects */
   --shadow-primary: 0 4px 6px rgba(150, 2, 187, 0.5);
   --gradient-primary: linear-gradient(135deg, #222222 0%, #2a2a2a 50%, #333333 100%);
@@ -74,6 +88,14 @@
   --active-gradient: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 50%, #a78bfa 100%);
   --active-hover: rgba(124, 58, 237, 0.2);   /* Violet-600 with opacity */
   --active-bg: rgba(124, 58, 237, 0.1);      /* Lighter violet background */
+
+  /* Dark theme agenda colors */
+  --agenda-bg: rgba(0, 0, 0, 0.2);
+  --agenda-hover: rgba(255, 255, 255, 0.05);
+  --agenda-text-inactive: #9CA3AF;
+  --agenda-text-active: #F472B6;
+  --agenda-active-bg: rgba(236, 72, 153, 0.15);
+  --agenda-backdrop: rgba(0, 0, 0, 0.5);
 }
 
 body {

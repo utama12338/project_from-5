@@ -23,6 +23,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setIsDark(initialDarkMode);
     if (initialDarkMode) {
       document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+    } else {
+      document.documentElement.classList.add('light');
+      document.documentElement.classList.remove('dark');
     }
   }, []);
 
@@ -30,7 +34,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const newMode = !isDark;
     setIsDark(newMode);
     localStorage.setItem('darkMode', String(newMode));
-    document.documentElement.classList.toggle('dark');
+    if (newMode) {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+    } else {
+      document.documentElement.classList.add('light');
+      document.documentElement.classList.remove('dark');
+    }
   };
 
   return (

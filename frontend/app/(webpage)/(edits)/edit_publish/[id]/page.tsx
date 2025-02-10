@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Share2, Save } from 'lucide-react';
+import {  AnimatePresence } from 'framer-motion';
+// import { Share2, Save } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import StyledWrapper from '../../../../components/neoninput';
@@ -11,7 +11,7 @@ import Checkbox3d from '../../../../components/checkbox3d';
 import { api } from '../../../../services/api';
 import { validateForm, ValidationErrors } from '../../../../utils/validation';
 import Swal from 'sweetalert2';
-import { colors, shadows, transitions,line } from '../../../../styles/theme';
+import { colors, shadows } from '../../../../styles/theme';
 import DeleteButton from '../../../../components/button/delete';
 import Agenda from '@/components/itemweb/edit_publish/agenda';
 import {
@@ -40,6 +40,7 @@ import {
 import {SystemData,EnvironmentInfo,ConnectionInfo,SecurityInfo}from'@/types/inputform'
 import Input from '@/components/itemweb/edit_publish/search';
 import AddNewEntriesButton from '@/components/button/addNewEntries';
+import Header from '@/components/itemweb/edit_publish/header';
 
 const defaultSystemData: SystemData = {
   id: 0,
@@ -110,11 +111,13 @@ const FormField = ({
   error?: string;
 }) => (
   <div className="mb-4">
-    <label className="block text-sm font-medium text-gray-100 mb-2">{label}</label>
+    <label className="block text-sm font-medium mb-2 dark:text-gray-100 text-gray-900">{label}</label>
     <StyledWrapper>
       <input 
         type="text"
-        className={`w-full rounded-md border-none bg-transparent text-white p-2 
+        className={`w-full rounded-md border-none p-2 
+                dark:bg-transparent dark:text-white
+                light:bg-gray-50 light:text-gray-900
                 focus:ring-2 focus:ring-ppink-500 
                 hover:border-gray-400 transition-colors
                 ${error ? 'border-red-500 ring-1 ring-red-500' : ''}`}
@@ -142,12 +145,19 @@ const FormFieldOption = ({
   onChange,
   options,
   multiple = false,
-  error
-}: FormFieldOptionProps & { error?: string }) => (
+  error,
+  required
+}: FormFieldOptionProps) => (
   <div className="mb-4">
-    <label className="block text-sm font-medium text-gray-100 mb-2">{label}</label>
+    <label className="block text-sm font-medium mb-2 dark:text-gray-100 text-gray-900">
+      {label}
+      {required && <span className="text-pink-500 ml-1">*</span>}
+    </label>
     {multiple ? (
-      <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 rounded-md bg-[rgb(32,32,31)]">
+      <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 rounded-md 
+      bg-[var(--card-background)]  /* Use CSS variable */
+      text-[var(--text-primary)]   /* Use CSS variable */
+      transition-colors duration-200">
         {options.map((option) => (
           <Checkbox3d key={option}>
             <label className="container flex items-center space-x-2">
@@ -171,7 +181,7 @@ const FormFieldOption = ({
               <svg viewBox="0 0 64 64" height="24" width="24">
                 <path d="M 0 16 V 56 A 8 8 0 0 0 8 64 H 56 A 8 8 0 0 0 64 56 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16" className="path"/>
               </svg>
-              <span className="text-sm text-gray-100 ml-2">{option}</span>
+              <span className="text-sm text-var(--text-secondary) ml-2">{option}</span>
             </label>
           </Checkbox3d>
         ))}
@@ -181,33 +191,20 @@ const FormFieldOption = ({
         options={options}
         value={value as string}
         onChange={(value) => onChange?.(value)}
-
-        // label={label} label ที่ซ้ำซ้อนออก
-        required
+        required={required}
         placeholder={`Select ${label}`}
       />
     )}
     {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
   </div>
 );
-// 
-// 
-// 
-// 
-// interface ItemType {
-//   developUnit?: string | string[];
-//   businessUnit?: string | string[];
-//   [key: string]: string | string[] | undefined;
-// }
-
-
 
 const FormContainer = ({ children }: { children: React.ReactNode }) => (
   <div style={{ 
     backgroundColor: colors.background.secondary,
     color: colors.text.primary,
     boxShadow: shadows.primary,
-    transition: transitions.default
+    // transition: transitions.default
   }} className="p-6 rounded-lg">
     {children}
   </div>
@@ -221,8 +218,8 @@ interface FilterOptions {
 }
 
 const SectionContainer = ({ title, children }: { title: string, children: React.ReactNode }) => (
-  <div className="bg-[rgb(32,32,31)] rounded-lg p-6 mb-6">
-    <h3 className="text-xl font-medium text-gray-100 mb-4 pb-3">
+  <div className="rounded-lg p-6 mb-6 bg-[var(--card-background)] transition-colors duration-200">
+    <h3 className="text-xl font-medium dark:text-gray-100 text-gray-900 mb-4 pb-3">
       {title}
     </h3>
     {children}
@@ -497,9 +494,9 @@ useEffect(() => {
 
   // เพิ่ม Component สำหรับแสดงเมื่อไม่พบข้อมูล
   const NoResultsFound = () => (
-    <div className="bg-[rgb(27,27,26)] p-8 rounded-lg text-center">
-      <div className="text-gray-400 text-xl mb-2">{ERROR_MESSAGES.noResults.title}</div>
-      <div className="text-gray-500 text-sm">
+    <div className="bg-var(--background-primary) p-8 rounded-lg text-center">
+      <div className="text-var(--text-secondary) text-xl mb-2">{ERROR_MESSAGES.noResults.title}</div>
+      <div className="text-var(--text-muted) text-sm">
         {ERROR_MESSAGES.noResults.suggestion}
       </div>
     </div>
@@ -592,7 +589,7 @@ const renderEnvironmentInfo = () => (
           placeholder="กรองตามประเภทเซิร์ฟเวอร์"
         />
       </div>
-      <div className="mt-4 text-gray-300">
+      <div className="mt-4 text-var(--text-primary)">
         <div className="flex flex-col mb-4">
           <div className="flex justify-between items-center">
             <div>พบ {filteredIndexes.length} เครื่อง จากทั้งหมด {systemData.environmentInfo.length} เครื่อง</div>
@@ -629,9 +626,9 @@ const renderEnvironmentInfo = () => (
             key={index} 
             title={`${env.serverName || 'เครื่องใหม่'} (${env.ip || 'ยังไม่ระบุ IP'})`}
           >
-            <div className="border-b border-gray-700 pb-4 mb-4">
-              
-              <div className="grid grid-cols-3 gap-4 mt-2 text-sm text-gray-300">
+              <div className="border-b border-var(--border-focused) pb-4 mb-4">              
+
+              <div className="grid grid-cols-3 gap-4 mt-2 text-sm text-var(--text-primary)">
                 <div>Environment: {env.environment}</div>
                 <div>Type: {env.serverType}</div>
                 <div>Role: {env.serverRole}</div>
@@ -639,7 +636,7 @@ const renderEnvironmentInfo = () => (
             </div>
 
             <details className="mt-4">
-              <summary className="cursor-pointer text-gray-300 hover:text-white">
+              <summary className="cursor-pointer text-var(--text-primary) hover:text-white">
                 แสดงรายละเอียดเพิ่มเติม
               </summary>
               <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -770,7 +767,7 @@ const renderEnvironmentInfo = () => (
                         // Set error if no units selected
                         setErrors(prev => ({
                           ...prev,
-                          [`productionUnit-${index}`]: 'Please select at least one Production Unit'
+                          [`productionUnit-${index}`]: 'Please select at least one Production Unit เลือกอย่างน้อย 1 หน่วยงาน'
                         }));
                       }
                     }}
@@ -809,7 +806,7 @@ const renderConnectionInfo = () => (
               title={`การเชื่อมต่อ: ${systemData.environmentInfo[originalIndex]?.serverName || 'ไม่มีชื่อ'}`}
             >
               <div className="border-b border-gray-700 pb-4 mb-4">
-                <div className="grid grid-cols-3 gap-4 mt-2 text-sm text-gray-300">
+                <div className="grid grid-cols-3 gap-4 mt-2 text-sm text-var(--text-primary)">
                   <div>AD: {conn.ad}</div>
                   <div>DNS: {conn.dns}</div>
                   <div>TPAM: {conn.tpam}</div>
@@ -817,7 +814,7 @@ const renderConnectionInfo = () => (
               </div>
 
               <details className="mt-4">
-                <summary className="cursor-pointer text-gray-300 hover:text-white">
+                <summary className="cursor-pointer text-var(--text-primary) hover:text-white">
                   แสดงรายละเอียดเพิ่มเติม
                 </summary>
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -945,7 +942,7 @@ const renderSecurityInfo = () => (
               title={`ความปลอดภัย: ${systemData.environmentInfo[originalIndex]?.serverName || 'ไม่มีชื่อ'}`}
             >
               <div className="border-b border-gray-700 pb-4 mb-4">
-                <div className="grid grid-cols-3 gap-4 mt-2 text-sm text-gray-300">
+                <div className="grid grid-cols-3 gap-4 mt-2 text-sm text-var(--text-primary)">
                   <div>URL: {security.urlWebsite}</div>
                   <div>Backup: {security.backupPolicy}</div>
                   <div>Centralize Log: {security.certificateExpireDate}</div>
@@ -953,7 +950,7 @@ const renderSecurityInfo = () => (
               </div>
 
               <details className="mt-4">
-                <summary className="cursor-pointer text-gray-300 hover:text-white">
+                <summary className="cursor-pointer text-var(--text-primary) hover:text-white">
                   แสดงรายละเอียดเพิ่มเติม
                 </summary>
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -965,7 +962,7 @@ const renderSecurityInfo = () => (
                     error={errors[`urlWebsite-${originalIndex}`]}
                   />
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-100 mb-2">
+                    <label className="block text-sm font-medium text-var(--text-primary) mb-2">
                       {SECURITY_LABELS.certificateExpireDate}
                     </label>
                     <StyledWrapper style={{ position: 'relative', zIndex: 50 }}>
@@ -1044,7 +1041,7 @@ if (error) {
       <div className="text-center p-8 rounded-lg" style={{ backgroundColor: colors.background.secondary }}>
         <div className="text-red-500 text-4xl mb-4">⚠️</div>
         <h2 className="text-2xl text-white mb-4">เกิดข้อผิดพลาด</h2>
-        <p className="text-gray-300 mb-4">{error}</p>
+        <p className="text-var(--text-primary) mb-4">{error}</p>
         <button
           onClick={() => window.location.reload()}
           className="px-6 py-2 rounded-full text-white"
@@ -1059,89 +1056,37 @@ if (error) {
 
   return (
     <div style={{ backgroundColor: colors.background.primary }} className="min-h-screen py-8">
-      <div className="container mx-auto px-4 max-w-[98%]">
-        <div className="text-center mb-12">
-          <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            style={{ 
-              color: colors.text.primary,
-              background: `linear-gradient(to right, ${colors.button.primary.background}, ${colors.button.primary.hover})`,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }} 
-            className="text-4xl font-bold tracking-tight"
-          >
-            แก้ไขระบบ
-          </motion.h1>
-          <motion.div 
-            initial={{ opacity: 0, width: 0 }}
-            animate={{ opacity: 1, width: "200px" }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="h-1 mx-auto mt-4 rounded-full"
-            style={{ background: line.line }}
-          />
-          <div className="flex justify-center mt-6 space-x-4">
-            <motion.button
-              onClick={handleShare}
-              style={{ 
-                backgroundColor: `${colors.button.primary.background}10`,
-                color: colors.button.primary.background
-              }}
-              className="inline-flex items-center px-6 py-2 rounded-full shadow-lg"
-              whileHover={{ 
-                backgroundColor: `${colors.button.primary.hover}20`,
-                scale: 1.05,
-                boxShadow: '0 0 20px rgba(236, 72, 153, 0.3)'
-              }}
-              transition={{ duration: 0.2 }}
-            >
-              <Share2 className="w-4 h-4 mr-2" />
-              แชร์
-            </motion.button>
-            <motion.button
-              onClick={handleSave}
-              style={{ backgroundColor: colors.button.primary.background }}
-              className="inline-flex items-center px-6 py-2 text-white rounded-full shadow-lg"
-              whileHover={{ 
-                backgroundColor: colors.button.primary.hover,
-                scale: 1.05,
-                boxShadow: '0 0 20px rgba(236, 72, 153, 0.5)'
-              }}
-              transition={{ duration: 0.2 }}
-            >
-              <Save className="w-4 h-4 mr-2" />
-              บันทึก
-            </motion.button>
-          </div>
-        </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Header 
+  handleShareAction={handleShare} // Updated prop name
+  handleSaveAction={handleSave}   // Updated prop name
+/>
 
-        <Agenda activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Agenda activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        <AnimatePresence>
-          {activeTab === 'system' && (
-            <FormContainer>
-              {renderSystemInfo()}
-            </FormContainer>
-          )}
-          {activeTab === 'environment' && (
-            <FormContainer>
-              {renderEnvironmentInfo()}
-            </FormContainer>
-          )}
-          {activeTab === 'connection' && (
-            <FormContainer>
-              {renderConnectionInfo()}
-            </FormContainer>
-          )}
-          {activeTab === 'security' && (
-            <FormContainer>
-              {renderSecurityInfo()}
-            </FormContainer>
-          )}
-        </AnimatePresence>
-      </div>
+      <AnimatePresence>
+        {activeTab === 'system' && (
+          <FormContainer>
+            {renderSystemInfo()}
+          </FormContainer>
+        )}
+        {activeTab === 'environment' && (
+          <FormContainer>
+            {renderEnvironmentInfo()}
+          </FormContainer>
+        )}
+        {activeTab === 'connection' && (
+          <FormContainer>
+            {renderConnectionInfo()}
+          </FormContainer>
+        )}
+        {activeTab === 'security' && (
+          <FormContainer>
+            {renderSecurityInfo()}
+          </FormContainer>
+        )}
+      </AnimatePresence>
+    </div>
     </div>
   );
 }

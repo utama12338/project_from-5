@@ -71,12 +71,12 @@ export default function SearchModal({ isOpen, onClose, onSearch, initialCriteria
               }}
               className="rounded-lg p-6 w-full max-w-2xl z-10"
             >
-              <h2 className="text-2xl font-bold mb-4 text-white">ค้นหาระบบ</h2>
+              <h2 className="text-2xl font-bold mb-4 text-var(--text-primary)">ค้นหาระบบ</h2>
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Common Search Fields */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-100 mb-2">
+                    <label className="block text-sm font-medium text-var(--text-secondary) mb-2">
                       ชื่อระบบ
                     </label>
                     <StyledWrapper>
@@ -89,7 +89,7 @@ export default function SearchModal({ isOpen, onClose, onSearch, initialCriteria
                     </StyledWrapper>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-100 mb-2">
+                    <label className="block text-sm font-medium text-var(--text-secondary) mb-2">
                       Server Name
                     </label>
                     <StyledWrapper>
@@ -105,7 +105,7 @@ export default function SearchModal({ isOpen, onClose, onSearch, initialCriteria
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-100 mb-2">
+                    <label className="block text-sm font-medium text-var(--text-secondary) mb-2">
                       Environment
                     </label>
                     <ModernDropdown
@@ -116,7 +116,7 @@ export default function SearchModal({ isOpen, onClose, onSearch, initialCriteria
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-100 mb-2">
+                    <label className="block text-sm font-medium text-var(--text-secondary) mb-2">
                       IP Address
                     </label>
                     <StyledWrapper>
@@ -131,13 +131,13 @@ export default function SearchModal({ isOpen, onClose, onSearch, initialCriteria
                 </div>
 
                 {/* Additional Search Fields */}
-                <details className="mt-4 text-gray-100">
+                <details className="mt-4 ">
                   <summary className="cursor-pointer text-pink-500 hover:text-pink-400">
                     ค้นหาขั้นสูง
                   </summary>
                   <div className="mt-4 grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-100 mb-2">
+                      <label className="block text-sm font-medium text-var(--text-secondary) mb-2">
                         ประเภทการพัฒนา
                       </label>
                       <ModernDropdown
@@ -148,7 +148,7 @@ export default function SearchModal({ isOpen, onClose, onSearch, initialCriteria
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-100 mb-2">
+                      <label className="block text-sm font-medium text-var(--text-secondary) mb-2">
                         หน่วยงาน
                       </label>
                       <StyledWrapper>
@@ -167,7 +167,7 @@ export default function SearchModal({ isOpen, onClose, onSearch, initialCriteria
                   <motion.button
                     type="button"
                     onClick={handleClear}
-                    className="px-4 py-2 rounded-md text-gray-300 hover:text-white"
+                    className="px-4 py-2 rounded-md text-var(--text-secondary) hover:text-pink-400"
                     style={{ backgroundColor: `${colors.button.secondary.background}40` }}
                     whileHover={{ 
                       backgroundColor: `${colors.button.secondary.hover}60`,
@@ -179,7 +179,7 @@ export default function SearchModal({ isOpen, onClose, onSearch, initialCriteria
                   <motion.button
                     type="button"
                     onClick={onClose}
-                    className="px-4 py-2 rounded-md text-gray-300 hover:text-white"
+                    className="px-4 py-2 rounded-md text-var(--text-secondary) hover:text-pink-400"
                     style={{ backgroundColor: `${colors.button.secondary.background}40` }}
                     whileHover={{ 
                       backgroundColor: `${colors.button.secondary.hover}60`,
@@ -190,7 +190,7 @@ export default function SearchModal({ isOpen, onClose, onSearch, initialCriteria
                   </motion.button>
                   <motion.button
                     type="submit"
-                    className="px-4 py-2 text-white rounded-md"
+                    className="px-4 py-2 text-pink rounded-md"
                     style={{ backgroundColor: colors.button.primary.background }}
                     whileHover={{ 
                       backgroundColor: colors.button.primary.hover,

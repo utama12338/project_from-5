@@ -636,7 +636,7 @@ const renderEnvironmentInfo = () => (
             </div>
 
             <details className="mt-4">
-              <summary className="cursor-pointer text-var(--text-primary) hover:text-white">
+            <summary className="cursor-pointer text-var(--text-primary) ">
                 แสดงรายละเอียดเพิ่มเติม
               </summary>
               <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -814,7 +814,7 @@ const renderConnectionInfo = () => (
               </div>
 
               <details className="mt-4">
-                <summary className="cursor-pointer text-var(--text-primary) hover:text-white">
+                <summary className="cursor-pointer text-var(--text-primary) ">
                   แสดงรายละเอียดเพิ่มเติม
                 </summary>
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -950,7 +950,7 @@ const renderSecurityInfo = () => (
               </div>
 
               <details className="mt-4">
-                <summary className="cursor-pointer text-var(--text-primary) hover:text-white">
+                <summary className="cursor-pointer text-var(--text-primary) ">
                   แสดงรายละเอียดเพิ่มเติม
                 </summary>
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -28,6 +28,16 @@
   --button-secondary: #6366f1;
   --button-secondary-hover: #818cf8;
   --button-danger: #dc2626;
+  --button-shadow: 0 4px 6px rgba(236, 72, 153, 0.5),
+  0 -4px 6px rgba(236, 72, 153, 0.5),
+  4px 0 6px rgba(236, 72, 153, 0.5),
+  -4px 0 6px rgba(236, 72, 153, 0.5);
+  --button-shadow-hover: 0 6px 8px rgba(236, 72, 153, 0.7),
+    0 -6px 8px rgba(236, 72, 153, 0.7),
+    6px 0 8px rgba(236, 72, 153, 0.7),
+    -6px 0 8px rgba(236, 72, 153, 0.7);
+
+
 
   --input-bg: #f9fafb;
   --input-border: #d1d5db;
@@ -63,9 +73,11 @@
 
   --text-primary: #ffffff;          /* Brightest - Primary text */
   --text-secondary: #e0e0e0;        /* Slightly dimmed - Secondary text */
-  --text-muted: #a0a0a0;           /* More dimmed - Tertiary text */
+  --text-muted: rgb(160, 160, 160);           /* More dimmed - Tertiary text */
   --border-primary: #333333;        /* Subtle borders */
   --border-focused: #444444;        /* Focused element borders */
+
+  
 
   /* Button colors */
   --button-primary: #2a2a2a;        /* Primary button background */
@@ -73,6 +85,16 @@
   --button-secondary: #222222;      /* Secondary button background */
   --button-secondary-hover: #222222;
   --button-danger: #3f1f1f;        /* Danger button with red tint */
+  --button-shadow: 0 4px 6px rgba(150, 2, 187, 0.5), 
+  0 -4px 6px rgba(150, 2, 187, 0.5), 
+  4px 0 6px rgba(150, 2, 187, 0.5), 
+  -4px 0 6px rgba(150, 2, 187, 0.5);
+  --button-shadow-hover:  0 6px 8px rgba(150, 2, 187, 0.7),  /* ม่วง */
+  0 -6px 8px rgba(150, 2, 187, 0.7), 
+  6px 0 8px rgba(150, 2, 187, 0.7), 
+  -6px 0 8px rgba(150, 2, 187, 0.7);
+
+
 
   /* Form elements */
   --input-bg: #1f1f1f;             /* Input background */
@@ -104,6 +126,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   /* Remove transition */
 }
+
 
 /* Remove theme transition utilities */
 .theme-transition {

@@ -36,7 +36,6 @@ const StyledWrapper = styled.div`
   .container {
     position: relative;
     --size-button: 40px;
-    color: white;
   }
 
   .input {
@@ -44,48 +43,69 @@ const StyledWrapper = styled.div`
     height: var(--size-button);
     font-size: 15px;
     border: none;
-    color: #fff;
     outline: none;
     width: var(--size-button);
     transition: all ease 0.3s;
-    background-color: rgb(20, 20, 19);
-    box-shadow: 1.5px 1.5px 3px #0e0e0e, -1.5px -1.5px 3px rgb(95 94 94 / 25%);
     border-radius: 50px;
     cursor: pointer;
+
+    /* Light theme styles */
+    .light & {
+      color: var(--text-primary);
+      background-color: var(--card-background);
+      box-shadow: var(--shadow-primary);
+      
+      &::placeholder {
+        color: var(--text-muted);
+      }
+
+      &:focus,
+      &:not(:invalid) {
+        background-color: var(--background-secondary);
+        box-shadow: 0 0 15px rgba(236, 72, 153, 0.2);
+      }
+    }
+
+    /* Dark theme styles */
+    .dark & {
+      color: var(--text-primary);
+      background-color: var(--card-background);
+      box-shadow: var(--shadow-primary);
+      
+      &::placeholder {
+        color: var(--text-muted);
+      }
+
+      &:focus,
+      &:not(:invalid) {
+        background-color: var(--background-secondary);
+        box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+      }
+    }
   }
 
   .input:focus,
   .input:not(:invalid) {
-    width: 400px;
+    width: 360px;
     cursor: text;
-    animation: rgbShadow 2s infinite linear;
   }
 
   .input:hover {
-    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+    /* Common hover effect for both themes */
     transform: translateY(-1px);
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.25);
   }
 
-  @keyframes rgbShadow {
-    0% {
-      box-shadow: -2px -2px 15px #ff0000, 2px 2px 15px #0000ff;
-    }
-    33% {
-      box-shadow: -2px -2px 15px #00ff00, 2px 2px 15px #ff0000;
-    }
-    66% {
-      box-shadow: -2px -2px 15px #0000ff, 2px 2px 15px #00ff00;
-    }
-    100% {
-      box-shadow: -2px -2px 15px #ff0000, 2px 2px 15px #0000ff;
-    }
+  /* Remove theme-specific animations and use consistent effects */
+  .input:focus {
+    box-shadow: 0 0 25px rgba(236, 72, 153, 0.35);
   }
 
   .input:focus + .icon,
   .input:not(:invalid) + .icon {
     pointer-events: all;
     cursor: pointer;
-    filter: drop-shadow(0 0 5px rgba(255, 0, 255, 0.5));
+    color: var(--button-primary);
   }
 
   .container .icon {
@@ -97,6 +117,7 @@ const StyledWrapper = styled.div`
     padding: 8px;
     pointer-events: none;
     transition: all 0.3s ease;
+    color: var(--text-muted);
   }
 
   .container .icon svg {

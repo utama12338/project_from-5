@@ -189,12 +189,24 @@ export default function CreateSystem() {
             {/* Step 1: ข้อมูลระบบพื้นฐาน */}
             {currentStep === 1 && (
               <motion.div className="space-y-4" variants={fadeInUp}>
-                <h3 className="text-lg font-medium text-gray-100">
+                <h3 className="text-lg font-medium"
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                   ข้อมูลระบบพื้นฐาน
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-100">
+                    <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                       {SYSTEM_LABELS.systemName}
                     </label>
                     <StyledWrapper>
@@ -230,7 +242,13 @@ export default function CreateSystem() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-100">
+                    <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                       {SYSTEM_LABELS.contractNo}
                     </label>
                     <StyledWrapper>
@@ -251,7 +269,13 @@ export default function CreateSystem() {
                   </div>
 
                   <div>
-                    <label className="block teBusiness Unitxt-sm font-medium text-gray-100">
+                    <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                     {SYSTEM_LABELS.vendorContactNo}
                     </label>  
                     <StyledWrapper>
@@ -272,7 +296,13 @@ export default function CreateSystem() {
                   </div>
 
                   <div>
-                    <label className="block teBusiness Unitxt-sm font-medium text-gray-100">
+                    <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                     {SYSTEM_LABELS.businessUnit}
                     </label>
                     <StyledWrapper>
@@ -331,7 +361,13 @@ export default function CreateSystem() {
             {currentStep === 2 && (
               <motion.div className="space-y-4" variants={fadeInUp}>
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-100">
+                  <h3 className="text-lg font-medium"
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                     ข้อมูลสภาพแวดล้อม - {formData.systemName || 'ไม่ระบุชื่อระบบ'}
                   </h3>
                   <AddNewEntriesButton onClick={addNewEntries} />
@@ -341,7 +377,13 @@ export default function CreateSystem() {
                   <div key={index} className="space-y-4 p-4 rounded-lg" 
                        style={{ background: colors.background.tertiary }}>
                     <div className="flex justify-between items-center">
-                      <h4 className="font-medium">ข้อมูลชุดที่ {index + 1}</h4>
+                      <h4 className="font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>ข้อมูลชุดที่ {index + 1}</h4>
                                               
                           <DeleteButton onClick={() => removeEntries(index)} />
                     </div>
@@ -366,7 +408,13 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
+                        <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                           {ENVIRONMENT_LABELS.serverName}
                         </label>
                         <StyledWrapper>
@@ -387,7 +435,13 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
+                        <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                           {ENVIRONMENT_LABELS.ip}
                         </label>
                         <StyledWrapper>
@@ -457,7 +511,13 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
+                        <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                           {ENVIRONMENT_LABELS.database}
                         </label>
                         <StyledWrapper>
@@ -479,7 +539,13 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
+                        <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                           {ENVIRONMENT_LABELS.application}
                         </label>
                         <StyledWrapper>
@@ -501,7 +567,13 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
+                        <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                           {ENVIRONMENT_LABELS.operatingSystem}
                         </label>
                         <StyledWrapper>
@@ -522,7 +594,13 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
+                        <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                           {ENVIRONMENT_LABELS.servicePack}
                         </label>
                         <StyledWrapper>
@@ -543,7 +621,13 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
+                        <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                           {ENVIRONMENT_LABELS.build}
                         </label>
                         <StyledWrapper>
@@ -564,7 +648,13 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
+                        <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                           {ENVIRONMENT_LABELS.cpu}
                         </label>
                         <StyledWrapper>
@@ -585,7 +675,13 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
+                        <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                           {ENVIRONMENT_LABELS.ram}
                         </label>
                         <StyledWrapper>
@@ -606,7 +702,13 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
+                        <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                           {ENVIRONMENT_LABELS.disk}
                         </label>
                         <StyledWrapper>
@@ -675,7 +777,13 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100 mb-2">
+                        <label className="block text-sm font-medium mb-2" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                           {ENVIRONMENT_LABELS.productionUnit}
                         </label>
                         <div className={`grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 rounded-md ${
@@ -728,7 +836,13 @@ export default function CreateSystem() {
             {currentStep === 3 && (
               <motion.div className="space-y-4" variants={fadeInUp}>
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-100">
+                  <h3 className="text-lg font-medium"
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                     ข้อมูลการเชื่อมต่อ
                   </h3>
                 </div>
@@ -737,7 +851,13 @@ export default function CreateSystem() {
                   <div key={index} className="space-y-4 p-4 rounded-lg" 
                        style={{ background: colors.background.tertiary }}>
                     <div className="flex justify-between items-center">
-                      <h4 className="font-medium text-gray-100">
+                      <h4 className="font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                         Server Name: {formData.environmentInfo[index]?.serverName || 'N/A'}
                       </h4>
                   <DeleteButton onClick={() => removeEntries(index)} />
@@ -934,7 +1054,13 @@ export default function CreateSystem() {
             {currentStep === 4 && (
               <motion.div className="space-y-4" variants={fadeInUp}>
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-100">
+                  <h3 className="text-lg font-medium"
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                     ข้อมูลความปลอดภัย
                   </h3>
                 </div>
@@ -943,14 +1069,26 @@ export default function CreateSystem() {
                   <div key={index} className="space-y-4 p-4 rounded-lg" 
                        style={{ background: colors.background.tertiary }}>
                     <div className="flex justify-between items-center">
-                      <h4 className="font-medium text-gray-100">
+                      <h4 className="font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                         Server Name: {formData.environmentInfo[index]?.serverName || 'N/A'}
                       </h4>
                      <DeleteButton onClick={() => removeEntries(index)} />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
+                        <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                           {SECURITY_LABELS.urlWebsite}
                         </label>
                         <StyledWrapper>
@@ -971,7 +1109,13 @@ export default function CreateSystem() {
                       </div>
 
                       <div   >
-                        <label className="block text-sm font-medium text-gray-100">
+                        <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                           {SECURITY_LABELS.certificateExpireDate}
                         </label>
                         <StyledWrapper  style={{ position: 'relative', zIndex: 1000 }}>
@@ -990,7 +1134,13 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
+                        <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                           {SECURITY_LABELS.backupPolicy}
                         </label>
                         <StyledWrapper>
@@ -1011,7 +1161,13 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-100">
+                        <label className="block text-sm font-medium" 
+  style={{ 
+    background: line.line,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: '600'
+  }}>
                           {SECURITY_LABELS.downtimeAllowed}
                         </label>
                         <StyledWrapper>

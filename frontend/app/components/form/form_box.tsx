@@ -2,15 +2,22 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styled from 'styled-components';
 import { colors } from '@/styles/theme';
+import Link from 'next/link';
+import EditButton from '../button/edite';
+import DetailButton from '../button/detail';
 
 interface FormBoxProps {
-  children: React.ReactNode;
+  children?: React.ReactNode; // เพิ่มเครื่องหมาย ? เพื่อทำให้เป็น optional
   header?: string;
   rightHeaderContent?: React.ReactNode;
   hasExpandableContent?: boolean;
   expandableContent?: React.ReactNode;
   initialContent?: React.ReactNode;
   totalItems?: number;
+  editLink?: string;
+  onDetailClick?: () => void;
+  isBulk?: boolean;
+  bulkCount?: number;
 }
 
 const FormBox: React.FC<FormBoxProps> = ({
@@ -21,6 +28,10 @@ const FormBox: React.FC<FormBoxProps> = ({
   expandableContent,
   initialContent,
   totalItems = 0,
+  editLink,
+  onDetailClick,
+  isBulk = false,
+  bulkCount = 0,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -62,18 +73,34 @@ const FormBox: React.FC<FormBoxProps> = ({
                   </motion.div>
                 )}
               </AnimatePresence>
-              {totalItems > 1 && (
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={toggleExpand}
-                  className="expand-button"
-                >
-                  {isExpanded ? 'แสดงน้อยลง' : `แสดงเพิ่มเติม ${totalItems - 1}`}
-                </motion.button>
-              )}
             </>
           )}
+          <div className="actions-container">
+            <div className="left-actions">
+              {editLink && (
+                <Link href={editLink}>
+                  <EditButton />
+                </Link>
+              )}
+              {onDetailClick && (
+                <DetailButton 
+                  onClick={onDetailClick}
+                  isBulk={isBulk}
+                  count={bulkCount}
+                />
+              )}
+            </div>
+            {hasExpandableContent && totalItems > 1 && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={toggleExpand}
+                className="expand-button"
+              >
+                {isExpanded ? 'แสดงน้อยลง' : `แสดงเพิ่มเติม ${totalItems - 1}`}
+              </motion.button>
+            )}
+          </div>
           {children}
         </div>
       </motion.div>
@@ -102,7 +129,8 @@ const StyledWrapper = styled.div`
   .header-text {
     font-size: 1rem;
     font-weight: 500;
-    color: ${colors.text.primary};
+    color: var(--text-primary);
+    transition: color 0.2s ease;
   }
 
   .header-right {
@@ -136,6 +164,32 @@ const StyledWrapper = styled.div`
       background: ${colors.background.hover || 'rgba(96, 165, 250, 0.15)'};
       color: ${colors.text.hover || '#93c5fd'};
     }
+  }
+
+  .actions-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+  }
+
+  .left-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  label {
+    color: var(--text-primary);
+    transition: color 0.2s ease;
+  }
+
+  .form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    display: block;
+    transition: color 0.2s ease;
   }
 `;
 

@@ -8,12 +8,11 @@ import DetailViewModal from '../components/DetailViewModal';
 import { colors, transitions } from '../styles/theme';
 import AddSystemButton from '../components/button/addsystem';
 import SearchButton from '../components/button/search';
-import EditButton from '../components/button/edite';
-import DetailButton from '../components/button/detail';
 import FormBox from '../components/form/form_box';
 import Checkbox3d from '@/components/checkbox3d';
 import Button_v2 from '@/components/button/delete._v2';
 import { SystemData } from '../types/inputform';
+import DetailButton from '../components/button/detail'; // เพิ่ม import DetailButton
 
 export default function SystemList() {
   const {
@@ -80,7 +79,7 @@ export default function SystemList() {
             <AddSystemButton />
           </Link>
           <h1 className="text-2xl font-bold" style={{ color: colors.text.primary }}>ระบบทั้งหมด</h1>
-          <div className="flex space-x-3">
+          <div className="flex space-x-3 items-center"> {/* เพิ่ม items-center */}
             {selectedItems.length === 0 ? (
               <>
                 <div onClick={() => setShowSearchModal(true)}>
@@ -104,30 +103,36 @@ export default function SystemList() {
               </>
             ) : (
               <>
+              <span>เลือก{selectedItems.length}</span>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleBulkDelete}
                   style={{
                     backgroundColor: colors.button.danger.background,
-                    transition: transitions.default
+                    transition: transitions.default,
+                    height: '45px', // กำหนดความสูงให้เท่ากับปุ่มอื่น
                   }}
-                  className="px-4 py-2 text-white rounded-lg hover:bg-opacity-80"
+                  className="px-4 text-white rounded-lg hover:bg-opacity-80 flex items-center"
                 >
-                  ลบที่เลือก ({selectedItems.length})
+                  ลบที่เลือก 
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleDownloadCSV}
-                  className="px-4 py-2 bg-green-500 text-white rounded-lg"
+                  style={{
+                    height: '45px', // กำหนดความสูงให้เท่ากับปุ่มอื่น
+                  }}
+                  className="px-4 bg-green-500 text-white rounded-lg flex items-center"
                 >
-                  ดาวน์โหลด CSV ({selectedItems.length})
+                  ดาวน์โหลด CSV 
                 </motion.button>
                 <DetailButton 
                   onClick={handleBulkViewClick} 
                   isBulk={true} 
                   count={selectedItems.length}
+                  
                 />
               </>
             )}
@@ -193,27 +198,18 @@ export default function SystemList() {
                       </svg>
                        </label>
                       </Checkbox3d>
-                     
-                        
-
-                      
-                        <Button_v2 onClick={() => handleDelete(system.id)}  />
-                       
-
-                     
+                      <Button_v2 onClick={() => handleDelete(system.id)} />
                     </div>
                   }
                   hasExpandableContent={envInfo.length > 1}
                   initialContent={initialContent}
                   expandableContent={expandableContent}
                   totalItems={envInfo.length}
+                  editLink={`/edit_publish/${system.id}`}
+                  onDetailClick={() => handleSingleSystemView(system)}
                 >
-                  <div className="space-y-2 pt-4">
-                    <Link href={`/edit_publish/${system.id}`}>
-                      <EditButton />
-                    </Link>
-                    <DetailButton onClick={() => handleSingleSystemView(system)} />
-                  </div>
+                  {/* ส่ง children เป็น empty div หรือ null ถ้าไม่มีเนื้อหา */}
+                  <div></div>
                 </FormBox>
               </motion.div>
             );

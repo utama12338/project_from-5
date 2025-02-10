@@ -7,7 +7,7 @@ interface DetailButtonProps {
   count?: number;
 }
 
-const DetailButton: React.FC<DetailButtonProps> = ({ onClick, isBulk, count }) => {
+const DetailButton: React.FC<DetailButtonProps> = ({ onClick }) => {
   return (
     <StyledWrapper className="theme-transition">
       <button className="DetailBtn" onClick={onClick}>
@@ -16,9 +16,6 @@ const DetailButton: React.FC<DetailButtonProps> = ({ onClick, isBulk, count }) =
             <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
           </svg>
         </span>
-        <p className="text">
-          {isBulk ? `ดูรายละเอียด ${count}` : 'ดูรายละเอียด'}
-        </p>
       </button>
     </StyledWrapper>
   );
@@ -26,7 +23,7 @@ const DetailButton: React.FC<DetailButtonProps> = ({ onClick, isBulk, count }) =
 
 const StyledWrapper = styled.div`
   .DetailBtn {
-    width: 100%;
+    width: 45px;
     height: 45px;
     border-radius: 12px;
     border: none;
@@ -34,23 +31,17 @@ const StyledWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    overflow: hidden;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    position: relative;
   }
 
   .IconContainer {
-    position: relative;
     width: 30px;
     height: 30px;
-    background-color: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2;
   }
 
   .detail-icon {
@@ -58,13 +49,6 @@ const StyledWrapper = styled.div`
     width: 20px;
     height: 20px;
     transition: transform 0.2s ease;
-  }
-
-  .text {
-    color: var(--text-primary);
-    font-size: 1.04em;
-    font-weight: 600;
-    z-index: 1;
   }
 
   .DetailBtn:hover {

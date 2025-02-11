@@ -9,7 +9,7 @@ import { colors, transitions } from '../styles/theme';
 import AddSystemButton from '../components/button/addsystem';
 import SearchButton from '../components/button/search';
 import FormBox from '../components/form/form_box';
-import Checkbox3d, { CheckboxItem } from '@/components/checkbox3d';
+import  { CheckboxItem } from '@/components/checkbox3d';
 import Button_v2 from '@/components/button/delete._v2';
 import { SystemData } from '../types/inputform';
 import DetailButton from '../components/button/detail'; // เพิ่ม import DetailButton
@@ -182,12 +182,12 @@ export default function SystemList() {
                   header={`${system.systemName}`}
                   rightHeaderContent={
                     <div className="flex items-center space-x-2">
-                      <Checkbox3d>
+                     
                         <CheckboxItem
                           checked={selectedItems.includes(system.id)}
                           onChangeAction={() => handleSelectItem(system.id)}
                         />
-                      </Checkbox3d>
+                     
                       <Button_v2 onClick={() => handleDelete(system.id)} />
                     </div>
                   }

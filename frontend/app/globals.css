@@ -42,8 +42,8 @@
   --input-bg: #f9fafb;
   --input-border: #d1d5db;
 
-  --shadow-primary: 0 4px 6px rgba(177, 177, 177, 0.5);
-  --gradient-primary: linear-gradient(95deg, #ec4899 0%, #f472b6 50%, #ff0090 100%);
+  --shadow-primary: 0 4px 6px rgba(254, 0, 0, 0.5);
+  --gradient-primary: linear-gradient(135deg, rgb(255, 20, 147) 0%, rgb(255, 105, 180) 50%, rgb(255, 192, 203) 100%);  /* steper */
   /* --transition-duration: 0.3s; */
 
   /* New active state variables for dark theme */
@@ -102,7 +102,9 @@
 
   /* Effects */
   --shadow-primary: 0 4px 6px rgba(150, 2, 187, 0.5);
-  --gradient-primary: linear-gradient(135deg, #222222 0%, #2a2a2a 50%, #333333 100%);
+
+  --gradient-primary: linear-gradient(135deg, #4B0082 0%, #8A2BE2 50%, #DA70D6 100%); /* steper */
+
 
   /* New active state variables for dark theme */
   --active-primary: #7c3aed;    /* Violet-600 */

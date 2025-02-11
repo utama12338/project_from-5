@@ -1,30 +1,22 @@
 "use client"
 
 import CSVPreviewModal from '../../../components/CSVPreviewModal';
-import { FiDatabase,FiArrowLeft } from 'react-icons/fi';
-import {useCSVImport} from './csv_function';
+import { FiArrowLeft } from 'react-icons/fi';
+import {useCSVImport} from '@/components/itemweb/inputform/csv_function';
 // 
 import StyledWrapper  from '../../../components/neoninput';
-import {backButtonVariants,backIconVariants,fadeInUp}from './animation'
+import {backButtonVariants,backIconVariants,fadeInUp}from '../../../components/itemweb/inputform/animation'
 import Checkbox3d from '../../../components/checkbox3d'
 // 
 import ModernDropdown from '../../../components/ModernDropdown';
 import CustomDatePicker from '../../../components/CustomDatePicker';
 
-// 
-// steper
+import {colors}from '@/styles/theme'
 
-import {iconstrper}from './iconstrper'
-import {ColorlibConnector,CustomStepLabel}from './color' 
-import {colors,line}from '@/styles/theme'
-// 
-import Stack from '@mui/material/Stack';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
 import { motion } from 'framer-motion';
 
 
-import { useFormHandlers } from './function_handle';
+import { useFormHandlers } from '../../../components/itemweb/inputform/function_handle';
 
 import Button from '../../../components/button/next';
 import DeleteButton from '../../../components/button/delete';
@@ -50,6 +42,8 @@ import {
 } from '@/constants/labels';
 
 import { useEffect, useState } from 'react';
+import Header from '../../../components/itemweb/inputform/header';
+import ProgressStepper from '../../../components/itemweb/inputform/steper';
 
 export default function CreateSystem() {
   // Add state to control client-side rendering
@@ -67,10 +61,10 @@ export default function CreateSystem() {
     handleConfirmImport, 
     handleClosePreview 
   } = useCSVImport();
-  const { 
-    steps,
-    ColorlibStepIcon
-  } = iconstrper();
+  // const { 
+  //   steps,
+  //   ColorlibStepIcon
+  // } = iconstrper();
 
 
  
@@ -107,78 +101,18 @@ export default function CreateSystem() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        {/* Header */}
-        <div className="text-center mb-12">
-          <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            style={{ 
-              color: colors.text.primary,
-              background: `linear-gradient(to right, ${colors.button.primary.background}, ${colors.button.primary.hover})`,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-            className="text-4xl font-bold tracking-tight mb-4"
-          >
-            เพิ่มข้อมูลระบบ
-          </motion.h1>
-          <motion.div 
-            initial={{ opacity: 0, width: 0 }}
-            animate={{ opacity: 1, width: "200px" }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            style={{
-              height: "2px",
-              background: line.line,
-              margin: "0 auto",
-              borderRadius: "4px"
-              
-            }}
-          />  
-          <div className="flex justify-center mt-6 space-x-4"
-          
-          >
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleImportCSV}
-              accept=".csv"
-              className="hidden"
-            />
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="px-6 py-3 bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white rounded-lg shadow-lg
-              hover:from-green-500 hover:via-green-600 hover:to-green-700 transform transition-all duration-200
-              hover:shadow-xl active:scale-95 flex items-center space-x-2"
-            >
-              <FiDatabase className="w-5 h-5" />
-              <span>Import CSV</span>
-            </button>
-          </div>
-        </div>
+        <Header 
+          fileInputRef={fileInputRef}
+          handleImportCSV={handleImportCSV}
+        />
 
-        {/* Replace existing progress steps with MUI Stepper */}
-        <motion.div 
-          className="mb-12"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          <Stack spacing={4}>
-            <Stepper alternativeLabel activeStep={currentStep - 1} connector={<ColorlibConnector />}>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <CustomStepLabel StepIconComponent={ColorlibStepIcon}>{label}</CustomStepLabel>
-                </Step>
-              ))}
-            </Stepper>
-          </Stack>
-        </motion.div>
+        {/* Replace existing stepper with new component */}
+        <ProgressStepper currentStep={currentStep} />
 
         {/* Form Content */}
         <motion.div 
           // แก้ไขจาก bg-[rgb(27,27,26)] เป็นการใช้ style จาก theme
-          className="shadow-2xl rounded-2xl p-8 text-white"
+          className="shadow-2xl rounded-2xl p-8 "
           style={{ background: colors.background.secondary }}
           variants={fadeInUp}
           initial="initial"
@@ -189,24 +123,12 @@ export default function CreateSystem() {
             {/* Step 1: ข้อมูลระบบพื้นฐาน */}
             {currentStep === 1 && (
               <motion.div className="space-y-4" variants={fadeInUp}>
-                <h3 className="text-lg font-medium"
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                <h3 className="text-lg font-medium text-var(--text-secondary)">
                   ข้อมูลระบบพื้นฐาน
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                    <label className="block text-sm font-medium text-var(--text-secondary)">
                       {SYSTEM_LABELS.systemName}
                     </label>
                     <StyledWrapper>
@@ -216,7 +138,7 @@ export default function CreateSystem() {
                       value={formData.systemName}
                       onChange={handleChange}
                       className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                        ${errors.systemName ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                        ${errors.systemName ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-var(--text-secondary)'}`}
                       required  
                       autoComplete="off"
                     /> </StyledWrapper>
@@ -242,13 +164,7 @@ export default function CreateSystem() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                    <label className="block text-sm font-medium text-var(--text-secondary)">
                       {SYSTEM_LABELS.contractNo}
                     </label>
                     <StyledWrapper>
@@ -258,7 +174,7 @@ export default function CreateSystem() {
                       value={formData.contractNo}
                       onChange={handleChange}
                       className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                        ${errors.contractNo ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                        ${errors.contractNo ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-var(--text-secondary)'}`}
                       required
                       autoComplete="off"
                     />
@@ -269,13 +185,7 @@ export default function CreateSystem() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                    <label className="block teBusiness Unitxt-sm font-medium text-var(--text-secondary)">
                     {SYSTEM_LABELS.vendorContactNo}
                     </label>  
                     <StyledWrapper>
@@ -285,7 +195,7 @@ export default function CreateSystem() {
                       value={formData.vendorContactNo}
                       onChange={handleChange}
                       className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                        ${errors.vendorContactNo ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                        ${errors.vendorContactNo ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-var(--text-secondary)'}`}
                       required
                       autoComplete="off"
                     />
@@ -296,13 +206,7 @@ export default function CreateSystem() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                    <label className="block teBusiness Unitxt-sm font-medium text-var(--text-secondary)">
                     {SYSTEM_LABELS.businessUnit}
                     </label>
                     <StyledWrapper>
@@ -312,7 +216,7 @@ export default function CreateSystem() {
                       value={formData.businessUnit}
                       onChange={handleChange}
                       className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                        ${errors.businessUnit ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                        ${errors.businessUnit ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-var(--text-secondary)'}`}
                       required
                       autoComplete="off"
                     />
@@ -361,13 +265,7 @@ export default function CreateSystem() {
             {currentStep === 2 && (
               <motion.div className="space-y-4" variants={fadeInUp}>
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium"
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                  <h3 className="text-lg font-medium text-var(--text-secondary)">
                     ข้อมูลสภาพแวดล้อม - {formData.systemName || 'ไม่ระบุชื่อระบบ'}
                   </h3>
                   <AddNewEntriesButton onClick={addNewEntries} />
@@ -377,13 +275,7 @@ export default function CreateSystem() {
                   <div key={index} className="space-y-4 p-4 rounded-lg" 
                        style={{ background: colors.background.tertiary }}>
                     <div className="flex justify-between items-center">
-                      <h4 className="font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>ข้อมูลชุดที่ {index + 1}</h4>
+                      <h4 className="font-medium">ข้อมูลชุดที่ {index + 1}</h4>
                                               
                           <DeleteButton onClick={() => removeEntries(index)} />
                     </div>
@@ -408,13 +300,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                        <label className="block text-sm font-medium text-var(--text-secondary)">
                           {ENVIRONMENT_LABELS.serverName}
                         </label>
                         <StyledWrapper>
@@ -424,7 +310,7 @@ export default function CreateSystem() {
                           value={env.serverName}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`serverName-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                            ${errors[`serverName-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-var(--text-secondary)'}`}
                           required
                           autoComplete="off"
                         />
@@ -435,13 +321,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                        <label className="block text-sm font-medium text-var(--text-secondary)">
                           {ENVIRONMENT_LABELS.ip}
                         </label>
                         <StyledWrapper>
@@ -451,7 +331,7 @@ export default function CreateSystem() {
                           value={env.ip}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`ip-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                            ${errors[`ip-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-var(--text-secondary)'}`}
                           required
                           autoComplete="off"
                         />
@@ -511,13 +391,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                        <label className="block text-sm font-medium text-var(--text-secondary)">
                           {ENVIRONMENT_LABELS.database}
                         </label>
                         <StyledWrapper>
@@ -527,7 +401,7 @@ export default function CreateSystem() {
                           value={env.database}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`database-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                            ${errors[`database-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-var(--text-secondary)'}`}
                           placeholder="Database management"
                           required
                           autoComplete="off"
@@ -539,13 +413,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                        <label className="block text-sm font-medium text-var(--text-secondary)">
                           {ENVIRONMENT_LABELS.application}
                         </label>
                         <StyledWrapper>
@@ -555,7 +423,7 @@ export default function CreateSystem() {
                           value={env.application}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`application-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                            ${errors[`application-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-var(--text-secondary)'}`}
                           placeholder="Supporting software IIS .net framework"
                           required
                           autoComplete="off"
@@ -567,13 +435,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                        <label className="block text-sm font-medium text-var(--text-secondary)">
                           {ENVIRONMENT_LABELS.operatingSystem}
                         </label>
                         <StyledWrapper>
@@ -583,7 +445,7 @@ export default function CreateSystem() {
                           value={env.operatingSystem}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`operatingSystem-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                            ${errors[`operatingSystem-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-var(--text-secondary)'}`}
                           required
                           autoComplete="off"
                         />
@@ -594,13 +456,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                        <label className="block text-sm font-medium text-var(--text-secondary)">
                           {ENVIRONMENT_LABELS.servicePack}
                         </label>
                         <StyledWrapper>
@@ -610,7 +466,7 @@ export default function CreateSystem() {
                           value={env.servicePack}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`servicePack-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                            ${errors[`servicePack-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-var(--text-secondary)'}`}
                           required
                           autoComplete="off"
                         />
@@ -621,13 +477,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                        <label className="block text-sm font-medium text-var(--text-secondary)">
                           {ENVIRONMENT_LABELS.build}
                         </label>
                         <StyledWrapper>
@@ -637,7 +487,7 @@ export default function CreateSystem() {
                           value={env.build}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`build-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                            ${errors[`build-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-var(--text-secondary)'}`}
                           required
                           autoComplete="off"
                         />
@@ -648,13 +498,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                        <label className="block text-sm font-medium text-var(--text-secondary)">
                           {ENVIRONMENT_LABELS.cpu}
                         </label>
                         <StyledWrapper>
@@ -664,7 +508,7 @@ export default function CreateSystem() {
                           value={env.cpu}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`cpu-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                            ${errors[`cpu-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-var(--text-secondary)'}`}
                           required
                           autoComplete="off"
                         />
@@ -675,13 +519,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                        <label className="block text-sm font-medium text-var(--text-secondary)">
                           {ENVIRONMENT_LABELS.ram}
                         </label>
                         <StyledWrapper>
@@ -691,7 +529,7 @@ export default function CreateSystem() {
                           value={env.ram}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`ram-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                            ${errors[`ram-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-var(--text-secondary)'}`}
                           required
                           autoComplete="off"
                         />
@@ -702,13 +540,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                        <label className="block text-sm font-medium text-var(--text-secondary)">
                           {ENVIRONMENT_LABELS.disk}
                         </label>
                         <StyledWrapper>
@@ -718,7 +550,7 @@ export default function CreateSystem() {
                           value={env.disk}
                           onChange={(e) => handleEnvironmentChange(e, index)}
                           className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`disk-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                            ${errors[`disk-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-var(--text-secondary)'}`}
                           required
                           autoComplete="off"
                         />
@@ -776,18 +608,12 @@ export default function CreateSystem() {
                         )}
                       </div>
 
-                      <div>
-                        <label className="block text-sm font-medium mb-2" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                      <div >
+                        <label className="block text-sm font-medium text-var(--text-secondary) mb-2 ">
                           {ENVIRONMENT_LABELS.productionUnit}
                         </label>
-                        <div className={`grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 rounded-md ${
-                          errors[`productionUnit-${index}`] ? 'border-red-500' : 'bg-[rgb(32,32,31)] text-gray-100'
+                        <div className={`grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2  rounded-md ${
+                          errors[`productionUnit-${index}`] ? 'border-red-500' : ' text-var(--text-secondary)'
                         }`}>
                           {PRODUCTION_UNIT_OPTIONS.map((option) => (
                             <Checkbox3d key={option}>
@@ -815,7 +641,7 @@ export default function CreateSystem() {
                                     className="path"
                                   />
                                 </svg>
-                                <span className="text-sm text-gray-100 ml-2">{option}</span>
+                                <span className="text-sm text-var(--text-secondary) ml-2">{option}</span>
                               </label>
                             </Checkbox3d>
                           ))}
@@ -836,13 +662,7 @@ export default function CreateSystem() {
             {currentStep === 3 && (
               <motion.div className="space-y-4" variants={fadeInUp}>
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium"
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                  <h3 className="text-lg font-medium text-var(--text-secondary)">
                     ข้อมูลการเชื่อมต่อ
                   </h3>
                 </div>
@@ -851,13 +671,7 @@ export default function CreateSystem() {
                   <div key={index} className="space-y-4 p-4 rounded-lg" 
                        style={{ background: colors.background.tertiary }}>
                     <div className="flex justify-between items-center">
-                      <h4 className="font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                      <h4 className="font-medium text-var(--text-secondary)">
                         Server Name: {formData.environmentInfo[index]?.serverName || 'N/A'}
                       </h4>
                   <DeleteButton onClick={() => removeEntries(index)} />
@@ -1054,13 +868,7 @@ export default function CreateSystem() {
             {currentStep === 4 && (
               <motion.div className="space-y-4" variants={fadeInUp}>
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium"
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                  <h3 className="text-lg font-medium text-var(--text-secondary)">
                     ข้อมูลความปลอดภัย
                   </h3>
                 </div>
@@ -1069,26 +877,14 @@ export default function CreateSystem() {
                   <div key={index} className="space-y-4 p-4 rounded-lg" 
                        style={{ background: colors.background.tertiary }}>
                     <div className="flex justify-between items-center">
-                      <h4 className="font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                      <h4 className="font-medium text-var(--text-secondary)">
                         Server Name: {formData.environmentInfo[index]?.serverName || 'N/A'}
                       </h4>
                      <DeleteButton onClick={() => removeEntries(index)} />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                        <label className="block text-sm font-medium text-var(--text-secondary)">
                           {SECURITY_LABELS.urlWebsite}
                         </label>
                         <StyledWrapper>
@@ -1098,7 +894,7 @@ export default function CreateSystem() {
                           value={security.urlWebsite}
                           onChange={(e) => handleSecurityChange(e, index)}
                           className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`urlWebsite-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                            ${errors[`urlWebsite-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-var(--text-secondary)'}`}
                           required
                           autoComplete="off"
                         />
@@ -1109,13 +905,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div   >
-                        <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                        <label className="block text-sm font-medium text-var(--text-secondary)">
                           {SECURITY_LABELS.certificateExpireDate}
                         </label>
                         <StyledWrapper  style={{ position: 'relative', zIndex: 1000 }}>
@@ -1134,13 +924,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                        <label className="block text-sm font-medium text-var(--text-secondary)">
                           {SECURITY_LABELS.backupPolicy}
                         </label>
                         <StyledWrapper>
@@ -1150,7 +934,7 @@ export default function CreateSystem() {
                           value={security.backupPolicy}
                           onChange={(e) => handleSecurityChange(e, index)}
                           className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`backupPolicy-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                            ${errors[`backupPolicy-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-var(--text-secondary)'}`}
                           required
                           autoComplete="off"
                         />
@@ -1161,13 +945,7 @@ export default function CreateSystem() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium" 
-  style={{ 
-    background: line.line,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: '600'
-  }}>
+                        <label className="block text-sm font-medium text-var(--text-secondary)">
                           {SECURITY_LABELS.downtimeAllowed}
                         </label>
                         <StyledWrapper>
@@ -1177,7 +955,7 @@ export default function CreateSystem() {
                           value={security.downtimeAllowed}
                           onChange={(e) => handleSecurityChange(e, index)}
                           className={`input mt-1 block w-full rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 
-                            ${errors[`downtimeAllowed-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-gray-100'}`}
+                            ${errors[`downtimeAllowed-${index}`] ? 'border-red-500' : 'border-gray-600 bg-gray-700 text-var(--text-secondary)'}`}
                           required
                           autoComplete="off"
                         />

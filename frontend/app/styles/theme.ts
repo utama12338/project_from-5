@@ -43,6 +43,7 @@ export interface ThemeColors {
   };
   shadows: {
     primary: string;
+    iconsteper: string;
   };
   themes: {
     light: {
@@ -102,7 +103,8 @@ export const colors: ThemeColors = {
     completed: 'var(--gradient-primary)'
   },
   shadows: {
-    primary: 'var(--shadow-primary)'
+    primary: 'var(--shadow-primary)',
+    iconsteper: 'var(--shadow-iconsteper)'
   },
   themes: {
     light: {

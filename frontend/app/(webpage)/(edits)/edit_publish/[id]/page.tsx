@@ -7,7 +7,7 @@ import axios from 'axios';
 import StyledWrapper from '../../../../components/neoninput';
 import ModernDropdown from '../../../../components/ModernDropdown';
 import CustomDatePicker from '../../../../components/CustomDatePicker';
-import Checkbox3d, { CheckboxItem } from '@/components/checkbox3d';
+import { CheckboxItem } from '@/components/checkbox3d';
 import { api } from '../../../../services/api';
 import { validateForm, ValidationErrors } from '../../../../utils/validation';
 import Swal from 'sweetalert2';
@@ -162,7 +162,7 @@ const FormFieldOption = ({
       <CheckboxItem
         key={option}
         checked={Array.isArray(value) ? value.includes(option) : value.split(',').includes(option)}
-        onChange={(e) => {
+        onChangeAction={(e) => {
           if (onChange) {
             const currentValues = Array.isArray(value) 
               ? value 

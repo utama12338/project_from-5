@@ -34,17 +34,17 @@ const Checkbox3d = styled.div`
 
 interface CheckboxItemProps {
   checked: boolean;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeAction: (e: React.ChangeEvent<HTMLInputElement>) => void;
   children?: ReactNode;
 }
 
-export const CheckboxItem = ({ checked, onChange, children }: CheckboxItemProps) => (
+export const CheckboxItem = ({ checked, onChangeAction, children }: CheckboxItemProps) => (
   <Checkbox3d>
     <label className="container flex items-center space-x-2">
       <input
         type="checkbox"
         checked={checked}
-        onChange={onChange}
+        onChange={onChangeAction}
       />
       <svg viewBox="0 0 64 64" height="24" width="24">
         <path

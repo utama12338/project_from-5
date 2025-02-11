@@ -619,7 +619,7 @@ export default function CreateSystem() {
                             <CheckboxItem
                               key={`productionUnit-${index}-${option}`}
                               checked={Array.isArray(env.productionUnit) && env.productionUnit.includes(option)}
-                              onChange={(e) => {
+                              onChangeAction={(e) => {
                                 const updatedUnits = e.target.checked
                                   ? [...(Array.isArray(env.productionUnit) ? env.productionUnit : []), option]
                                   : (Array.isArray(env.productionUnit) ? env.productionUnit : []).filter((unit: string) => unit !== option);

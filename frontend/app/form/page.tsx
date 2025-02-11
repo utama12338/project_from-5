@@ -185,7 +185,7 @@ export default function SystemList() {
                       <Checkbox3d>
                         <CheckboxItem
                           checked={selectedItems.includes(system.id)}
-                          onChange={() => handleSelectItem(system.id)}
+                          onChangeAction={() => handleSelectItem(system.id)}
                         />
                       </Checkbox3d>
                       <Button_v2 onClick={() => handleDelete(system.id)} />

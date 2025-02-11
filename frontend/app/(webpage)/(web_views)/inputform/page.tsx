@@ -6,7 +6,7 @@ import {useCSVImport} from '@/components/itemweb/inputform/csv_function';
 // 
 import StyledWrapper  from '../../../components/neoninput';
 import {backButtonVariants,backIconVariants,fadeInUp}from '../../../components/itemweb/inputform/animation'
-import Checkbox3d from '../../../components/checkbox3d'
+import  { CheckboxItem } from '../../../components/checkbox3d'
 // 
 import ModernDropdown from '../../../components/ModernDropdown';
 import CustomDatePicker from '../../../components/CustomDatePicker';
@@ -616,34 +616,24 @@ export default function CreateSystem() {
                           errors[`productionUnit-${index}`] ? 'border-red-500' : ' text-var(--text-secondary)'
                         }`}>
                           {PRODUCTION_UNIT_OPTIONS.map((option) => (
-                            <Checkbox3d key={option}>
-                              <label className="container flex items-center space-x-2">
-                                <input
-                                    type="checkbox"
-                                    id={`productionUnit-${index}-${option}`}
-                                    checked={Array.isArray(env.productionUnit) && env.productionUnit.includes(option)}
-                                    onChange={(e) => {
-                                      const updatedUnits = e.target.checked
-                                        ? [...(Array.isArray(env.productionUnit) ? env.productionUnit : []), option]
-                                        : (Array.isArray(env.productionUnit) ? env.productionUnit : []).filter((unit: string) => unit !== option);
-                                      
-                                      handleEnvironmentChange({
-                                        target: {
-                                          name: 'productionUnit',
-                                          value: updatedUnits
-                                        }
-                                      }, index);
-                                    }}
-                                  />
-                                <svg viewBox="0 0 64 64" height="24" width="24">
-                                  <path
-                                    d="M 0 16 V 56 A 8 8 0 0 0 8 64 H 56 A 8 8 0 0 0 64 56 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16"
-                                    className="path"
-                                  />
-                                </svg>
-                                <span className="text-sm text-var(--text-secondary) ml-2">{option}</span>
-                              </label>
-                            </Checkbox3d>
+                            <CheckboxItem
+                              key={`productionUnit-${index}-${option}`}
+                              checked={Array.isArray(env.productionUnit) && env.productionUnit.includes(option)}
+                              onChange={(e) => {
+                                const updatedUnits = e.target.checked
+                                  ? [...(Array.isArray(env.productionUnit) ? env.productionUnit : []), option]
+                                  : (Array.isArray(env.productionUnit) ? env.productionUnit : []).filter((unit: string) => unit !== option);
+                                
+                                handleEnvironmentChange({
+                                  target: {
+                                    name: 'productionUnit',
+                                    value: updatedUnits
+                                  }
+                                }, index);
+                              }}
+                            >
+                              <span className="text-sm text-var(--text-secondary) ml-2">{option}</span>
+                            </CheckboxItem>
                           ))}
                         </div>
                         {errors[`productionUnit-${index}`] && (

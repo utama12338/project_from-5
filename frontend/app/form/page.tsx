@@ -9,7 +9,7 @@ import { colors, transitions } from '../styles/theme';
 import AddSystemButton from '../components/button/addsystem';
 import SearchButton from '../components/button/search';
 import FormBox from '../components/form/form_box';
-import Checkbox3d from '@/components/checkbox3d';
+import Checkbox3d, { CheckboxItem } from '@/components/checkbox3d';
 import Button_v2 from '@/components/button/delete._v2';
 import { SystemData } from '../types/inputform';
 import DetailButton from '../components/button/detail'; // เพิ่ม import DetailButton
@@ -183,20 +183,10 @@ export default function SystemList() {
                   rightHeaderContent={
                     <div className="flex items-center space-x-2">
                       <Checkbox3d>
-                      <label className="container flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        checked={selectedItems.includes(system.id)}
-                        onChange={() => handleSelectItem(system.id)}
-                        className="rounded"
-                      />
-                      <svg viewBox="0 0 64 64" height="24" width="24">
-                      <path
-                         d="M 0 16 V 56 A 8 8 0 0 0 8 64 H 56 A 8 8 0 0 0 64 56 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16"
-                        className="path"
-                      />
-                      </svg>
-                       </label>
+                        <CheckboxItem
+                          checked={selectedItems.includes(system.id)}
+                          onChange={() => handleSelectItem(system.id)}
+                        />
                       </Checkbox3d>
                       <Button_v2 onClick={() => handleDelete(system.id)} />
                     </div>

@@ -7,7 +7,7 @@ import axios from 'axios';
 import StyledWrapper from '../../../../components/neoninput';
 import ModernDropdown from '../../../../components/ModernDropdown';
 import CustomDatePicker from '../../../../components/CustomDatePicker';
-import Checkbox3d from '../../../../components/checkbox3d';
+import Checkbox3d, { CheckboxItem } from '@/components/checkbox3d';
 import { api } from '../../../../services/api';
 import { validateForm, ValidationErrors } from '../../../../utils/validation';
 import Swal from 'sweetalert2';
@@ -154,47 +154,41 @@ const FormFieldOption = ({
       {required && <span className="text-pink-500 ml-1">*</span>}
     </label>
     {multiple ? (
-      <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 rounded-md 
-      bg-[var(--card-background)]  /* Use CSS variable */
-      text-[var(--text-primary)]   /* Use CSS variable */
-      transition-colors duration-200">
-        {options.map((option) => (
-          <Checkbox3d key={option}>
-            <label className="container flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={Array.isArray(value) ? value.includes(option) : value.split(',').includes(option)}
-                onChange={(e) => {
-                  if (onChange) {
-                    const currentValues = Array.isArray(value) 
-                      ? value 
-                      : value.split(',').filter(Boolean);
-                    
-                    const newValues = e.target.checked
-                      ? [...currentValues, option]
-                      : currentValues.filter(v => v !== option);
-                    
-                    onChange(newValues);
-                  }
-                }}
-              />
-              <svg viewBox="0 0 64 64" height="24" width="24">
-                <path d="M 0 16 V 56 A 8 8 0 0 0 8 64 H 56 A 8 8 0 0 0 64 56 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 0 0 0 56 0 H 8 A 8 8 0 0 0 0 8 V 16" className="path"/>
-              </svg>
-              <span className="text-sm text-var(--text-secondary) ml-2">{option}</span>
-            </label>
-          </Checkbox3d>
-        ))}
-      </div>
-    ) : (
-      <ModernDropdown
-        options={options}
-        value={value as string}
-        onChange={(value) => onChange?.(value)}
-        required={required}
-        placeholder={`Select ${label}`}
-      />
-    )}
+  <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 rounded-md 
+  bg-[var(--card-background)]  /* Use CSS variable */
+  text-[var(--text-primary)]   /* Use CSS variable */
+  transition-colors duration-200">
+    {options.map((option) => (
+      <CheckboxItem
+        key={option}
+        checked={Array.isArray(value) ? value.includes(option) : value.split(',').includes(option)}
+        onChange={(e) => {
+          if (onChange) {
+            const currentValues = Array.isArray(value) 
+              ? value 
+              : value.split(',').filter(Boolean);
+            
+            const newValues = e.target.checked
+              ? [...currentValues, option]
+              : currentValues.filter(v => v !== option);
+            
+            onChange(newValues);
+          }
+        }}
+      >
+        <span className="text-sm text-var(--text-secondary) ml-2">{option}</span>
+      </CheckboxItem>
+    ))}
+  </div>
+) : (
+  <ModernDropdown
+    options={options}
+    value={value as string}
+    onChange={(value) => onChange?.(value)}
+    required={required}
+    placeholder={`Select ${label}`}
+  />
+)}
     {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
   </div>
 );
@@ -749,7 +743,7 @@ const renderEnvironmentInfo = () => (
                   options={YES_NO}
                   error={errors[`windowsCluster-${index}`]}
                 />
-                  <FormFieldOption
+                <FormFieldOption
                     label={ENVIRONMENT_LABELS.productionUnit}
                     value={Array.isArray(env.productionUnit) 
                       ? env.productionUnit 

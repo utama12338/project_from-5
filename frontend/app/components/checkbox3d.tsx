@@ -38,6 +38,7 @@ const Checkbox3d = styled.div<StyledWrapperProps>`
       align-items: center;
       justify-content: flex-start;
       color: white;
+      gap: 0.5rem;  /* Add gap to match light theme spacing */
     }
 
     .checkbox-wrapper-33 .checkbox + .checkbox {
@@ -45,14 +46,15 @@ const Checkbox3d = styled.div<StyledWrapperProps>`
     }
 
     .checkbox-wrapper-33 .checkbox__symbol {
-      display: inline-block;
       display: flex;
-      margin-right: calc(var(--s-small) * 0.7);
+      align-items: center;
+      justify-content: center;
+      width: 24px;     /* Match light theme size */
+      height: 24px;    /* Match light theme size */
+      margin-right: 0; /* Remove margin since we're using gap */
       border: var(--border-width) solid var(--c-primary);
       position: relative;
       border-radius: 0.1em;
-      width: 1.5em;
-      height: 1.5em;
       transition: box-shadow var(--t-base) var(--e-out),
         background-color var(--t-base);
       box-shadow: 0 0 0 0 var(--c-primary-10-percent-opacity);
@@ -73,8 +75,8 @@ const Checkbox3d = styled.div<StyledWrapperProps>`
     }
 
     .checkbox-wrapper-33 .checkbox .icon-checkbox {
-      width: 1em;
-      height: 1em;
+      width: 16px;     /* Adjust icon size */
+      height: 16px;    /* Adjust icon size */
       margin: auto;
       fill: none;
       stroke-width: 3;
@@ -94,6 +96,8 @@ const Checkbox3d = styled.div<StyledWrapperProps>`
 
     .checkbox-wrapper-33 .checkbox__textwrapper {
       margin: 0;
+      display: flex;
+      align-items: center;
     }
 
     .checkbox-wrapper-33 .checkbox__trigger:checked + .checkbox__symbol:after {

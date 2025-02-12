@@ -49,7 +49,7 @@ const Checkbox3d = styled.div<StyledWrapperProps>`
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 24px;     /* Match light theme size */
+      width: 24px;     /* Match light themxe size */
       height: 24px;    /* Match light theme size */
       margin-right: 0; /* Remove margin since we're using gap */
       border: var(--border-width) solid var(--c-primary);

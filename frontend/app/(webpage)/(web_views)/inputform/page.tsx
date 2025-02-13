@@ -45,6 +45,8 @@ import { useEffect, useState } from 'react';
 import Header from '../../../components/itemweb/inputform/header';
 import ProgressStepper from '../../../components/itemweb/inputform/steper';
 
+export const dynamicParams = true;
+
 export default function CreateSystem() {
   // Add state to control client-side rendering
   const [isClient, setIsClient] = useState(false);
@@ -94,7 +96,7 @@ export default function CreateSystem() {
 
   return (
     // แก้ไขจาก bg-[rgb(17,17,16)] เป็นการใช้ style จาก theme
-    <div className="min-h-screen py-8" style={{ background: colors.background.primary }}>
+    <div className="min-h-screen py-8" >
       <motion.div 
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
         initial={{ opacity: 0 }}

@@ -91,7 +91,7 @@ export default function CreateSystem() {
 
   // Return null or loading state while client-side rendering is not ready
   if (!isClient) {
-    return <div className="min-h-screen py-8" style={{ background: colors.background.primary }} />;
+    return <div className="min-h-screen py-8"  />;
   }
 
   return (

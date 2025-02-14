@@ -1,73 +1,82 @@
 import { Request, Response } from 'express'
 import { PrismaClient, SystemInfo, EnvironmentInfo, ConnectionInfo, SecurityInfo } from '@prisma/client'
-import * as Joi from 'joi'
 
+import * as z from 'zod'
 const prisma = new PrismaClient()
 
-const systemSchema = Joi.object({
-  // userId: Joi.number().optional(),
-  id: Joi.number().optional(),
-  systemName: Joi.string().required(),
-  developType: Joi.string().valid('OUTSOURCE', 'IN HOUSE').required(),
-  contractNo: Joi.string().required(),
-  vendorContactNo: Joi.string().required(),
-  businessUnit: Joi.string().required(),
-  developUnit: Joi.string().required(),
-  computerbackup: Joi.string().required(),
-  environmentInfo: Joi.array().items(Joi.object({
-    environment: Joi.string().optional(),
-    serverName: Joi.string().optional(),
-    ip: Joi.string().optional(),
-    serverType: Joi.string().optional(),
-    serverRole: Joi.string().optional(),
-    serverDuty: Joi.string().optional(),
-    database: Joi.string().optional(),
-    application: Joi.string().optional(),
-    operatingSystem: Joi.string().optional(),
-    servicePack: Joi.string().optional(),
-    build: Joi.string().optional(),
-    cpu: Joi.string().optional(),
-    ram: Joi.string().optional(),
-    disk: Joi.string().optional(),
-    dr: Joi.string().optional(),
-    joinDomain: Joi.string().optional(),
-    windowsCluster: Joi.string().optional(),
-    productionUnit: Joi.array().items(Joi.string()).optional(),
-  })).optional(),
-  connectionInfo: Joi.array().items(Joi.object({
-    ad: Joi.string().optional(),
-    adfs: Joi.string().optional(),
-    dns: Joi.string().optional(),
-    ntp: Joi.string().optional(),
-    tpam: Joi.string().optional(),
-    netka: Joi.string().optional(),
-    fim: Joi.string().optional(),
-    ftpServer: Joi.string().optional(),
-    ftpGoAnywhereMFTServer: Joi.string().optional(),
-    emailSmtp: Joi.string().optional(),
-    sms: Joi.string().optional(),
-    apiManagement: Joi.string().optional(),
-    dv: Joi.string().optional(),
-    snmp: Joi.string().optional(),
-  })).optional(),
-  securityInfo: Joi.array().items(Joi.object({
-    urlWebsite: Joi.string().optional(),
-    certificateExpireDate: Joi.string().optional(),
-    backupPolicy: Joi.string().optional(),
-    downtimeAllowed: Joi.string().optional(),
-    centralizeLog: Joi.string().optional(),
-    setupAgentPatch: Joi.string().optional(),
-    internetFacing: Joi.string().optional(),
-  })).optional(),
+const systemSchema = z.object({
+  //  userId: z.number(),
+  id: z.number(),
+  systemName: z.string(),
+  developType: z.enum(['OUTSOURCE', 'IN HOUSE']),
+  contractNo: z.string(),
+  vendorContactNo: z.string(),
+  businessUnit: z.string(),
+
+
+  
+  developUnit: z.string(),
+  computerbackup: z.string(),
+  environmentInfo: z.array(z.object({
+    environment: z.string(),
+    serverName: z.string(),
+    ip: z.string(),
+    serverType: z.string(),
+    serverRole: z.string(),
+    serverDuty: z.string(),
+    database: z.string(),
+    application: z.string(),
+    operatingSystem: z.string(),
+    servicePack: z.string(),
+    build: z.string(),
+    cpu: z.string(),
+    ram: z.string(),
+    disk: z.string(),
+    dr: z.string(),
+    znDomain: z.string(),
+    windowsCluster: z.string(),
+    productionUnit: z.array(z.string()),
+  })),
+  connectionInfo: z.array(z.object({
+    ad: z.string(),
+    adfs: z.string(),
+    dns: z.string(),
+    ntp: z.string(),
+    tpam: z.string(),
+    netka: z.string(),
+    fim: z.string(),
+    ftpServer: z.string(),
+    ftpGoAnywhereMFTServer: z.string(),
+    emailSmtp: z.string(),
+    sms: z.string(),
+    apiManagement: z.string(),
+    dv: z.string(),
+    snmp: z.string(),
+  })),
+  securityInfo: z.array(z.object({
+    urlWebsite: z.string().url(),
+    certificateExpireDate: z.string().datetime(),
+    backupPolicy: z.string(),
+    downtimeAllowed: z.string(),
+    centralizeLog: z.string(),
+    setupAgentPatch: z.string(),
+    internetFacing: z.string(),
+  })),
 });
 
 // Create system (เดิมคือ createforme)
-const createfrome = async (req: Request, res: Response) => {
+const createfrome = async (req: Request, res: Response)  => {
   const systemInput = req.body;
   
-  const { error } = systemSchema.validate(systemInput);
-  if (error) {
-    return res.status(400).json({ errors: error.details.map(detail => detail.message) });
+  const validationResult = systemSchema.safeParse(systemInput);
+  if (!validationResult.success) {
+    res.status(400).json({
+      errors: validationResult.error.errors.map(error => ({
+        field: error.path.join('.'),
+        message: error.message
+      }))
+    });
+    return;
   }
 
   try {
@@ -110,86 +119,19 @@ const updateforme = async (req: Request, res: Response) => {
   const { id } = req.params;
   const updateData = req.body;
 
-  // Separate validation schema for updates
-  const updateSystemValidationSchema = Joi.object({
-    id: Joi.number().required(),
-    systemName: Joi.string().required(),
-    developType: Joi.string().valid('OUTSOURCE', 'IN HOUSE').required(),
-    contractNo: Joi.string().required(),
-    vendorContactNo: Joi.string().required(),
-    businessUnit: Joi.string().required(),
-    developUnit: Joi.string().required(),
-    computerbackup: Joi.string().required(),
-    userId: Joi.number().allow(null),
-    createdAt: Joi.date().iso(),
-    updatedAt: Joi.date().iso(),
-
-    environmentInfo: Joi.array().items(Joi.object({
-      id: Joi.number().optional(),
-      environment: Joi.string().required(),
-      serverName: Joi.string().required(),
-      ip: Joi.string().required(),
-      serverType: Joi.string().required(),
-      serverRole: Joi.string().required(),
-      serverDuty: Joi.string().required(),
-      database: Joi.string().allow(''),
-      application: Joi.string().allow(''),
-      operatingSystem: Joi.string().allow(''),
-      servicePack: Joi.string().allow(''),
-      build: Joi.string().allow(''),
-      cpu: Joi.string().allow(''),
-      ram: Joi.string().allow(''),
-      disk: Joi.string().allow(''),
-      dr: Joi.string().allow(''),
-      joinDomain: Joi.string().valid('YES', 'NO').required(),
-      windowsCluster: Joi.string().valid('YES', 'NO').required(),
-      productionUnit: Joi.array().items(Joi.string()),
-      systemInfoId: Joi.number(),
-      createdAt: Joi.date().iso(),
-      updatedAt: Joi.date().iso()
-    })),
-
-    connectionInfo: Joi.array().items(Joi.object({
-      id: Joi.number().optional(),
-      ad: Joi.string().valid('YES', 'NO').required(),
-      adfs: Joi.string().valid('YES', 'NO').required(),
-      dns: Joi.string().valid('YES', 'NO').required(),
-      ntp: Joi.string().valid('YES', 'NO').required(),
-      tpam: Joi.string().valid('YES', 'NO').required(),
-      netka: Joi.string().valid('YES', 'NO').required(),
-      fim: Joi.string().valid('YES', 'NO').required(),
-      ftpServer: Joi.string().valid('YES', 'NO').required(),
-      ftpGoAnywhereMFTServer: Joi.string().valid('YES', 'NO').required(),
-      emailSmtp: Joi.string().valid('YES', 'NO').required(),
-      sms: Joi.string().valid('YES', 'NO').required(),
-      apiManagement: Joi.string().valid('YES', 'NO').required(),
-      dv: Joi.string().valid('YES', 'NO').required(),
-      snmp: Joi.string().valid('YES', 'NO').required(),
-      systemInfoId: Joi.number(),
-      createdAt: Joi.date().iso(),
-      updatedAt: Joi.date().iso()
-    })),
-
-    securityInfo: Joi.array().items(Joi.object({
-      id: Joi.number().optional(),
-      urlWebsite: Joi.string().uri().allow(''),
-      certificateExpireDate: Joi.string().allow(''),
-      backupPolicy: Joi.string().allow(''),
-      downtimeAllowed: Joi.string().allow(''),
-      centralizeLog: Joi.string().valid('YES', 'NO').required(),
-      setupAgentPatch: Joi.string().valid('YES', 'NO').required(),
-      internetFacing: Joi.string().valid('YES', 'NO').required(),
-      systemInfoId: Joi.number(),
-      createdAt: Joi.date().iso(),
-      updatedAt: Joi.date().iso()
-    }))
-  });
+ 
 
   try {
     // Validate update data
-    const { error } = updateSystemValidationSchema.validate(updateData);
-    if (error) {
-      return res.status(400).json({ errors: error.details.map(detail => detail.message) });
+    const validationResult = systemSchema.safeParse(updateData);
+    if (!validationResult.success) {
+      res.status(400).json({
+        errors: validationResult.error.errors.map(error => ({
+          field: error.path.join('.'),
+          message: error.message
+        }))
+      });
+      return ;
     }
 
     const now = new Date();
@@ -283,7 +225,7 @@ const getforme = async (req: Request, res: Response) => {
 };
 
 // Get system by ID
-const getSystemById = async (req: Request, res: Response) => {
+const getSystemById = async (req: Request, res: Response)=> {
   try {
     const { id } = req.params;
     const system = await prisma.systemInfo.findUnique({
@@ -298,7 +240,8 @@ const getSystemById = async (req: Request, res: Response) => {
     });
 
     if (!system) {
-      return res.status(404).json({ error: 'ไม่พบข้อมูลระบบที่ต้องการ' });
+      res.status(404).json({ error: 'ไม่พบข้อมูลระบบที่ต้องการ' });
+      return ;
     }
 
     res.json(system);
@@ -325,6 +268,7 @@ const deletefrome = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'เกิดข้อผิดพลาดในการลบข้อมูล' });
   }
 };
+
 
 
 // Check existing system

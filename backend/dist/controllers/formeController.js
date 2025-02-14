@@ -144,76 +144,6 @@ const createfrome = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.createfrome = createfrome;
-// Get all systems (เดิมคือ getforme)
-const getforme = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const systems = yield prisma.systemInfo.findMany({
-            include: {
-                environmentInfo: true,
-                connectionInfo: true,
-                securityInfo: true,
-                user: {
-                    select: {
-                        id: true,
-                        username: true,
-                        email: true
-                    }
-                }
-            },
-            orderBy: {
-                createdAt: 'desc'
-            }
-        });
-        res.json(systems);
-    }
-    catch (error) {
-        console.error('Error fetching systems:', error);
-        res.status(500).json({ error: 'Failed to fetch systems' });
-    }
-});
-exports.getforme = getforme;
-// Get system by ID
-const getSystemById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { id } = req.params;
-        const system = yield prisma.systemInfo.findUnique({
-            where: {
-                id: parseInt(id)
-            },
-            include: {
-                environmentInfo: true,
-                connectionInfo: true,
-                securityInfo: true
-            }
-        });
-        if (!system) {
-            return res.status(404).json({ error: 'ไม่พบข้อมูลระบบที่ต้องการ' });
-        }
-        res.json(system);
-    }
-    catch (error) {
-        console.error('Error fetching system:', error);
-        res.status(500).json({ error: 'เกิดข้อผิดพลาดในการดึงข้อมูล' });
-    }
-});
-exports.getSystemById = getSystemById;
-// Delete system
-const deletefrome = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { id } = req.params;
-        yield prisma.systemInfo.delete({
-            where: {
-                id: parseInt(id)
-            }
-        });
-        res.json({ message: 'ลบข้อมูลระบบเรียบร้อยแล้ว' });
-    }
-    catch (error) {
-        console.error('Error deleting system:', error);
-        res.status(500).json({ error: 'เกิดข้อผิดพลาดในการลบข้อมูล' });
-    }
-});
-exports.deletefrome = deletefrome;
 // Modified update function using Prisma's generated types
 const updateforme = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
@@ -343,6 +273,76 @@ const updateforme = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.updateforme = updateforme;
+// Get all systems (เดิมคือ getforme)
+const getforme = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const systems = yield prisma.systemInfo.findMany({
+            include: {
+                environmentInfo: true,
+                connectionInfo: true,
+                securityInfo: true,
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                        email: true
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+        res.json(systems);
+    }
+    catch (error) {
+        console.error('Error fetching systems:', error);
+        res.status(500).json({ error: 'Failed to fetch systems' });
+    }
+});
+exports.getforme = getforme;
+// Get system by ID
+const getSystemById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const system = yield prisma.systemInfo.findUnique({
+            where: {
+                id: parseInt(id)
+            },
+            include: {
+                environmentInfo: true,
+                connectionInfo: true,
+                securityInfo: true
+            }
+        });
+        if (!system) {
+            return res.status(404).json({ error: 'ไม่พบข้อมูลระบบที่ต้องการ' });
+        }
+        res.json(system);
+    }
+    catch (error) {
+        console.error('Error fetching system:', error);
+        res.status(500).json({ error: 'เกิดข้อผิดพลาดในการดึงข้อมูล' });
+    }
+});
+exports.getSystemById = getSystemById;
+// Delete system
+const deletefrome = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        yield prisma.systemInfo.delete({
+            where: {
+                id: parseInt(id)
+            }
+        });
+        res.json({ message: 'ลบข้อมูลระบบเรียบร้อยแล้ว' });
+    }
+    catch (error) {
+        console.error('Error deleting system:', error);
+        res.status(500).json({ error: 'เกิดข้อผิดพลาดในการลบข้อมูล' });
+    }
+});
+exports.deletefrome = deletefrome;
 // Check existing system
 const checkExistingSystem = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

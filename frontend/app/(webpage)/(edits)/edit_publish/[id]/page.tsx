@@ -223,7 +223,6 @@ const SectionContainer = ({ title, children }: { title: string, children: React.
 export default function EditSystem() {
   const [activeTab, setActiveTab] = useState('system');
   const [systemData, setSystemData] = useState<SystemData>(defaultSystemData);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const { id } = useParams(); 
@@ -250,8 +249,6 @@ export default function EditSystem() {
           ? error.response.data.message 
           : 'ไม่สามารถโหลดข้อมูลได้'
       );
-    } finally {
-      setLoading(false);
     }
   }, [id]);
 
@@ -393,7 +390,7 @@ const updateSecurityInfo = (index: number, field: keyof SecurityInfo, value: str
     ...prev,
     securityInfo: updateArrayItemField<SecurityInfo>(prev.securityInfo, index, field, value)
   }));
-};
+};  // Fixed the syntax here - changed }); to };
 
   const addEnvironmentInfo = () => {
     setSystemData(prev => ({
@@ -1017,17 +1014,6 @@ const renderSecurityInfo = () => (
     )}
   </div>
 );
-
-if (loading) {
-  return (
-    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.background.primary }}>
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-pink-500 mx-auto"></div>
-        <p className="mt-4 text-white text-xl">กำลังโหลดข้อมูล...</p>
-      </div>
-    </div>
-  );
-}
 
 if (error) {
   return (

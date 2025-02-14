@@ -215,7 +215,7 @@ const CustomDatePicker = ({
         onChange={onChange}
         className={`${className} ${error ? '' : ''}`}
         placeholderText={placeholder}
-        dateFormat="dd-MM-yyyy"
+        dateFormat="yyyy-MM-dd"
         required={required}
         showPopperArrow={false}
 

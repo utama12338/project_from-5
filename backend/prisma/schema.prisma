@@ -23,7 +23,11 @@ model User {
   canEdit     Boolean   @default(false) // กำหนดสิทธิ์แก้ไขข้อมูล
   canDelete   Boolean   @default(false) // กำหนดสิทธิ์ลบข้อมูล
 
-  systems     SystemInfo[]  // การเชื่อมโยงกับ SystemInfo
+  auditLogs     AuditLog[]
+  systemHistory SystemHistory[]
+  sessions      UserSession[]
+  systems     SystemInfo[] 
+
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
@@ -42,7 +46,7 @@ model SystemInfo {
   // deletedAt        DateTime?  // เวลาที่ถูกลบ (null ถ้ายังไม่ถูกลบ)
   userId           Int?
   user             User?       @relation(fields: [userId], references: [id])
-
+  history       SystemHistory[]
   environmentInfo  EnvironmentInfo[] @relation("SystemToEnvironment")
   connectionInfo   ConnectionInfo[]  @relation("SystemToConnection")
   securityInfo     SecurityInfo[]    @relation("SystemToSecurity")
@@ -127,6 +131,48 @@ enum Role {
   ADMIN
   SUPERUSER
 }
+
+
+
+// User Sessions - เก็บข้อมูล session การใช้งาน
+model UserSession {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  token       String   @unique
+  ipAddress   String?  @db.VarChar(50)
+  userAgent   String?  @db.VarChar(255)
+  lastActive  DateTime @default(now())
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+}
+
+model AuditLog {
+  id          Int      @id @default(autoincrement())
+  action      String   // 'CREATE', 'UPDATE', 'DELETE'
+  entityType  String   // 'SystemInfo', 'EnvironmentInfo', etc.
+  entityId    Int      // ID ของ record ที่ถูกกระทำ
+  changes     Json?    // เก็บข้อมูลที่เปลี่ยนแปลง {old: {}, new: {}}
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  ipAddress   String?  @db.VarChar(50)
+  userAgent   String?  @db.VarChar(255)
+  createdAt   DateTime @default(now())
+}
+
+model SystemHistory {
+  id          Int      @id @default(autoincrement())
+  systemId    Int
+  systemInfo  SystemInfo @relation(fields: [systemId], references: [id])
+  version     Int      // เวอร์ชันของการเปลี่ยนแปลง
+  changes     Json     // snapshot ของข้อมูลทั้งหมด
+  changedBy   Int
+  user        User     @relation(fields: [changedBy], references: [id])
+  changeType  String   // 'DRAFT', 'PUBLISHED', 'ROLLBACK'
+
+  createdAt   DateTime @default(now())
+}
+
 
 
 

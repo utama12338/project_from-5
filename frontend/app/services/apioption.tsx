@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/option?type=';
+const API_URL = 'http://localhost:4000/option?type=';
 
 interface OptionType {
   option: string;

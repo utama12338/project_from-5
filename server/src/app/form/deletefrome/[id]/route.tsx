@@ -3,33 +3,25 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+// DELETE /api/forms/[id]
 export async function DELETE(
-    request: NextRequest,
-    { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: { id: string } }
 ) {
-    try {
-        const id = Number(params.id); // ใช้ Number() แทน parseInt()
+  try {
+    const { id } = params;
+    const deletedSystem = await prisma.systemInfo.delete({
+      where: {
+        id: parseInt(id, 10),
+      },
+    });
 
-        if (isNaN(id)) {
-            return NextResponse.json(
-                { error: 'Invalid ID format' },
-                { status: 400 }
-            );
-        }
-
-        await prisma.systemInfo.delete({
-            where: { id }
-        });
-
-        return NextResponse.json(
-            { message: 'System deleted successfully' },
-            { status: 200 }
-        );
-    } catch (error) {
-        console.error('Error deleting system:', error);
-        return NextResponse.json(
-            { error: 'Failed to delete system' },
-            { status: 500 }
-        );
-    }
+    return NextResponse.json({ message: 'System deleted successfully', deletedSystem });
+  } catch (error) {
+    console.error('Error deleting system:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete system' },
+      { status: 500 }
+    );
+  }
 }

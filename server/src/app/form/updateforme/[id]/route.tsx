@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { systemSchema } from '@/lib/validate_api/updateform';
+import { systemSchema } from '@/lib/validate_api/creatform';
 
 const prisma = new PrismaClient();
 
@@ -12,7 +12,7 @@ export async function PUT(
     try {
       const updateData = await req.json();
       const validationResult = systemSchema.safeParse(updateData);
-      
+      const { id } = await params;
       if (!validationResult.success) {
         return NextResponse.json(
           {
@@ -28,7 +28,7 @@ export async function PUT(
       const now = new Date();
       const updatedSystem = await prisma.systemInfo.update({
         where: {
-          id: parseInt(params.id)
+          id: parseInt(id)
         },
         data: {
           systemName: updateData.systemName,

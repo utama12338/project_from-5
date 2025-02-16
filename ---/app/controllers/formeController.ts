@@ -63,7 +63,6 @@ const systemSchema = z.object({
     internetFacing: z.string(),
   })),
 });
-
 // Create system (เดิมคือ createforme)
 const createfrome = async (req: Request, res: Response)  => {
   const systemInput = req.body;
@@ -113,7 +112,6 @@ const createfrome = async (req: Request, res: Response)  => {
     res.status(500).json({ error: 'Failed to create system' });
   }
 };
-
 // Modified update function using Prisma's generated types
 const updateforme = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -194,8 +192,6 @@ const updateforme = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'เกิดข้อผิดพลาดในการอัพเดทข้อมูล' });
   }
 };
-
-
 // Get all systems (เดิมคือ getforme)
 const getforme = async (req: Request, res: Response) => {
   try {
@@ -223,7 +219,6 @@ const getforme = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to fetch systems' });
   }
 };
-
 // Get system by ID
 const getSystemById = async (req: Request, res: Response)=> {
   try {
@@ -250,7 +245,6 @@ const getSystemById = async (req: Request, res: Response)=> {
     res.status(500).json({ error: 'เกิดข้อผิดพลาดในการดึงข้อมูล' });
   }
 };
-
 // Delete system
 const deletefrome = async (req: Request, res: Response) => {
   try {
@@ -268,9 +262,6 @@ const deletefrome = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'เกิดข้อผิดพลาดในการลบข้อมูล' });
   }
 };
-
-
-
 // Check existing system
 const checkExistingSystem = async (req: Request, res: Response) => {
   try {
@@ -288,7 +279,6 @@ const checkExistingSystem = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to check system' });
   }
 };
-
 const searchSystems = async (req: Request, res: Response) => {
   try {
     const { 

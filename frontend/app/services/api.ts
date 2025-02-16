@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import SystemData from '@/types/inputform'
-const BASE_URL = 'http://localhost:4000/from';
+const BASE_URL = 'http://localhost:3000/form';
 import { FormData,SystemData } from '../types/inputform';
 // export interface SystemData {
 //   // ...existing interfaces from page.tsx...
@@ -9,6 +9,7 @@ import { FormData,SystemData } from '../types/inputform';
 export const api = {
   // Create system
   createSystem: async (data: FormData) => {
+    console.log(data);
     const response = await axios.post(`${BASE_URL}/createforme`, data);
     return response.data;
   },
@@ -29,7 +30,7 @@ export const api = {
 
   // Check if system exists for import csv
   checkSystem: async (systemName: string) => {
-    const response = await axios.get(`${BASE_URL}/api/system/check?systemName=${systemName}`);
+    const response = await axios.get(`${BASE_URL}/checkcsv?systemName=${systemName}`);
     return response.data;
   },
 
@@ -39,7 +40,7 @@ export const api = {
 
 
 export const fetchSystems = async () => {
-  const response = await axios.get(`${BASE_URL}/getforme`);
+  const response = await axios.get(`${BASE_URL}/getform`);
   return response.data;
 };
 

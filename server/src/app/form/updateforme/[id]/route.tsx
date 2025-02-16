@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 // PUT /api/forms/[id]
 export async function PUT(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }:  { params: Promise<{ id: string }> }
   ) {
     try {
       const updateData = await req.json();

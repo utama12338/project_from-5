@@ -6,8 +6,8 @@ const prisma = new PrismaClient();
 
 // GET /api/forms/[id]
 export async function GET(
-    req: NextRequest,
-    context: { params: { id: string } }
+    req: NextRequest ,
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
         const { id } = await context.params;

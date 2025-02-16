@@ -7,8 +7,6 @@ import { z } from 'zod';
 const prisma = new PrismaClient();
 
 
-
-
 // สร้างระบบใหม่
 export async function POST(req: NextRequest) {
   try {

@@ -1,28 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { systemSchema } from '@/lib/validate_api/creatform';
 
 const prisma = new PrismaClient();
 
-
-// DELETE /api/forms/[id]
 export async function DELETE(
-    req: NextRequest,
+    request: NextRequest,
     { params }: { params: { id: string } }
-  ) {
+) {
     try {
-      await prisma.systemInfo.delete({
-        where: {
-          id: parseInt(params.id)
+        const id = Number(params.id); // ใช้ Number() แทน parseInt()
+
+        if (isNaN(id)) {
+            return NextResponse.json(
+                { error: 'Invalid ID format' },
+                { status: 400 }
+            );
         }
-      });
-  
-      return NextResponse.json({ message: 'System deleted successfully' });
+
+        await prisma.systemInfo.delete({
+            where: { id }
+        });
+
+        return NextResponse.json(
+            { message: 'System deleted successfully' },
+            { status: 200 }
+        );
     } catch (error) {
-      console.error('Error deleting system:', error);
-      return NextResponse.json(
-        { error: 'Failed to delete system' },
-        { status: 500 }
-      );
+        console.error('Error deleting system:', error);
+        return NextResponse.json(
+            { error: 'Failed to delete system' },
+            { status: 500 }
+        );
     }
-  }
+}

@@ -10,7 +10,7 @@ interface OptionType {
 export const getEnvironmentOptions = async (): Promise<OptionType[]> => {
   try {
     const response = await axios.get(`${API_URL}environment`);
-    console.log(response)
+    
     return response.data;
   } catch (error) {
     console.error('Error fetching environment options:', error);

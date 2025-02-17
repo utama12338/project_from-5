@@ -1,0 +1,33 @@
+
+
+model User {
+  id          Int       @id @default(autoincrement())
+  username    String    @unique
+  email       String    @unique
+  password    String
+  role        Role      @default(USER)
+
+  viewHistory  Boolean   @default(false) // กำหนดสิทธิ์ดูประวิตการเปลี่ยนแปลง
+  canCreateuser   Boolean   @default(false) // กำหนดสิทธิ์เพิ่มuser
+  canCreate   Boolean   @default(false) // กำหนดสิทธิ์เพิ่มข้อมูล
+  canEdit     Boolean   @default(false) // กำหนดสิทธิ์แก้ไขข้อมูล
+  canDelete   Boolean   @default(false) // กำหนดสิทธิ์ลบข้อมูล
+
+  auditLogs     AuditLog[]
+  systemHistory SystemHistory[]
+  sessions      UserSession[]
+  systems     SystemInfo[] 
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  @@schema("USER")
+}
+
+
+
+enum Role {
+  USER
+  ADMIN
+  SUPERUSER
+  @@schema("USER")
+}

@@ -1,3 +1,13 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema", "prismaSchemaFolder"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["USER", "forme", "log", "options"]
+}
 
 // User Sessions - เก็บข้อมูล session การใช้งาน
 model UserSession {
@@ -38,5 +48,8 @@ model SystemHistory {
   changeType  String   // 'DRAFT', 'PUBLISHED', 'ROLLBACK'
 
   createdAt   DateTime @default(now())
+
+ 
+
   @@schema("log")
 }

@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { systemSchema } from '@/lib/validate_api/creatform';
 import { validate } from '@/lib/utils';
 import { z } from 'zod';
+import { createUUID } from '@/lib/uuid/create_uuid';
 
 const prisma = new PrismaClient();
 
@@ -25,9 +26,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    
+    const uuid = createUUID();
+    const id = `${validation.data.systemName}-${validation.data.developUnit}-${validation.data.environmentInfo[0].ip}-${uuid}`;
+
     const system = await prisma.systemInfo.create({
       data: {
-        // userId: validation.data.userId,
+        id, // Use the generated ID
         systemName: validation.data.systemName,
         developType: validation.data.developType,
         contractNo: validation.data.contractNo,

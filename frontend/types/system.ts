@@ -1,6 +1,6 @@
 
 export interface SystemInfo {
-  id: number;
+  id: string;
   systemName: string;
   environmentInfo?: {
     serverName: string;

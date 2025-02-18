@@ -15,15 +15,15 @@ export const api = {
   },
 
   // Get system by ID - change parameter type to number
-  getSystemById: async (id: number) => {
+  getSystemById: async (id: string) => {
     
     const response = await axios.get(`${BASE_URL}/getSystemById/${id}`);
     return response.data;
   },
 
   // Update system - keep id as number
-  updateSystem: async (id: number, data: SystemData) => {
-   
+  updateSystem: async (id: string, data: SystemData) => {
+   console.log(id,data);
     const response = await axios.put(`${BASE_URL}/updateforme/${id}`, data);
     return response.data;
   },
@@ -44,11 +44,11 @@ export const fetchSystems = async () => {
   return response.data;
 };
 
-export const deleteSystem = async (id: number) => {
+export const deleteSystem = async (id: string) => {
   await axios.delete(`${BASE_URL}/deletefrome/${id}`);
 };
 
-export const bulkDeleteSystems = async (ids: number[]) => {
+export const bulkDeleteSystems = async (ids: string[]) => {
   await Promise.all(ids.map(id => deleteSystem(id)));
 };
 

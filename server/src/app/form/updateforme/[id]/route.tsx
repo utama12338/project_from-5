@@ -11,24 +11,14 @@ export async function PUT(
   ) {
     try {
       const updateData = await req.json();
-      const validationResult = systemSchema.safeParse(updateData);
+     
       const { id } = await params;
-      if (!validationResult.success) {
-        return NextResponse.json(
-          {
-            errors: validationResult.error.errors.map(error => ({
-              field: error.path.join('.'),
-              message: error.message
-            }))
-          },
-          { status: 400 }
-        );
-      }
+   
   
       const now = new Date();
       const updatedSystem = await prisma.systemInfo.update({
         where: {
-          id: parseInt(id)
+          id: id
         },
         data: {
           systemName: updateData.systemName,

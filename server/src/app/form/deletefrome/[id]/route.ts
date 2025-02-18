@@ -10,7 +10,7 @@ export async function DELETE( req: NextRequest, { params }: { params: Promise<{ 
     const { id } = await params;
     const deletedSystem = await prisma.systemInfo.delete({
       where: {
-        id: parseInt(id, 10),
+        id: id,
       },
     });
 

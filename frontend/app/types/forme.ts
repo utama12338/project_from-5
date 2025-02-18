@@ -1,5 +1,5 @@
 export interface SystemInfo {
-    id: number;
+    id: string;
     systemName: string;
     developType: string;
     businessUnit: string;

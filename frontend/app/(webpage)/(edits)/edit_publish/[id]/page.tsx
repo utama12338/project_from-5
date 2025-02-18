@@ -43,7 +43,7 @@ import AddNewEntriesButton from '@/components/button/addNewEntries';
 import Header from '@/components/itemweb/edit_publish/header';
 
 const defaultSystemData: SystemData = {
-  id: 0,
+  id: '',
   systemName: '',
   developType: '',
   contractNo: '',
@@ -237,7 +237,7 @@ export default function EditSystem() {
   const fetchSystemData = useCallback(async () => {
     try {
       // Convert string id to number
-      const numericId = parseInt(id as string, 10);
+      const numericId = id as string;
       const data = await api.getSystemById(numericId);
       console.log('Fetched data:', data);
       setSystemData(data);
@@ -305,7 +305,7 @@ export default function EditSystem() {
       }
 
       // If validation passes, proceed with save
-      const numericId = parseInt(id as string, 10);
+      const numericId = id as string;
       await api.updateSystem(numericId, systemData);
       
       Swal.fire({

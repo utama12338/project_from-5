@@ -49,7 +49,7 @@ export interface SecurityInfo {
   internetFacing: string;
 }
 export interface SystemData { //สำหรับสร้าง creat system
-  id: number;
+  id: string;
   systemName: string;
   developType: string;
   contractNo: string;

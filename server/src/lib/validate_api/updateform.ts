@@ -3,7 +3,7 @@ import * as z from 'zod';
 
 export const systemSchema = z.object({
     //user: z.null()
-  id: z.number(),
+  id: z.string(),
   systemName: z.string(),
   developType: z.enum(['OUTSOURCE', 'IN HOUSE']),
   contractNo: z.string(),
@@ -15,7 +15,7 @@ export const systemSchema = z.object({
   // createdAt: z.string().datetime(),
   // updatedAt: z.string().datetime(),
   environmentInfo: z.array(z.object({
-     id: z.number(),
+     id: z.string(),
     environment: z.string(),
     serverName: z.string(),
     ip: z.string(),
@@ -34,7 +34,7 @@ export const systemSchema = z.object({
     joinDomain: z.string(),
     windowsCluster: z.string(),
     productionUnit: z.array(z.string()),
-    systemInfoId: z.number(),
+    systemInfoId: z.string(),
     // createdAt: z.string().datetime(),
     // updatedAt: z.string().datetime()
   })),
@@ -54,12 +54,12 @@ export const systemSchema = z.object({
     apiManagement: z.string(),
     dv: z.string(),
     snmp: z.string(),
-    systemInfoId: z.number(),
+    systemInfoId: z.string(),
     // createdAt: z.string().datetime(),
     // updatedAt: z.string().datetime()
   })),
   securityInfo: z.array(z.object({
-    id: z.number(),
+    id: z.string(),
     urlWebsite: z.string().url(),
     certificateExpireDate: z.string(),
     backupPolicy: z.string(),
@@ -67,7 +67,7 @@ export const systemSchema = z.object({
     centralizeLog: z.string(),
     setupAgentPatch: z.string(),
     internetFacing: z.string(),
-    systemInfoId: z.number(),
+    systemInfoId: z.string(),
     // createdAt: z.string().datetime(),
     // updatedAt: z.string().datetime()
   })),

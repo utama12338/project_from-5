@@ -11,18 +11,13 @@ export async function GET(
 ) {
     try {
         const { id } = await context.params;
-        const parsedId = parseInt(id);
+        
 
-        if (isNaN(parsedId)) {
-            return NextResponse.json(
-                { error: 'Invalid ID format' },
-                { status: 400 }
-            );
-        }
+        
 
         const system = await prisma.systemInfo.findUnique({
             where: {
-                id: parsedId
+                id: id
             },
             include: {
                 environmentInfo: true,

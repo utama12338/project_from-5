@@ -15,7 +15,7 @@ CREATE TYPE "USER"."Role" AS ENUM ('USER', 'ADMIN', 'SUPERUSER');
 
 -- CreateTable
 CREATE TABLE "forme"."SystemInfo" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "systemName" VARCHAR(255),
     "developType" VARCHAR(50),
     "contractNo" VARCHAR(100),
@@ -23,7 +23,7 @@ CREATE TABLE "forme"."SystemInfo" (
     "businessUnit" VARCHAR(100),
     "developUnit" VARCHAR(100),
     "computerbackup" VARCHAR(50),
-    "userId" INTEGER,
+    "userId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -51,7 +51,7 @@ CREATE TABLE "forme"."EnvironmentInfo" (
     "joinDomain" VARCHAR(50),
     "windowsCluster" VARCHAR(50),
     "productionUnit" VARCHAR(50)[],
-    "systemInfoId" INTEGER NOT NULL,
+    "systemInfoId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -60,7 +60,7 @@ CREATE TABLE "forme"."EnvironmentInfo" (
 
 -- CreateTable
 CREATE TABLE "forme"."ConnectionInfo" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "ad" VARCHAR(10),
     "adfs" VARCHAR(10),
     "dns" VARCHAR(10),
@@ -75,7 +75,7 @@ CREATE TABLE "forme"."ConnectionInfo" (
     "apiManagement" VARCHAR(10),
     "dv" VARCHAR(10),
     "snmp" VARCHAR(10),
-    "systemInfoId" INTEGER NOT NULL,
+    "systemInfoId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -84,7 +84,7 @@ CREATE TABLE "forme"."ConnectionInfo" (
 
 -- CreateTable
 CREATE TABLE "forme"."SecurityInfo" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "urlWebsite" VARCHAR(255),
     "certificateExpireDate" VARCHAR(100),
     "backupPolicy" VARCHAR(255),
@@ -92,7 +92,7 @@ CREATE TABLE "forme"."SecurityInfo" (
     "centralizeLog" VARCHAR(10),
     "setupAgentPatch" VARCHAR(10),
     "internetFacing" VARCHAR(10),
-    "systemInfoId" INTEGER NOT NULL,
+    "systemInfoId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -101,8 +101,8 @@ CREATE TABLE "forme"."SecurityInfo" (
 
 -- CreateTable
 CREATE TABLE "log"."UserSession" (
-    "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "token" TEXT NOT NULL,
     "ipAddress" VARCHAR(50),
     "userAgent" VARCHAR(255),
@@ -115,12 +115,12 @@ CREATE TABLE "log"."UserSession" (
 
 -- CreateTable
 CREATE TABLE "log"."AuditLog" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "action" TEXT NOT NULL,
     "entityType" TEXT NOT NULL,
     "entityId" INTEGER NOT NULL,
     "changes" JSONB,
-    "userId" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
     "ipAddress" VARCHAR(50),
     "userAgent" VARCHAR(255),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -130,11 +130,11 @@ CREATE TABLE "log"."AuditLog" (
 
 -- CreateTable
 CREATE TABLE "log"."SystemHistory" (
-    "id" SERIAL NOT NULL,
-    "systemId" INTEGER NOT NULL,
+    "id" TEXT NOT NULL,
+    "systemId" TEXT NOT NULL,
     "version" INTEGER NOT NULL,
     "changes" JSONB NOT NULL,
-    "changedBy" INTEGER NOT NULL,
+    "changedBy" TEXT NOT NULL,
     "changeType" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -188,7 +188,7 @@ CREATE TABLE "options"."DeveloperTypeOption" (
 
 -- CreateTable
 CREATE TABLE "USER"."User" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,

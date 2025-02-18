@@ -1,18 +1,9 @@
-generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["multiSchema", "prismaSchemaFolder"]
-}
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  schemas  = ["USER", "forme", "log", "options"]
-}
 
 // User Sessions - เก็บข้อมูล session การใช้งาน
 model UserSession {
-  id          Int      @id @default(autoincrement())
-  userId      Int
+  id   String @id @default(cuid())
+  userId      String
   user        User     @relation(fields: [userId], references: [id])
   token       String   @unique
   ipAddress   String?  @db.VarChar(50)
@@ -24,12 +15,12 @@ model UserSession {
 }
 
 model AuditLog {
-  id          Int      @id @default(autoincrement())
+  id   String @id @default(cuid())
   action      String   // 'CREATE', 'UPDATE', 'DELETE'
   entityType  String   // 'SystemInfo', 'EnvironmentInfo', etc.
   entityId    Int      // ID ของ record ที่ถูกกระทำ
   changes     Json?    // เก็บข้อมูลที่เปลี่ยนแปลง {old: {}, new: {}}
-  userId      Int
+  userId      String
   user        User     @relation(fields: [userId], references: [id])
   ipAddress   String?  @db.VarChar(50)
   userAgent   String?  @db.VarChar(255)
@@ -38,12 +29,12 @@ model AuditLog {
 }
 
 model SystemHistory {
-  id          Int      @id @default(autoincrement())
-  systemId    Int
+  id   String @id @default(cuid())
+  systemId    String
   systemInfo  SystemInfo @relation(fields: [systemId], references: [id])
   version     Int      // เวอร์ชันของการเปลี่ยนแปลง
   changes     Json     // snapshot ของข้อมูลทั้งหมด
-  changedBy   Int
+  changedBy   String
   user        User     @relation(fields: [changedBy], references: [id])
   changeType  String   // 'DRAFT', 'PUBLISHED', 'ROLLBACK'
 

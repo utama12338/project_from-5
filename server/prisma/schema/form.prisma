@@ -1,7 +1,5 @@
-
-
 model SystemInfo {
-  id              Int               @id @default(autoincrement())
+  id               String @id @default(cuid())
   systemName      String?           @db.VarChar(255)
   developType     String?           @db.VarChar(50) // 'outsource' or 'in house'
   contractNo      String?           @db.VarChar(100)
@@ -12,7 +10,7 @@ model SystemInfo {
   // draftStatus      DraftStatus @default(DRAFT)  // ใช้ค่า 'DRAFT' โดยตรง
   // isDeleted        Boolean    @default(false)  // ฟิลด์ Soft Delete
   // deletedAt        DateTime?  // เวลาที่ถูกลบ (null ถ้ายังไม่ถูกลบ)
-  userId          Int?
+  userId          String?
   user            User?             @relation(fields: [userId], references: [id])
   history         SystemHistory[]
   environmentInfo EnvironmentInfo[] @relation("SystemToEnvironment")
@@ -46,7 +44,7 @@ model EnvironmentInfo {
   windowsCluster  String?  @db.VarChar(50)
   productionUnit  String[] @db.VarChar(50) // 'หน่วยโปรแกรมระบบ', 'หน่วยระบบงานคอมพิวเตอร์ 1', etc.
 
-  systemInfoId Int
+  systemInfoId String
   systemInfo   SystemInfo @relation("SystemToEnvironment", fields: [systemInfoId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -56,7 +54,7 @@ model EnvironmentInfo {
 }
 
 model ConnectionInfo {
-  id                     Int     @id @default(autoincrement())
+  id                     String @id @default(cuid())
   ad                     String? @db.VarChar(10) // 'YES' or 'NO'
   adfs                   String? @db.VarChar(10) // 'YES' or 'NO'
   dns                    String? @db.VarChar(10) // 'YES' or 'NO'
@@ -72,7 +70,7 @@ model ConnectionInfo {
   dv                     String? @db.VarChar(10) // 'YES' or 'NO'
   snmp                   String? @db.VarChar(10) // 'YES' or 'NO'
 
-  systemInfoId Int
+  systemInfoId String
   systemInfo   SystemInfo @relation("SystemToConnection", fields: [systemInfoId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -82,7 +80,7 @@ model ConnectionInfo {
 }
 
 model SecurityInfo {
-  id                    Int     @id @default(autoincrement())
+  id   String @id @default(cuid())
   urlWebsite            String? @db.VarChar(255)
   certificateExpireDate String? @db.VarChar(100)
   backupPolicy          String? @db.VarChar(255)
@@ -91,7 +89,7 @@ model SecurityInfo {
   setupAgentPatch       String? @db.VarChar(10) // 'YES' or 'NO'
   internetFacing        String? @db.VarChar(10) // 'YES' or 'NO'
 
-  systemInfoId Int
+  systemInfoId String
   systemInfo   SystemInfo @relation("SystemToSecurity", fields: [systemInfoId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())

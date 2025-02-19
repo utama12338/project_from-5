@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { cookies } from 'next/headers';
-import { verifyToken } from '@/utils/auth';
+import { verifyToken } from '../../../utils/auth';
 
 // Generate CSRF token
 function generateCSRFToken(): string {

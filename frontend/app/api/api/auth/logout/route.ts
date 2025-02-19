@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { PrismaAuthAdapter } from '@/adapters/prisma-auth.adapter';
+import { PrismaAuthAdapter } from '../../../adapters/prisma-auth.adapter';
+
 import { cookies } from 'next/headers';
 
 const authAdapter = new PrismaAuthAdapter();

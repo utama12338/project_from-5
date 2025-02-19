@@ -77,7 +77,7 @@ const authOptions: NextAuthOptions = {
     }
   },
   session: {
-    strategy: "database" as const || 'jwt',
+    strategy: "database",
     maxAge: 0.5 * 24 * 60 * 60, // 30 days
   },
   pages: {

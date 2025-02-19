@@ -1,0 +1,59 @@
+model User {
+  id           String           @id @default(cuid())
+  username      String          @unique
+
+  password      String
+  viewHistory   Boolean         @default(false)
+  canCreateuser Boolean         @default(false)
+  canCreate     Boolean         @default(false)
+  canEdit       Boolean         @default(false)
+  canDelete     Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  role          Role            @default(USER)
+  systems       SystemInfo[]
+  auditLogs     AuditLog[]
+  systemHistory SystemHistory[]
+  sessions      UserSession[]
+  UserToken      UserToken[]
+
+  @@schema("USER")
+}
+
+model UserToken {
+  id            String      @id @default(cuid())
+  userId        String
+  token         String      @unique
+  refreshToken  String?     @unique
+  tokenType     TokenType   @default(ACCESS)
+  isRevoked     Boolean     @default(false)
+  deviceInfo    String?
+  ipAddress     String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  expiresAt     DateTime
+  lastUsedAt    DateTime    @default(now())
+
+  user          User        @relation(fields: [userId], references: [id])
+
+  @@index([token])
+  @@index([userId])
+  @@schema("USER")
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPERUSER
+
+  @@schema("USER")
+}
+
+enum TokenType {
+  ACCESS
+  REFRESH
+  RESET_PASSWORD
+  EMAIL_VERIFICATION
+
+  @@schema("USER")
+}

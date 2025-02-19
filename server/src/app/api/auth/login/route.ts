@@ -8,6 +8,13 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export async function POST(request: Request) {
   try {
+    if (!request.body) {
+      return NextResponse.json(
+        { message: 'Request body is empty' },
+        { status: 400 }
+      );
+    }
+
     const body = await request.json();
     const { username, password } = body;
 

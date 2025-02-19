@@ -29,4 +29,11 @@ export class PrismaAuthAdapter implements IAuthAdapter {
       },
     });
   }
+
+  async invalidateUserToken(token: string): Promise<void> {
+    await this.prisma.userToken.updateMany({
+      where: { token },
+      data: { isRevoked: true }
+    });
+  }
 }

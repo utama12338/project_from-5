@@ -1,6 +1,6 @@
 import NextAuth, { DefaultSession, NextAuthOptions, Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaClient } from '@prisma/client';
+import { PrismaAuthAdapter } from '../../../adapters/prisma-auth.adapter';
 import argon2 from 'argon2';
 
 // Extend the built-in types
@@ -19,8 +19,8 @@ declare module "next-auth" {
   }
 }
 
-// Initialize Prisma client
-const prisma = new PrismaClient();
+// Initialize PrismaAuthAdapter
+const authAdapter = new PrismaAuthAdapter();
 
 // Configure NextAuth options
 const authOptions: NextAuthOptions = {
@@ -37,9 +37,7 @@ const authOptions: NextAuthOptions = {
         }
 
         try {
-          const user = await prisma.user.findUnique({
-            where: { username: credentials.username }
-          });
+          const user = await authAdapter.findUserByUsername(credentials.username);
 
           if (!user) {
             return null;
@@ -79,12 +77,13 @@ const authOptions: NextAuthOptions = {
     }
   },
   session: {
-    strategy: "database" as const,
+    strategy: "database" as const || 'jwt',
     maxAge: 0.5 * 24 * 60 * 60, // 30 days
   },
   pages: {
     signIn: process.env.NEXT_PUBLIC_FRONTEND_URL || "/auth/signin"
   },
+  secret: process.env.NEXTAUTH_SECRET 
   // cookies: {
   //   sessionToken: {
   //     name: `__Secure-next-auth.session-token`,

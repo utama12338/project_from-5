@@ -1,30 +1,44 @@
-import NextAuth from "next-auth";
+import NextAuth, { DefaultSession, NextAuthOptions, Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from '@prisma/client';
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import argon2 from 'argon2';
+
+// Extend the built-in types
+declare module "next-auth" {
+  interface Session extends DefaultSession {
+    user: {
+      id: string;
+      role: string;
+    } & DefaultSession["user"]
+  }
+
+  interface User {
+    id: string;
+    role: string;
+    name: string;
+  }
+}
 
 // Initialize Prisma client
 const prisma = new PrismaClient();
 
 // Configure NextAuth options
-const authOptions = {
-  adapter: PrismaAdapter(prisma),
+const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        if (!credentials?.username || !credentials?.password) {
           return null;
         }
 
         try {
           const user = await prisma.user.findUnique({
-            where: { email: credentials.email }
+            where: { username: credentials.username }
           });
 
           if (!user) {
@@ -39,7 +53,6 @@ const authOptions = {
 
           return {
             id: user.id,
-            email: user.email,
             name: user.username,
             role: user.role
           };
@@ -50,20 +63,57 @@ const authOptions = {
     })
   ],
   callbacks: {
-    async session({ session, user }) {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
       if (session?.user) {
-        session.user.role = user.role;
-        session.user.id = user.id;
+        session.user.id = token.id as string;
+        session.user.role = token.role as string;
       }
       return session;
     }
   },
   session: {
-    strategy: "database"
+    strategy: "database" as const,
+    maxAge: 0.5 * 24 * 60 * 60, // 30 days
   },
   pages: {
-    signIn: process.env.NEXT_PUBLIC_FRONTEND_URL 
-  }
+    signIn: process.env.NEXT_PUBLIC_FRONTEND_URL || "/auth/signin"
+  },
+  // cookies: {
+  //   sessionToken: {
+  //     name: `__Secure-next-auth.session-token`,
+  //     options: {
+  //       httpOnly: true,
+  //       sameSite: 'lax',
+  //       path: '/',
+  //       secure: true,
+  //     },
+  //   },
+  //   callbackUrl: {
+  //     name: `__Secure-next-auth.callback-url`,
+  //     options: {
+  //       httpOnly: true,
+  //       sameSite: 'lax',
+  //       path: '/',
+  //       secure: true,
+  //     },
+  //   },
+  //   csrfToken: {
+  //     name: `__Host-next-auth.csrf-token`,
+  //     options: {
+  //       httpOnly: true,
+  //       sameSite: 'lax',
+  //       path: '/',
+  //       secure: true,
+  //     },
+  //   },
+  // },
 };
 
 // Create and export handler

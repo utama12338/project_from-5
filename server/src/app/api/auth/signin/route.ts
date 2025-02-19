@@ -1,45 +1,78 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
 import argon2 from 'argon2';
-import { PrismaClient } from '@prisma/client';
+import jwt from 'jsonwebtoken';
+import { PrismaAuthAdapter } from '@/adapters/prisma-auth.adapter';
 
-const prisma = new PrismaClient();
+const authAdapter = new PrismaAuthAdapter();
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
-
+export async function POST(request: Request) {
   try {
-    const user = await prisma.user.findUnique({
-      where: { email },
-      select: {
-        id: true,
-        email: true,
-        username: true,
-        password: true,
-        role: true,
-      },
-    });
+    const body = await request.json();
+    const { username, password } = body;
+
+    if (!username || !password) {
+      return NextResponse.json(
+        { message: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
+    // Find user using adapter
+    const user = await authAdapter.findUserByUsername(username);
 
     if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return NextResponse.json(
+        { message: 'Invalid credentials' },
+        { status: 401 }
+      );
     }
 
-    const isPasswordValid = await argon2.verify(user.password, password);
-
-    if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+    // Verify password
+    const validPassword = await argon2.verify(user.password, password);
+    if (!validPassword) {
+      return NextResponse.json(
+        { message: 'Invalid credentials' },
+        { status: 401 }
+      );
     }
 
+    // Generate tokens
+    const accessToken = jwt.sign(
+      { userId: user.id, role: user.role },
+      JWT_SECRET,
+      { expiresIn: '15m' }
+    );
+    const refreshToken = jwt.sign(
+      { userId: user.id },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    // Save token using adapter
+    await authAdapter.createUserToken({
+      userId: user.id,
+      token: accessToken,
+      refreshToken,
+      deviceInfo: request.headers.get('user-agent') || undefined,
+      ipAddress: request.headers.get('x-forwarded-for') || undefined,
+      expiresAt: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
+    });
+
+    // Remove password from response
     const { password: _, ...userWithoutPassword } = user;
-    res.status(200).json({ user: userWithoutPassword });
+
+    return NextResponse.json({
+      user: userWithoutPassword,
+      accessToken,
+      refreshToken,
+    }, { status: 200 });
+
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('Signin error:', error);
+    return NextResponse.json(
+      { message: 'Internal server error' },
+      { status: 500 }
+    );
   }
-};
+}

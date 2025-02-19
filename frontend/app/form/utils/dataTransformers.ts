@@ -8,7 +8,7 @@ type IndexableSystemData = SystemData & {
 };
 type Row = { [key: string]: string };
 
-export const transformDataForCSV = (data: SystemData[], selectedItems: number[], keysToRemove: string[]) => {
+export const transformDataForCSV = (data: SystemData[], selectedItems: string[], keysToRemove: string[]) => {
   const dataToDownload = data.filter(item => selectedItems.includes(item.id));
   const transformedData: { [key: string]: string }[] = [];
   

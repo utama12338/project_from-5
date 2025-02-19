@@ -8,7 +8,7 @@ import { SystemData } from '@/types/inputform';
 export const useSystemList = () => {
   const [systems, setSystems] = useState<SystemData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [showAlert, setShowAlert] = useState(false);
   const [alertType, setAlertType] = useState<'warning' | 'success' | 'error'>('warning');
 
@@ -31,7 +31,7 @@ export const useSystemList = () => {
     setSelectedItems(e.target.checked ? systems.map(system => system.id) : []);
   };
 
-  const handleSelectItem = (id: number) => {
+  const handleSelectItem = (id: string) => {
     setSelectedItems(prev => 
       prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
     );
@@ -47,7 +47,7 @@ export const useSystemList = () => {
     downloadCSV(transformedData, 'systems-data.csv');
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     const result = await Swal.fire({
       title: 'คุณแน่ใจหรือไม่?',
       text: 'คุณต้องการลบข้อมูลนี้ใช่หรือไม่?',

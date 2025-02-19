@@ -9,7 +9,7 @@ import { SystemData } from '@/types/inputform';
 export const useSystemListViewModel = () => {
   const [systems, setSystems] = useState<SystemData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [showAlert, setShowAlert] = useState(false);
   const [alertType, setAlertType] = useState<'warning' | 'success' | 'error'>('warning');
   const [currentPage, setCurrentPage] = useState(1);
@@ -51,7 +51,7 @@ export const useSystemListViewModel = () => {
     setSelectedItems(e.target.checked ? systems.map(system => system.id) : []);
   };
 
-  const handleSelectItem = (id: number) => {
+  const handleSelectItem = (id: string) => {
     setSelectedItems(prev => 
       prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
     );
@@ -98,7 +98,7 @@ export const useSystemListViewModel = () => {
     window.location.href = `/systems/view-multiple?ids=${queryString}`;
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     const result = await Swal.fire({
       title: 'คุณแน่ใจหรือไม่?',
       text: 'คุณต้องการลบข้อมูลนี้ใช่หรือไม่?',

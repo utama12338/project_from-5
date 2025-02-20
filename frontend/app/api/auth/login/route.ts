@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import { PrismaAuthAdapter } from '../../../adapters/prisma-auth.adapter';
+import { PrismaAuthAdapter } from '../../adapters/prisma-auth.adapter';
 
 const authAdapter = new PrismaAuthAdapter();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';

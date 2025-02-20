@@ -1,6 +1,6 @@
 import NextAuth, { DefaultSession, NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAuthAdapter } from '../../../adapters/prisma-auth.adapter';
+import { PrismaAuthAdapter } from '../../adapters/prisma-auth.adapter';
 import argon2 from 'argon2';
 
 // Extend the built-in types
@@ -78,42 +78,42 @@ const authOptions: NextAuthOptions = {
     }
   },
   session: {
-    strategy: "database",
+    strategy: "jwt",
     maxAge: 0.5 * 24 * 60 * 60, // 30 days
   },
   pages: {
     signIn: process.env.NEXT_PUBLIC_FRONTEND_URL || "/auth/signin"
   },
-  secret: process.env.NEXTAUTH_SECRET 
-  // cookies: {
-  //   sessionToken: {
-  //     name: `__Secure-next-auth.session-token`,
-  //     options: {
-  //       httpOnly: true,
-  //       sameSite: 'lax',
-  //       path: '/',
-  //       secure: true,
-  //     },
-  //   },
-  //   callbackUrl: {
-  //     name: `__Secure-next-auth.callback-url`,
-  //     options: {
-  //       httpOnly: true,
-  //       sameSite: 'lax',
-  //       path: '/',
-  //       secure: true,
-  //     },
-  //   },
-  //   csrfToken: {
-  //     name: `__Host-next-auth.csrf-token`,
-  //     options: {
-  //       httpOnly: true,
-  //       sameSite: 'lax',
-  //       path: '/',
-  //       secure: true,
-  //     },
-  //   },
-  // },
+  secret: process.env.NEXTAUTH_SECRET,
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
+      },
+    },
+    callbackUrl: {
+      name: `__Secure-next-auth.callback-url`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
+      },
+    },
+    csrfToken: {
+      name: `__Host-next-auth.csrf-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
+      },
+    },
+  },
 };
 
 // Create and export handler

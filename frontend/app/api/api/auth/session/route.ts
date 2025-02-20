@@ -46,7 +46,8 @@ export async function GET() {
       await authAdapter.updateTokenLastUsed(accessToken);
 
       // Remove sensitive data
-      const { password, ...safeUser } = user;
+    
+      const { password: _password, ...safeUser } = user;
 
       return NextResponse.json({
         session: {

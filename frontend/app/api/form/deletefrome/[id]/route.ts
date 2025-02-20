@@ -5,7 +5,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 // DELETE /api/forms/[id]
-export async function DELETE( req: NextRequest, { params }: { params: Promise<{ id: string }> } ) {
+export async function DELETE( _req: NextRequest, { params }: { params: Promise<{ id: string }> } ) {
   try {
     const { id } = await params;
     const deletedSystem = await prisma.systemInfo.delete({

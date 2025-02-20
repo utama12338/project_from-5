@@ -36,4 +36,55 @@ export class PrismaAuthAdapter implements IAuthAdapter {
       data: { isRevoked: true }
     });
   }
+
+  async findUserToken(token: string) {
+    return await this.prisma.userToken.findUnique({
+      where: {
+        token: token
+      }
+    });
+  }
+
+  async updateUserPassword(userId: string, hashedPassword: string) {
+    return await this.prisma.user.update({
+      where: {
+        id: userId
+      },
+      data: {
+        password: hashedPassword
+      }
+    });
+  }
+
+  async invalidateAllUserTokens(userId: string) {
+    return await this.prisma.userToken.updateMany({
+      where: {
+        userId: userId,
+        isRevoked: false
+      },
+      data: {
+        isRevoked: true,
+        updatedAt: new Date()
+      }
+    });
+  }
+
+  async findUserById(userId: string) {
+    return await this.prisma.user.findUnique({
+      where: {
+        id: userId
+      }
+    });
+  }
+
+  async updateTokenLastUsed(token: string) {
+    return await this.prisma.userToken.update({
+      where: {
+        token: token
+      },
+      data: {
+        lastUsedAt: new Date()
+      }
+    });
+  }
 }

@@ -1,4 +1,3 @@
-
 // 
 
 export interface EnvironmentInfo {
@@ -75,7 +74,30 @@ export interface FormData { //สำหรับสร้าง get มา
   securityInfo: SecurityInfo[];
 }
 
-
+export type SystemSearchParams = {
+  systemName?: {
+    equals: string;
+  };
+  developType?: {
+    equals: string;
+  };
+  businessUnit?: {
+    equals: string;
+  };
+  environmentInfo?: {
+    some: {
+      environment?: {
+        equals: string;
+      };
+      serverName?: {
+        equals: string;
+      };
+      ip?: {
+        equals: string;
+      };
+    };
+  };
+};
 
 // export interface CSVValidationResults {
 //   row: number;

@@ -55,6 +55,7 @@ export async function POST(request: Request) {
       }
     });
   } catch (error) {
+    console.error('refresh endpoint error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

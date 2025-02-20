@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 
 const authAdapter = new PrismaAuthAdapter();
 
-export async function POST(request: Request) {
+export async function POST() {
   try {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get('access-token')?.value;
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
-    console.error('Logout error:', error);
+    console.error('logout endpoint error:', error);
     return NextResponse.json(
       { message: 'Internal server error' },
       { status: 500 }

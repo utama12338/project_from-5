@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { systemSchema } from '../../../lib/validate_api/updateform';
 import { validate } from '../../../lib/utils'; 
 import { z } from 'zod';
+import  {SystemData} from '@/types/inputform'
 const prisma = new PrismaClient();
 
 // PUT /api/forms/[id]
@@ -44,7 +45,7 @@ export async function PUT(
           updatedAt: now,
           environmentInfo: {
             deleteMany: {},
-            create: updateData.environmentInfo.map((env: any) => ({
+            create: updateData.environmentInfo.map((env: SystemData) => ({
               ...env,
               id: undefined,
               systemInfoId: undefined,
@@ -53,7 +54,7 @@ export async function PUT(
           },
           connectionInfo: {
             deleteMany: {},
-            create: updateData.connectionInfo.map((conn: any) => ({
+            create: updateData.connectionInfo.map((conn: SystemData) => ({
               ...conn,
               id: undefined,
               systemInfoId: undefined,
@@ -62,7 +63,7 @@ export async function PUT(
           },
           securityInfo: {
             deleteMany: {},
-            create: updateData.securityInfo.map((sec: any) => ({
+            create: updateData.securityInfo.map((sec: SystemData) => ({
               ...sec,
               id: undefined,
               systemInfoId: undefined,

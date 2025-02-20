@@ -26,6 +26,7 @@ export async function verifyToken(token: string): Promise<TokenPayload> {
     const decoded = jwt.verify(token, JWT_SECRET) as TokenPayload;
     return decoded;
   } catch (error) {
+    console.error("generateToken token error",error)
     throw new Error('Invalid token');
   }
 }

@@ -26,6 +26,7 @@ export async function GET(request: Request) {
     try {
       decodedToken = await verifyToken(token);
     } catch (error) {
+      console.error('me endpoint error:', error);
       return NextResponse.json(
         { message: 'Invalid token' },
         { status: 401 }

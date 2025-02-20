@@ -1,4 +1,4 @@
-import NextAuth, { DefaultSession, NextAuthOptions, Session, User } from "next-auth";
+import NextAuth, { DefaultSession, NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAuthAdapter } from '../../../adapters/prisma-auth.adapter';
 import argon2 from 'argon2';
@@ -55,6 +55,7 @@ const authOptions: NextAuthOptions = {
             role: user.role
           };
         } catch (error) {
+          console.error("CredentialsProvider error:", error);
           return null;
         }
       }

@@ -33,6 +33,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(user, { status: 201 });
   } catch (error) {
+    console.error('Register endpoint error:', error);
     return NextResponse.json(
       { message: 'Internal server error' },
       { status: 500 }

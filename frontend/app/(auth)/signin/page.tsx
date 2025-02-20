@@ -26,13 +26,18 @@ export default function SignInPage() {
         redirect: false,
       });
 
+      console.log('SignIn result:', result);
+
       if (result?.error) {
+        console.log('Error:', result.error);
         setError('Invalid username or password');
       } else {
+        
         router.push('/form'); // Redirect to dashboard after successful login
         router.refresh();
       }
     } catch (error) {
+      console.log('Catch Error:', error);
       setError('An error occurred during sign in');
     } finally {
       setIsLoading(false);
@@ -119,7 +124,7 @@ export default function SignInPage() {
             href="/signup" 
             className="font-medium text-indigo-600 hover:text-indigo-500"
           >
-            Don't have an account? Sign up
+            Don&apos;t have an account? Sign up
           </Link>
         </div>
       </div>

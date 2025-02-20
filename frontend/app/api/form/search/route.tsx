@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { SystemSearchParams } from '@/types/inputform';
 
 const prisma = new PrismaClient();
 
@@ -13,7 +14,7 @@ export async function GET(req: NextRequest) {
     const developType = searchParams.get('developType');
     const businessUnit = searchParams.get('businessUnit');
 
-    const whereClause: any = {};
+    const whereClause: SystemSearchParams = {};
 
     if (systemName) {
       whereClause.systemName = { equals: systemName };
@@ -35,7 +36,7 @@ export async function GET(req: NextRequest) {
     }
 
     const systems = await prisma.systemInfo.findMany({
-      where: whereClause,
+      where: whereClause , // Type assertion needed due to Prisma's type complexity
       include: {
         environmentInfo: true,
         connectionInfo: true,

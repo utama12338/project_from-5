@@ -69,6 +69,7 @@ export async function POST(request: Request) {
       try {
         await verifyToken(token);
       } catch (error) {
+        console.error('Authentication error:', error);
         return NextResponse.json(
           { error: 'Invalid authentication token' },
           { status: 401 }
@@ -82,6 +83,7 @@ export async function POST(request: Request) {
     );
 
   } catch (error) {
+    console.error('Internal server error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

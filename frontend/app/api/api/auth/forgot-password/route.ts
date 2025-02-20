@@ -31,7 +31,8 @@ export async function POST(request: Request) {
 
     // Generate reset token
     const resetToken = crypto.randomBytes(32).toString('hex');
-    const { accessToken } = await generateToken(user.id);
+    // Removed unused accessToken variable
+    await generateToken(user.id);
 
     // Store reset token
     await prisma.userToken.create({

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import argon2 from 'argon2';
-import { PrismaAuthAdapter } from '../../adapters/prisma-auth.adapter';
+
 
 const authAdapter = new PrismaAuthAdapter();
 

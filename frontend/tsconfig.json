@@ -26,6 +26,6 @@
       "@/*": ["./app/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(auth)/login/serviceWorker.js", "app/(auth)/login/reportWebVitals.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(auth)/loginsss/serviceWorker.js", "app/(auth)/loginsss/reportWebVitals.js"],
   "exclude": ["node_modules"]
 }

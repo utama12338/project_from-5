@@ -70,13 +70,27 @@ export async function POST(request: Request) {
       );
     }
 
-
-
-  } catch (error) {
-    console.error('Internal server error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+ // Add success response
+ return NextResponse.json(
+  { 
+    message: 'CSRF verification successful',
+    verified: true 
+  },
+  { 
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Content-Type-Options': 'nosniff',
+      'Cache-Control': 'no-store'
+    }
   }
+);
+
+} catch (error) {
+console.error('Internal server error:', error);
+return NextResponse.json(
+  { error: 'Internal server error' },
+  { status: 500 }
+);
+}
 }

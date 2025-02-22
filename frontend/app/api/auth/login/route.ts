@@ -32,6 +32,9 @@ export async function POST(request: Request) {
       );
     }
 
+    // Invalidate the CSRF token after use
+    cookieStorecsrf.delete('csrf-token');
+
     // ตรวจสอบว่ามีข้อมูลที่จำเป็นครบหรือไม่
     if (!username || !password) {
       return NextResponse.json(
@@ -61,11 +64,17 @@ export async function POST(request: Request) {
       );
     }
 
+    // เพิ่มจำนวน loginCount ในตาราง User
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { loginCount: { increment: 1 } }
+    });
+
     // สร้าง access token และ refresh token
     const accessToken = jwt.sign(
       { userId: user.id, role: user.role },
       JWT_SECRETs,
-      { expiresIn: '15m' }
+      { expiresIn: '1m' }
     );
     const refreshToken = jwt.sign(
       { userId: user.id },
@@ -84,18 +93,12 @@ export async function POST(request: Request) {
         ipAddress: request.headers.get('x-forwarded-for') || undefined,
         expiresAt: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
         lastUsedAt: new Date(),
-        loginCount: 1
+        
       }
     });
-
-    // สร้าง session สำหรับผู้ใช้
-    await prisma.userSession.create({
-      data: {
-        userId: user.id,
-        userAgent: request.headers.get('user-agent') || undefined,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-      }
-    });
+    
+   
+    
 
     // เก็บ tokens ใน HTTP-only cookies
     const cookieStore = await cookies();

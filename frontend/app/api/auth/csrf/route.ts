@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { cookies } from 'next/headers';
-import { verifyToken } from '../../lib/auth';
+
 
 // Generate CSRF token
 function generateCSRFToken(): string {
@@ -70,19 +70,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const token = authHeader.split(' ')[1];
-    try {
-      const decoded = await verifyToken(token);
-      return NextResponse.json(
-        { valid: true, user: decoded },
-        { status: 200 }
-      );
-    } catch (error) {
-      return NextResponse.json(
-        { error: 'Invalid authentication token' },
-        { status: 401 }
-      );
-    }
+
 
   } catch (error) {
     console.error('Internal server error:', error);

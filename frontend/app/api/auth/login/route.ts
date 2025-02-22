@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 
 // Initialize Prisma Client
 const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET || 'oomsinintrnership';
+const JWT_SECRETs = process.env.JWT_SECRET || 'oomsinintrnership';
 
 export async function POST(request: Request) {
   try {
@@ -22,8 +22,8 @@ export async function POST(request: Request) {
     const { username, password, csrfToken } = body;
 
     // Verify CSRF token
-    const cookieStore = await cookies();
-    const storedToken = cookieStore.get('csrf-token');
+    const cookieStorecsrf = await cookies();
+    const storedToken = cookieStorecsrf.get('csrf-token');
     
     if (!storedToken || storedToken.value !== csrfToken) {
       return NextResponse.json(
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // ตรวจสอบรหัสผ่านด้วย bcrypt แทน argon2
+    // ตรวจสอบรหัสผ่านด้วย bcrypt
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
       return NextResponse.json(
@@ -64,13 +64,13 @@ export async function POST(request: Request) {
     // สร้าง access token และ refresh token
     const accessToken = jwt.sign(
       { userId: user.id, role: user.role },
-      JWT_SECRET,
+      JWT_SECRETs,
       { expiresIn: '15m' }
     );
     const refreshToken = jwt.sign(
       { userId: user.id },
-      JWT_SECRET,
-      { expiresIn: '7d' }
+      JWT_SECRETs,
+      { expiresIn: '2h' }
     );
 
     // บันทึก token ลงในฐานข้อมูล
@@ -97,13 +97,34 @@ export async function POST(request: Request) {
       }
     });
 
+    // เก็บ tokens ใน HTTP-only cookies
+    const cookieStore = await cookies();
+    
+    // ตั้งค่า access token cookie
+    cookieStore.set('access_token', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 15 * 60, // 15 minutes in seconds
+      path: '/'
+    });
+
+    // ตั้งค่า refresh token cookie
+    cookieStore.set('refresh_token', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 2 * 60 * 60, // 2 hours in seconds
+      path: '/'
+    });
+
     // ลบข้อมูลรหัสผ่านออกก่อนส่งกลับ
     const { password: _, ...userWithoutPassword } = user;
 
+    // ส่งเฉพาะข้อมูล user กลับไป (ไม่ส่ง tokens)
     return NextResponse.json({
       user: userWithoutPassword,
-      accessToken,
-      refreshToken,
+      message: 'Login successful'
     }, { status: 200 });
 
   } catch (error) {

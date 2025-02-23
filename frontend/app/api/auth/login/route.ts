@@ -6,8 +6,10 @@ import { cookies } from 'next/headers';
 
 // Initialize Prisma Client
 const prisma = new PrismaClient();
-const JWT_SECRETs = process.env.JWT_SECRET || 'oomsinintrnership';
-
+const JWT_PUBLIC_KEY = process.env.JWT_PUBLIC_KEY ;
+const JWT_PRIVATE_KEY = process.env.JWT_PRIVATE_KEY;
+console.log(JWT_PRIVATE_KEY)
+console.log(JWT_PUBLIC_KEY)
 export async function POST(request: Request) {
   try {
     // ตรวจสอบว่ามี request body หรือไม่
@@ -71,14 +73,24 @@ export async function POST(request: Request) {
 
     // สร้าง access token และ refresh token
     const accessToken = jwt.sign(
-      { userId: user.id, role: user.role },
-      JWT_SECRETs,
-      { expiresIn: '1m' }
+      { userId: user.id},
+      JWT_PRIVATE_KEY,
+      { 
+        algorithm: 'ES512',
+        expiresIn: '15m' 
+      }
     );
+
+    // ยืนยันkey
+    // jwt.verify(token, PUBLIC_KEY, { algorithms: ['ES256'] });
+
     const refreshToken = jwt.sign(
       { userId: user.id },
-      JWT_SECRETs,
-      { expiresIn: '2h' }
+      JWT_PRIVATE_KEY,
+      { 
+        algorithm: 'ES512',
+        expiresIn: '2h' 
+      }
     );
 
     // บันทึก token ลงในฐานข้อมูล
@@ -96,7 +108,7 @@ export async function POST(request: Request) {
       }
     });
     
-   
+    
     
     // Invalidate the CSRF token after use
     cookieStorecsrf.delete('csrf-token');
@@ -125,6 +137,17 @@ export async function POST(request: Request) {
     // ลบข้อมูลรหัสผ่านออกก่อนส่งกลับ
     const { password: _, ...userWithoutPassword } = user;
 
+    // Log successful login
+    // await LogService.logActivity({
+    //   userId: user.id,
+    //   action: 'LOGIN',
+    //   module: 'AUTH',
+    //   description: 'User logged in successfully',
+    //   userAgent: request.headers.get('user-agent') || undefined,
+    //   ipAddress: request.headers.get('x-forwarded-for') || undefined
+    // });
+
+
     // ส่งเฉพาะข้อมูล user กลับไป (ไม่ส่ง tokens)
     return NextResponse.json({
       user: userWithoutPassword,
@@ -133,6 +156,16 @@ export async function POST(request: Request) {
 
   } catch (error) {
     console.error('Login error:', error);
+
+    // await LogService.logError({
+    //   errorType: 'AUTH_ERROR',
+    //   message: error.message,
+    //   stackTrace: error.stack,
+    //   path: '/api/auth/login',
+    //   userAgent: request.headers.get('user-agent') || undefined,
+    //   ipAddress: request.headers.get('x-forwarded-for') || undefined
+    // });
+
     return NextResponse.json(
       { message: 'Internal server error' },
       { status: 500 }

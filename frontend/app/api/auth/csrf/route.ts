@@ -22,10 +22,11 @@ export async function GET() {
   // Set cookie options
   const cookieOptions = {
     httpOnly: true,
+    secure: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax' as const,
     path: '/',
-    maxAge: 60 * 60 // 1 hour
+    maxAge: 60 * 15 // 1 hour
   };
 
   // Create response with CSRF token

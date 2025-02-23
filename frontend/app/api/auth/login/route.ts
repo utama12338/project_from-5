@@ -32,8 +32,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Invalidate the CSRF token after use
-    cookieStorecsrf.delete('csrf-token');
+
 
     // ตรวจสอบว่ามีข้อมูลที่จำเป็นครบหรือไม่
     if (!username || !password) {
@@ -99,7 +98,9 @@ export async function POST(request: Request) {
     
    
     
-
+    // Invalidate the CSRF token after use
+    cookieStorecsrf.delete('csrf-token');
+    
     // เก็บ tokens ใน HTTP-only cookies
     const cookieStore = await cookies();
     

@@ -7,7 +7,7 @@ const JWT_PUBLIC_KEY = process.env.JWT_PUBLIC_KEY;
 export async function GET() {
   try {
     const cookieStore = await cookies();
-    const accessToken = cookieStore.get('access_token');
+    const accessToken = cookieStore.get('access-token');
 
     if (!accessToken || JWT_PUBLIC_KEY === undefined) {
       return NextResponse.json(
@@ -22,17 +22,7 @@ export async function GET() {
         algorithms: ['ES512']
       });
 
-      // Check if token is about to expire (less than 1 minute remaining)
-      const exp = (decoded as any).exp * 1000; // Convert to milliseconds
-      const now = Date.now();
-      const timeRemaining = exp - now;
 
-      if (timeRemaining < 60000) { // Less than 1 minute remaining
-        return NextResponse.json({
-          valid: false,
-          message: 'Token is about to expire'
-        }, { status: 401 });
-      }
 
       return NextResponse.json({
         valid: true,

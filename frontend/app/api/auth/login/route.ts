@@ -8,7 +8,8 @@ import { cookies } from 'next/headers';
 const prisma = new PrismaClient();
 const JWT_PUBLIC_KEY = process.env.JWT_PUBLIC_KEY ;
 const JWT_PRIVATE_KEY = process.env.JWT_PRIVATE_KEY;
-
+console.log(JWT_PRIVATE_KEY)
+console.log(JWT_PUBLIC_KEY)
 export async function POST(request: Request) {
   try {
     // ตรวจสอบว่ามี request body หรือไม่

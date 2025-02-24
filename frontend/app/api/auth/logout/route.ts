@@ -37,7 +37,7 @@ export async function POST() {
         await prisma.userToken.updateMany({
           where: {
             userId: decoded.userId,
-            token: accessToken,
+            refreshToken: accessToken,
             isRevoked: false
           },
           data: {

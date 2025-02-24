@@ -23,7 +23,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    // setLoading(true);
+    setLoading(true);
 
     try {
       const res = await fetch('/api/auth/login', {
@@ -48,7 +48,7 @@ export default function LoginPage() {
     } catch (error) {
         setError(error instanceof Error ? error.message : 'Login failed');
     } finally {
-    //   setLoading(false);
+      setLoading(false);
     }
   };
 

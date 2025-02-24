@@ -8,8 +8,7 @@ import { cookies } from 'next/headers';
 const prisma = new PrismaClient();
 const JWT_PUBLIC_KEY = process.env.JWT_PUBLIC_KEY ;
 const JWT_PRIVATE_KEY = process.env.JWT_PRIVATE_KEY;
-console.log(JWT_PRIVATE_KEY)
-console.log(JWT_PUBLIC_KEY)
+
 export async function POST(request: Request) {
   try {
     // ตรวจสอบว่ามี request body หรือไม่
@@ -71,6 +70,18 @@ export async function POST(request: Request) {
       data: { loginCount: { increment: 1 } }
     });
 
+
+// 
+
+
+    //  ตรวจสอบว่ามี JWT_PUBLIC_KEY และ JWT_PRIVATE_KEY หรือไม่
+    if (!JWT_PUBLIC_KEY) {
+      throw new Error("JWT_PUBLIC_KEY is not defined in environment variables");
+    }
+    if (!JWT_PRIVATE_KEY) {
+      throw new Error("JWT_PUBLIC_KEY is not defined in environment variables");
+    }
+
     // สร้าง access token และ refresh token
     const accessToken = jwt.sign(
       { userId: user.id},
@@ -81,8 +92,6 @@ export async function POST(request: Request) {
       }
     );
 
-    // ยืนยันkey
-    // jwt.verify(token, PUBLIC_KEY, { algorithms: ['ES256'] });
 
     const refreshToken = jwt.sign(
       { userId: user.id },
@@ -93,13 +102,21 @@ export async function POST(request: Request) {
       }
     );
 
+
+
+
+
+
+
+
+
     // บันทึก token ลงในฐานข้อมูล
     await prisma.userToken.create({
       data: {
         userId: user.id,
-        token: accessToken,
+        
         refreshToken,
-        tokenType: 'ACCESS',
+       
         deviceInfo: request.headers.get('user-agent') || undefined,
         ipAddress: request.headers.get('x-forwarded-for') || undefined,
         expiresAt: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes

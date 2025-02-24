@@ -7,11 +7,11 @@ const JWT_PUBLIC_KEY = process.env.JWT_PUBLIC_KEY;
 export async function GET() {
   try {
     const cookieStore = await cookies();
-    const accessToken =  cookieStore.get('access_token');
+    const accessToken = cookieStore.get('access_token');
 
-    if (!accessToken) {
+    if (!accessToken || JWT_PUBLIC_KEY === undefined) {
       return NextResponse.json(
-        { message: 'No token provided' },
+        { valid: false, message: 'No token provided' },
         { status: 401 }
       );
     }
@@ -21,6 +21,18 @@ export async function GET() {
       const decoded = jwt.verify(accessToken.value, JWT_PUBLIC_KEY, {
         algorithms: ['ES512']
       });
+
+      // Check if token is about to expire (less than 1 minute remaining)
+      const exp = (decoded as any).exp * 1000; // Convert to milliseconds
+      const now = Date.now();
+      const timeRemaining = exp - now;
+
+      if (timeRemaining < 60000) { // Less than 1 minute remaining
+        return NextResponse.json({
+          valid: false,
+          message: 'Token is about to expire'
+        }, { status: 401 });
+      }
 
       return NextResponse.json({
         valid: true,
@@ -37,7 +49,7 @@ export async function GET() {
   } catch (error) {
     console.error('Token verification error:', error);
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { valid: false, message: 'Internal server error' },
       { status: 500 }
     );
   }

@@ -1,0 +1,59 @@
+[33mcommit fc49aa1b7f7a306053c6e7c1dabcb36faa6bfa12[m[33m ([m[1;36mHEAD[m[33m)[m
+Author: utama12338d <utama12338@gmail.com>
+Date:   Sun Feb 23 19:01:14 2025 -0800
+
+    gg
+
+[33mcommit 57272187913a2014c3d8733046bc81a91e17a58f[m
+Author: utama12338d <utama12338@gmail.com>
+Date:   Sun Feb 23 10:08:25 2025 -0800
+
+    refactor: update token expiration times and enhance auth flow with refresh token handling
+
+[33mcommit 30c8d37e752e4b48c5737c4a6a24a3daa977d580[m
+Author: utama12338d <utama12338@gmail.com>
+Date:   Sun Feb 23 06:52:52 2025 -0800
+
+    ทำการ authen state
+
+[33mcommit 0d625514bf5b090bb5354b89dde3edf7d495aca3[m
+Author: utama12338d <utama12338@gmail.com>
+Date:   Sun Feb 23 05:58:03 2025 -0800
+
+    rs512
+
+[33mcommit e97ecaef9cba503d97612b8d5ec267974f9d2f4c[m
+Author: utama12338d <utama12338@gmail.com>
+Date:   Sat Feb 22 23:21:59 2025 -0800
+
+    gg
+
+[33mcommit 337046603f378f3935c4f6b355d7648eaa97b477[m
+Author: utama12338d <utama12338@gmail.com>
+Date:   Sat Feb 22 11:57:25 2025 -0800
+
+    login and logout
+
+[33mcommit 0488e215958871f52b1e67eb7eb6e6310402d331[m
+Author: utama12338d <utama12338@gmail.com>
+Date:   Sat Feb 22 07:44:30 2025 -0800
+
+    create api login logout csrf api security
+
+[33mcommit a21158e9091ac607221a3c117353dcd7f9c089b4[m
+Author: utama12338d <utama12338@gmail.com>
+Date:   Sat Feb 22 05:35:27 2025 -0800
+
+    utama12338สู้ๆ
+
+[33mcommit ba32fba77c7701f739c44938c3ed41a468111249[m
+Author: utama12338d <utama12338@gmail.com>
+Date:   Sat Feb 22 03:08:17 2025 -0800
+
+    laster
+
+[33mcommit 89a17f7d92c761fb4a6143d47651ab701b355d61[m
+Author: utama12338d <utama12338@gmail.com>
+Date:   Sat Feb 22 02:03:47 2025 -0800
+
+    Remove unused authentication adapter files and related code; clean up user and session models in Prisma schema

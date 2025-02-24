@@ -1,13 +1,10 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { id } = req.query;
-
-  if (req.method !== 'GET') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
+export async function GET(_req: NextRequest, context: { params: Promise<{ id: string }> }) {
+    const { id } = await context.params; // ใช้ await กับ params
 
   try {
     const user = await prisma.user.findUnique({
@@ -23,12 +20,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return NextResponse.json({ message: 'User not found' }, { status: 404 });
     }
 
-    return res.status(200).json({ permissions: user });
+    return NextResponse.json({ permissions: user }, { status: 200 });
   } catch (error) {
     console.error('Error fetching user permissions:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
 }

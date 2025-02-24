@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { cookies } from 'next/headers';
-import * as jose from 'jose';
+// import { cookies } from 'next/headers';
+// import * as jose from 'jose';
 
 export async function middleware(request: NextRequest) {
-  const publicPaths = ['/login', '/api/auth/login', '/api/auth/csrf', '/test'];
+  const publicPaths = ['/login', '/api/auth/login', '/api/auth/csrf', '/test','/api/auth/register'];
   
   if (publicPaths.some(path => request.nextUrl.pathname.startsWith(path))) {
     return NextResponse.next();

@@ -19,6 +19,7 @@ const TestPage = () => {
   }
 
   return (
+    <PermissionGuard requiredPermissions={{ role: 'SUPERUSER', canEdit:true }} requireAny>
     <Container>
       <Stack spacing={3} py={4}>
         {boxes.map((box) => (
@@ -31,22 +32,22 @@ const TestPage = () => {
                 {box.description}
               </Typography>
               <Stack direction="row" spacing={2}>
-              <PermissionGuard requiredPermissions={{ canCreateuser: true }}>
+              <PermissionGuard requiredPermissions={{ role: 'USER' }}>
                 <Button
                   variant="contained"
                   color="primary"
                   onClick={() => handleView(box.id)}
                 >
-                  View Details
+                  View Details  เห็นเฉพาะ user
                 </Button>
                 </PermissionGuard>
-                <PermissionGuard requiredPermissions={{ canEdit: true }}>
+                <PermissionGuard requiredPermissions={{ role: 'ADMIN' }}>
                   <Button
                     variant="outlined"
                     color="primary"
                     onClick={() => handleEdit(box.id)}
                   >
-                    Edit
+                    Edit admin เห็นเฉพาะ admin
                   </Button>
                 </PermissionGuard>
               </Stack>
@@ -55,6 +56,7 @@ const TestPage = () => {
         ))}
       </Stack>
     </Container>
+    </PermissionGuard>
   )
 }
 

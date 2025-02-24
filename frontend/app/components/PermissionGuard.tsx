@@ -1,6 +1,8 @@
 'use client'
 import { ReactNode } from 'react';
 import { useAuth, UserPermissions } from '../hooks/useAuth';
+import Swal from 'sweetalert2';
+
 
 interface PermissionGuardProps {
   children: ReactNode;
@@ -20,7 +22,15 @@ export const PermissionGuard = ({
   }
 
   if (!permissions) {
-    return null;
+    // เพิ่มขึ้นมาเอง
+    Swal.fire({
+      icon: 'error',
+      title: 'Access Denied',
+      text: 'You are not authenticated or lack permissions.',
+      confirmButtonText: 'OK',
+    });
+    // เพิ่มขึ้นมาเอง
+    return null;  // แจ้งเตือน
   }
 
   const hasPermission = Object.entries(requiredPermissions).every(([key, value]) => {
@@ -32,7 +42,7 @@ export const PermissionGuard = ({
   });
 
   if ((requireAny && !hasAnyPermission) || (!requireAny && !hasPermission)) {
-    return null;
+    return null; // หรือแสดงข้อความ "Access Denied" ก็ได้
   }
 
   return <>{children}</>;

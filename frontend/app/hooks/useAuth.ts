@@ -16,7 +16,9 @@ export const useAuth = () => {
 
   const fetchUserPermissionsFromDB = async (userId: string): Promise<UserPermissions | null> => {
     try {
-      const response = await axios.get(`/api/auth/userID/${userId}`);
+        console.log({'getuser':userId})
+      const response = await axios.get(`/api/auth/userID/${userId}`); // ปรับ URL ให้ตรงกับ API
+      console.log({'response':response})
       return response.data.permissions;
     } catch (error) {
       console.error('Database fetch error:', error);
@@ -27,14 +29,22 @@ export const useAuth = () => {
   useEffect(() => {
     const verifyToken = async () => {
       try {
+        // สมมติว่า /api/auth/verifytoken return { valid: boolean, userId: string }
         const response = await axios.get('/api/auth/verifytoken');
+        console.log({'get verifytoken ':response})
         const data = response.data;
-        
+        console.log({'data':data})
         if (data.valid) {
-          const dbPermissions = await fetchUserPermissionsFromDB(data.userId);
-          setPermissions(dbPermissions);
+            console.log({'fetchUserPermissionsFromDB':data.decoded.userId})
+          const dbPermissions = await fetchUserPermissionsFromDB(data.decoded.userId);
+          
+          if (dbPermissions) {
+            setPermissions(dbPermissions); // set เฉพาะเมื่อมีข้อมูล
+          } else {
+            setPermissions(null); // ถ้า DB หาไม่เจอ
+          }
         } else {
-          setPermissions(null);
+          setPermissions(null); // token ไม่ถูกต้อง
         }
       } catch (error) {
         console.error('Auth verification error:', error);

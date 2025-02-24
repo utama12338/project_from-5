@@ -44,7 +44,7 @@ export default function LoginPage() {
       }
 
       // Successful login
-      router.push('/form'); // หรือหน้าที่ต้องการ redirect ไป
+      router.push('/test'); // หรือหน้าที่ต้องการ redirect ไป
     } catch (error) {
         setError(error instanceof Error ? error.message : 'Login failed');
     } finally {

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import * as jose from 'jose';
 import { PrismaClient } from '@prisma/client';
 import { cookies } from 'next/headers';
 
@@ -83,25 +83,20 @@ export async function POST(request: Request) {
       throw new Error("JWT_PUBLIC_KEY is not defined in environment variables");
     }
 
-    // สร้าง access token และ refresh token
-    const accessToken = jwt.sign(
-      { userId: user.id},
-      JWT_PRIVATE_KEY,
-      { 
-        algorithm: 'ES512',
-        expiresIn: '15m' 
-      }
-    );
+    // Convert PEM private key to KeyLike
+    const privateKey = await jose.importPKCS8(JWT_PRIVATE_KEY!, 'ES512');
 
+    // Create access token
+    const accessToken = await new jose.SignJWT({ userId: user.id })
+      .setProtectedHeader({ alg: 'ES512' })
+      .setExpirationTime('15m')
+      .sign(privateKey);
 
-    const refreshToken = jwt.sign(
-      { userId: user.id },
-      JWT_PRIVATE_KEY,
-      { 
-        algorithm: 'ES512',
-        expiresIn: '2h' 
-      }
-    );
+    // Create refresh token
+    const refreshToken = await new jose.SignJWT({ userId: user.id })
+      .setProtectedHeader({ alg: 'ES512' })
+      .setExpirationTime('2h')
+      .sign(privateKey);
 
 
 

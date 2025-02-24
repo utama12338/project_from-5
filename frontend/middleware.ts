@@ -1,29 +1,47 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { cookies } from 'next/headers';
+import * as jose from 'jose';
 
-export function middleware(request: NextRequest) {
-  const accessToken = request.cookies.get('access_token');
+export async function middleware(request: NextRequest) {
+  const publicPaths = ['/login', '/api/auth/login', '/api/auth/csrf', '/test'];
   
-  // List of public paths that don't require authentication
-  const publicPaths = ['/login', '/api/auth/login', '/api/auth/csrf'];
-  
-  // Check if the requested path is public
-  const isPublicPath = publicPaths.some(path => 
-    request.nextUrl.pathname.startsWith(path)
-  );
-
-  // Allow access to public paths
-  if (isPublicPath) {
+  if (publicPaths.some(path => request.nextUrl.pathname.startsWith(path))) {
     return NextResponse.next();
   }
 
-  // Redirect to login if no token is present
+  const accessToken = request.cookies.get('access_token');
+  
   if (!accessToken) {
-    const loginUrl = new URL('/login', request.url);
-    return NextResponse.redirect(loginUrl);
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  return NextResponse.next();
+  try {
+    // Verify token
+    const response = await fetch(`${request.nextUrl.origin}/api/auth/verifytoken`, {
+      headers: {
+        Cookie: `access_token=${accessToken.value}`
+      }
+    });
+
+    if (!response.ok) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+
+    const data = await response.json();
+    
+    // Add user permissions to request headers
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-user-permissions', JSON.stringify(data.userPermissions));
+
+    return NextResponse.next({
+      headers: requestHeaders,
+    });
+
+  } catch (error) {
+    console.error('Middleware error:', error);
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
 }
 
 export const config = {

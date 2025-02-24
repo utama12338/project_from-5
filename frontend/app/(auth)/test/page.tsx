@@ -31,7 +31,7 @@ const TestPage = () => {
                 {box.description}
               </Typography>
               <Stack direction="row" spacing={2}>
-              <PermissionGuard requiredPermissions={{ canCreateuser: false }}>
+              <PermissionGuard requiredPermissions={{ canCreateuser: true }}>
                 <Button
                   variant="contained"
                   color="primary"
@@ -40,7 +40,7 @@ const TestPage = () => {
                   View Details
                 </Button>
                 </PermissionGuard>
-                <PermissionGuard requiredPermissions={{ canEdit: false }}>
+                <PermissionGuard requiredPermissions={{ canEdit: true }}>
                   <Button
                     variant="outlined"
                     color="primary"

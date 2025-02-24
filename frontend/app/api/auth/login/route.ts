@@ -8,8 +8,7 @@ import { cookies } from 'next/headers';
 const prisma = new PrismaClient();
 const JWT_PUBLIC_KEY = process.env.JWT_PUBLIC_KEY ;
 const JWT_PRIVATE_KEY = process.env.JWT_PRIVATE_KEY;
-console.log(JWT_PRIVATE_KEY)
-console.log(JWT_PUBLIC_KEY)
+
 export async function POST(request: Request) {
   try {
     // ตรวจสอบว่ามี request body หรือไม่
@@ -87,9 +86,17 @@ export async function POST(request: Request) {
     const privateKey = await jose.importPKCS8(JWT_PRIVATE_KEY!, 'ES512');
 
     // Create access token
-    const accessToken = await new jose.SignJWT({ userId: user.id })
+    const accessToken = await new jose.SignJWT(
+      { userId: user.id,
+        // viewHistory: user.viewHistory,
+        // canCreateuser: user.canCreateuser,
+        // canCreate: user.canCreate,
+        // canEdit: user.canEdit,
+        // canDelete: user.canDelete,
+        // role: user.role
+      })
       .setProtectedHeader({ alg: 'ES512' })
-      .setExpirationTime('15m')
+      .setExpirationTime('60m')
       .sign(privateKey);
 
     // Create refresh token

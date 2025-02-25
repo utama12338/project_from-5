@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { cookies } from 'next/headers';
-import { verifyToken } from '../../utils/auth';
+
 
 // Generate CSRF token
 function generateCSRFToken(): string {
@@ -25,7 +25,7 @@ export async function GET() {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax' as const,
     path: '/',
-    maxAge: 60 * 60 // 1 hour
+    maxAge: 60 * 15 // 1 hour
   };
 
   // Create response with CSRF token
@@ -62,31 +62,35 @@ export async function POST(request: Request) {
       );
     }
 
-    // Verify user authentication if needed
     const authHeader = request.headers.get('authorization');
-    if (authHeader) {
-      const token = authHeader.split(' ')[1];
-      try {
-        await verifyToken(token);
-      } catch (error) {
-        console.error('Authentication error:', error);
-        return NextResponse.json(
-          { error: 'Invalid authentication token' },
-          { status: 401 }
-        );
-      }
+    if (!authHeader) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
     }
 
-    return NextResponse.json(
-      { valid: true },
-      { status: 200 }
-    );
-
-  } catch (error) {
-    console.error('Internal server error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+ // Add success response
+ return NextResponse.json(
+  { 
+    message: 'CSRF verification successful',
+    verified: true 
+  },
+  { 
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Content-Type-Options': 'nosniff',
+      'Cache-Control': 'no-store'
+    }
   }
+);
+
+} catch (error) {
+console.error('Internal server error:', error);
+return NextResponse.json(
+  { error: 'Internal server error' },
+  { status: 500 }
+);
+}
 }

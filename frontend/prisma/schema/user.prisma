@@ -1,8 +1,8 @@
 model User {
   id           String           @id @default(cuid())
   username      String          @unique
-
   password      String
+  loginCount    Int             @default(0)
   viewHistory   Boolean         @default(false)
   canCreateuser Boolean         @default(false)
   canCreate     Boolean         @default(false)
@@ -12,10 +12,10 @@ model User {
   updatedAt     DateTime        @updatedAt
   role          Role            @default(USER)
   systems       SystemInfo[]
-  auditLogs     AuditLog[]
   systemHistory SystemHistory[]
-  sessions      UserSession[]
   UserToken      UserToken[]
+  activities    ActivityLog[]
+  errors        ErrorLog[]
 
   @@schema("USER")
 }
@@ -33,8 +33,8 @@ model UserToken {
   updatedAt     DateTime    @updatedAt
   expiresAt     DateTime
   lastUsedAt    DateTime    @default(now())
-
-  user          User        @relation(fields: [userId], references: [id])
+  
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([token])
   @@index([userId])

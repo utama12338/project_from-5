@@ -1,46 +1,56 @@
-
-
-// User Sessions - เก็บข้อมูล session การใช้งาน
-model UserSession {
-  id   String @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  token       String   @unique
-  ipAddress   String?  @db.VarChar(50)
-  userAgent   String?  @db.VarChar(255)
-  lastActive  DateTime @default(now())
-  expiresAt   DateTime
-  createdAt   DateTime @default(now())
-  @@schema("log")
-}
-
-model AuditLog {
-  id   String @id @default(cuid())
-  action      String   // 'CREATE', 'UPDATE', 'DELETE'
-  entityType  String   // 'SystemInfo', 'EnvironmentInfo', etc.
-  entityId    Int      // ID ของ record ที่ถูกกระทำ
-  changes     Json?    // เก็บข้อมูลที่เปลี่ยนแปลง {old: {}, new: {}}
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  ipAddress   String?  @db.VarChar(50)
-  userAgent   String?  @db.VarChar(255)
-  createdAt   DateTime @default(now())
-  @@schema("log")
-}
-
 model SystemHistory {
-  id   String @id @default(cuid())
-  systemId    String
-  systemInfo  SystemInfo @relation(fields: [systemId], references: [id])
-  version     Int      // เวอร์ชันของการเปลี่ยนแปลง
-  changes     Json     // snapshot ของข้อมูลทั้งหมด
-  changedBy   String
-  user        User     @relation(fields: [changedBy], references: [id])
-  changeType  String   // 'DRAFT', 'PUBLISHED', 'ROLLBACK'
+  id          String    @id @default(cuid())
+  action      String    // 'CREATE', 'UPDATE', 'DELETE', 'DRAFT', 'PUBLISHED', 'ROLLBACK'
+  entityType  String    // 'User', 'SystemInfo', 'EnvironmentInfo', etc.
+  entityId    String    // ID ของ record ที่ถูกกระทำ
+  version     Int?      // ใช้เฉพาะกรณี versioning (เช่น SystemInfo)
+  changes     Json?     // เก็บข้อมูลการเปลี่ยนแปลง { old: {}, new: {} }
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  
+  // Add new relation field
+  systemInfo  SystemInfo @relation(fields: [entityId], references: [id])
+  lastActive  DateTime @default(now())
+  userAgent   String?   @db.VarChar(255)
+  ipAddress   String?   @db.VarChar(50)
+  createdAt   DateTime  @default(now())
 
-  createdAt   DateTime @default(now())
+  @@index([entityId])
+  @@schema("log")
+}
 
- 
+model ActivityLog {
+  id          String    @id @default(cuid())
+  userId      String
+  action      String    // LOGIN, LOGOUT, VIEW, CREATE, UPDATE, DELETE, etc.
+  module      String    // Which part of the system was accessed
+  description String?   // Additional details about the action
+  userAgent   String?   @db.VarChar(255)
+  ipAddress   String?   @db.VarChar(50)
+  createdAt   DateTime  @default(now())
+  
+  user        User      @relation(fields: [userId], references: [id])
 
+  @@index([userId])
+  @@index([createdAt])
+  @@schema("log")
+}
+
+model ErrorLog {
+  id          String    @id @default(cuid())
+  errorCode   String?
+  errorType   String    // e.g., ValidationError, ServerError, DatabaseError
+  message     String
+  stackTrace  String?   @db.Text
+  userId      String?   // Optional: who was using the system when the error occurred
+  path        String?   // URL or API endpoint where the error occurred
+  userAgent   String?   @db.VarChar(255)
+  ipAddress   String?   @db.VarChar(50)
+  createdAt   DateTime  @default(now())
+  
+  user        User?     @relation(fields: [userId], references: [id])
+
+  @@index([errorType])
+  @@index([createdAt])
   @@schema("log")
 }

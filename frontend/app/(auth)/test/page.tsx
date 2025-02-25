@@ -32,13 +32,13 @@ const TestPage = () => {
                 {box.description}
               </Typography>
               <Stack direction="row" spacing={2}>
-              <PermissionGuard requiredPermissions={{ role: 'USER' }}>
+              <PermissionGuard requiredPermissions={{ viewHistory: true }}>
                 <Button
                   variant="contained"
                   color="primary"
                   onClick={() => handleView(box.id)}
                 >
-                  View Details  เห็นเฉพาะ user
+                  เห็นเฉพาะ user
                 </Button>
                 </PermissionGuard>
                 <PermissionGuard requiredPermissions={{ role: 'ADMIN' }}>
@@ -47,7 +47,7 @@ const TestPage = () => {
                     color="primary"
                     onClick={() => handleEdit(box.id)}
                   >
-                    Edit admin เห็นเฉพาะ admin
+                    เห็นเฉพาะ admin
                   </Button>
                 </PermissionGuard>
               </Stack>

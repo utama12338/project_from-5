@@ -39,7 +39,7 @@ export const systemSchema = z.object({
     // updatedAt: z.string().datetime()
   })),
   connectionInfo: z.array(z.object({
-    id: z.number(),
+    id: z.string(),
     ad: z.string(),
     adfs: z.string(),
     dns: z.string(),

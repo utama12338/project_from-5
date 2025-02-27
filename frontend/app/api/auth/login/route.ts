@@ -96,7 +96,7 @@ export async function POST(request: Request) {
         // role: user.role
       })
       .setProtectedHeader({ alg: 'ES512' })
-      .setExpirationTime('60m')
+      .setExpirationTime('1h')
       .sign(privateKey);
 
     // Create refresh token
@@ -107,11 +107,7 @@ export async function POST(request: Request) {
 
 
 
-
-
-
-
-
+      
 
     // บันทึก token ลงในฐานข้อมูล
     await prisma.userToken.create({
@@ -141,7 +137,7 @@ export async function POST(request: Request) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 15 * 60, // 15 minutes in seconds
+      maxAge: 60 * 60, 
       path: '/'
     });
 

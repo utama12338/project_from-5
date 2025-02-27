@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { PrismaClient } from '@prisma/client';
-import jwt from 'jsonwebtoken';
+import * as jose from 'jose';
 
 const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET || 'oomsinintrnership';
+const JWT_PUBLIC_KEY = process.env.JWT_PUBLIC_KEY;
 
 export async function POST() {
   try {
@@ -28,15 +28,24 @@ export async function POST() {
       );
     }
 
-    // Verify and decode access token
+    // Verify tokens using jose
     try {
+      if (!JWT_PUBLIC_KEY) {
+        throw new Error("JWT_PUBLIC_KEY is not defined in environment variables");
+      }
+      
+      // Import the public key
+      const publicKey = await jose.importSPKI(JWT_PUBLIC_KEY, 'ES512');
+      
       if (accessToken) {
-        const decoded = jwt.verify(accessToken, JWT_SECRET) as { userId: string };
+        // Verify access token
+        const { payload } = await jose.jwtVerify(accessToken, publicKey);
+        const userId = payload.userId as string;
         
         // Invalidate the token in database
         await prisma.userToken.updateMany({
           where: {
-            userId: decoded.userId,
+            userId: userId,
             refreshToken: accessToken,
             isRevoked: false
           },

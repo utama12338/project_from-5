@@ -1,0 +1,280 @@
+
+// import { NextResponse } from 'next/server';
+// import type { NextRequest } from 'next/server';
+// import * as jose from 'jose';
+
+// const JWT_PUBLIC_KEY = process.env.JWT_PUBLIC_KEY || 'your-public-key-here'; // ใส่ public key ใน env
+
+// export async function middleware(request: NextRequest) {
+//   const publicPaths = [
+//     '/login',
+//     '/api/auth/login',
+//     '/api/auth/csrf',
+//     '/test',
+//     '/api/auth/register',
+//     '/api/auth/userID/',
+//     '/api/form/createforme',
+//   ];
+
+//   // อนุญาตให้ผ่านถ้าเป็น public path
+//   if (publicPaths.some((path) => request.nextUrl.pathname.startsWith(path))) {
+//     return NextResponse.next();
+//   }
+
+//   const accessToken = request.cookies.get('access_token');
+
+//   // ถ้าไม่มี token
+//   if (!accessToken) {
+//     if (request.nextUrl.pathname === '/login') {
+//       return NextResponse.next(); // ป้องกัน loop
+//     }
+//     return NextResponse.redirect(new URL('/login', request.url));
+//   }
+
+//   try {
+//     // นำเข้า public key และ verify token
+//     const publicKey = await jose.importSPKI(JWT_PUBLIC_KEY, 'ES512');
+//     const { payload } = await jose.jwtVerify(accessToken.value, publicKey, {
+//       algorithms: ['ES512'],
+//     });
+
+//     // ถ้า verify สำเร็จ สามารถใช้ payload ได้ (เช่น permissions หรือ role)
+//     const userPermissions = payload.permissions || []; // สมมติว่า permissions อยู่ใน payload
+
+//     // เพิ่ม permissions ลงใน headers
+//     const requestHeaders = new Headers(request.headers);
+//     requestHeaders.set('x-user-permissions', JSON.stringify(userPermissions));
+
+//     return NextResponse.next({
+//       headers: requestHeaders,
+//     });
+//   } catch (error) {
+//     console.error('Token verification error:', error);
+//     if (request.nextUrl.pathname === '/login') {
+//       return NextResponse.next(); // ป้องกัน loop
+//     }
+//     return NextResponse.redirect(new URL('/login', request.url));
+//   }
+// }
+
+
+
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
+
+export async function middleware(request: NextRequest) {
+  const publicPaths = ['/login', '/api/auth/login', '/api/auth/csrf', '/test','/api/auth/register','/api/auth/userID/','/api/form/createforme','/form/updateforme/'];
+
+  
+  
+  if (publicPaths.some(path => request.nextUrl.pathname.startsWith(path))) {
+    return NextResponse.next();
+  }
+
+  const accessToken = request.cookies.get('access_token');
+
+ 
+
+  if (!accessToken) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+
+  try {
+    // Verify token
+    const response = await fetch(`${request.nextUrl.origin}/api/auth/verifytoken`, {
+      headers: {
+        Cookie: `access_token=${accessToken.value}`
+      }
+    });
+
+    if (!response.ok) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+
+    const data = await response.json();
+    
+    // Add user permissions to request headers
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-user-permissions', JSON.stringify(data.userPermissions));
+
+    return NextResponse.next({
+      headers: requestHeaders,
+    });
+
+  } catch (error) {
+    console.error('Middleware error:', error);
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+}
+
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public files (public folder)
+     */
+    '/((?!_next/static|_next/image|favicon.ico|public).*)',
+  ],
+};
+
+
+
+
+
+
+
+
+
+
+// import { NextResponse } from 'next/server';
+// import type { NextRequest } from 'next/server';
+
+// // กำหนด type สำหรับ role
+// type UserRole = 'user' | 'admin' | 'superuser';
+
+// // กำหนด interface สำหรับ rolePaths
+// interface RolePaths {
+//   user: string[];
+//   admin: string[];
+//   superuser: string[];
+// }
+
+// export async function middleware(request: NextRequest) {
+//   const publicPaths = ['/login', '/api/auth/login', '/api/auth/csrf', '/test', '/api/auth/register'];
+//   const accessToken = request.cookies.get('access_token');
+//   const currentPath = request.nextUrl.pathname;
+
+//   if (publicPaths.some(path => currentPath.startsWith(path))) {
+//     if (accessToken && currentPath === '/login') {
+//       return NextResponse.redirect(new URL('/', request.url));
+//     }
+//     return NextResponse.next();
+//   }
+
+//   if (!accessToken) {
+//     return NextResponse.redirect(new URL('/login', request.url));
+//   }
+
+//   try {
+//     const response = await fetch(`${request.nextUrl.origin}/api/auth/verifytoken`, {
+//       headers: {
+//         Cookie: `access_token=${accessToken.value}`
+//       }
+//     });
+
+//     if (!response.ok) {
+//       return NextResponse.redirect(new URL('/login', request.url));
+//     }
+
+//     const data = await response.json();
+    
+//     // กำหนด userRole ให้เป็น UserRole และตรวจสอบค่า
+//     const userRole: UserRole = ['USER', 'ADMIN', 'SUPERUSER'].includes(data.userRole) 
+//       ? data.userRole as UserRole 
+//       : 'USER'; // fallback เป็น 'user' ถ้าค่าไม่ถูกต้อง
+
+//     const userPermissions = data.userPermissions || [];
+
+//     const rolePaths: RolePaths = {
+//       user: ['/form', '/dashboard'],
+//       admin: ['/admin', '/admin/users'],
+//       superuser: ['/admin', '/admin/users'] 
+//     };
+
+//     const allowedPaths = rolePaths[userRole] || rolePaths.user;
+//     const hasAccess = allowedPaths.some((allowedPath: string) => 
+//       currentPath === allowedPath || currentPath.startsWith(allowedPath + '/')
+//     );
+
+//     if (!hasAccess) {
+//       return NextResponse.redirect(new URL(
+//         userRole === 'user' ? '/dashboard' : 
+//         userRole === 'admin' ? '/admin' : '/superuser',
+//         request.url
+//       ));
+//     }
+
+//     const requestHeaders = new Headers(request.headers);
+//     requestHeaders.set('x-user-permissions', JSON.stringify(userPermissions));
+//     requestHeaders.set('x-user-role', userRole);
+
+//     return NextResponse.next({
+//       headers: requestHeaders,
+//     });
+
+//   } catch (error) {
+//     console.error('Middleware error:', error);
+//     return NextResponse.redirect(new URL('/login', request.url));
+//   }
+// }
+
+// export const config = {
+//   matcher: [
+//     '/((?!_next/static|_next/image|favicon.ico|public).*)',
+//   ],
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { NextRequest, NextResponse } from 'next/server'
+// import { routers } from './app/common/constant/path'
+// import { cookieKey } from './app/common/constant/cookie'
+
+// export function middleware(request: NextRequest) {
+//     const url = request.nextUrl.clone()
+
+//     // Check if the user is visiting the root path
+//     if (url.pathname === routers.root) {
+//         url.pathname = routers.landing
+//         return NextResponse.redirect(url)
+//     }
+
+//     // Check if the user is visiting the /login or /signup path
+//     if (url.pathname === routers.login || url.pathname === routers.signup) {
+//         const accessToken = request.cookies.get(cookieKey.accessToken)?.value
+//         if (accessToken) {
+//             url.pathname = routers.landing // Redirect to /app/predict if already logged in
+//             return NextResponse.redirect(url)
+//         }
+//     }
+
+//     // Check if the user is visiting the /app/position path
+//     if (url.pathname === routers.position || url.pathname === routers.profile) {
+//         const accessToken = request.cookies.get(cookieKey.accessToken)?.value
+//         if (!accessToken) {
+//             url.pathname = routers.landing // Redirect to /app/predict if no access token
+//             return NextResponse.redirect(url)
+//         }
+//     }
+
+//     return NextResponse.next()
+// }
+
+// // See "Matching Paths" below to learn more
+// export const config = {
+//     matcher: [
+//         '/',
+//         '/app/position',
+//         '/app/profile',
+//         '/challenge',
+//         '/reset-password',
+//     ],
+// }

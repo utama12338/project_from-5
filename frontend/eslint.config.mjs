@@ -14,7 +14,18 @@ const eslintConfig = [
   {
     rules: {
       "@typescript-eslint/no-unused-vars": "off",  // ปิดการตรวจสอบตัวแปรที่ไม่ได้ใช้
-      "no-unused-vars": "off"  // ปิดการตรวจสอบตัวแปรที่ไม่ได้ใช้ (สำหรับ JavaScript)
+      "no-unused-vars": "off",   // ปิดการตรวจสอบตัวแปรที่ไม่ได้ใช้ (สำหรับ JavaScript)
+      // "no-unused-vars": "warn",
+      // "no-console": "warn",
+      // "no-undef": "error",
+      // "react/prop-types": "off",
+      // "react/jsx-key": "warn",
+      "array-callback-return": "error",
+      "no-unsafe-optional-chaining": "error",
+      "array-callback-return": "error",
+     
+      "@typescript-eslint/no-unsafe-call": "error",
+      "@typescript-eslint/no-unsafe-member-access": "error"
     }
   }
 ];

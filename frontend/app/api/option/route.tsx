@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error(`Error fetching ${searchParams.get('type')} options:`, error);
     return NextResponse.json(
-      { error: 'Failed to fetch options' },
+      { error: 'Failed to get options' },
       { status: 500 }
     );
   }

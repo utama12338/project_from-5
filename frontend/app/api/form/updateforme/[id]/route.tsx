@@ -14,26 +14,24 @@ export async function PUT(
     try {
       const updateData = await req.json();
      
-      const validation = validate(systemSchema, updateData);
-      if (!validation.success) {
-        return NextResponse.json(
-          {
-            errors: validation.error.errors.map((error: z.ZodIssue) => ({
-              field: error.path.join('.'),
-              message: error.message
-            }))
-          },
-          { status: 400 }
-        );
-      }
+      // const validation = validate(systemSchema, updateData);
+      // if (!validation.success) {
+      //   return NextResponse.json(
+      //     {
+      //       errors: validation.error.errors.map((error: z.ZodIssue) => ({
+      //         field: error.path.join('.'),
+      //         message: error.message
+      //       }))
+      //     },
+      //     { status: 400 }
+      //   );
+      // }
 
       const { id } = await params;
    
       const now = new Date();
       const updatedSystem = await prisma.systemInfo.update({
-        where: {
-          id: id
-        },
+        where: {id: id},
         data: {
           systemName: updateData.systemName,
           developType: updateData.developType,

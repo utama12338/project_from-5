@@ -1,6 +1,9 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
+
+
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,13 +15,41 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [csrfToken, setCsrfToken] = useState('');
 
+  
+  useEffect(() => {
+    // Check if access token exists and verify it
+    const checkAccessToken = async () => {
+
+      try {
+        const res = await axios.get('/api/auth/verifytoken');
+        if (res.status === 200 && res.data.valid) {
+          // Check user role for redirection
+          console.log({'res': res});
+          console.log({'resfull': res.data.user.role});
+      
+          console.log({'resfulldecoded': res.data.decoded});
+          if (res.data.decoded && (res.data.user.role === 'ADMIN' || res.data.user.role === 'SUPERUSER')) {
+            router.push('/admin'); // Redirect admin users to admin page
+          } else {
+            router.push('/form'); // Redirect regular users to form page
+          }
+        }
+      } catch (error) {
+        console.error('Error verifying access token:', error);
+      }
+    };
+
+    checkAccessToken();
+  }, [router]);
+
   useEffect(() => {
     // Get CSRF token when component mounts
-    fetch('/api/auth/csrf')
-      .then(res => res.json())
-      .then(data => setCsrfToken(data.csrfToken))
+    axios.get('/api/auth/csrf')
+      .then(res => setCsrfToken(res.data.csrfToken))
       .catch(err => console.error('Error fetching CSRF token:', err));
   }, []);
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,25 +57,26 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          csrfToken,
-        }),
+      const res = await axios.post('/api/auth/login', {
+        ...formData,
+        csrfToken,
       });
 
-      const data = await res.json();
+      const data = res.data;
 
-      if (!res.ok) {
+      if (res.status !== 200) {
         throw new Error(data.message || 'Login failed');
       }
 
-      // Successful login
-      router.push('/test'); // หรือหน้าที่ต้องการ redirect ไป
+      // Check user role for redirection
+      console.log({'data': data});
+      console.log({'data.user': data.user});
+      console.log({'data.user.role': data.user.role});
+      if (data.user && (data.user.role === 'ADMIN' || data.user.role === 'SUPERUSER')) {
+        router.push('/admin'); // Redirect admin users to admin page
+      } else {
+        router.push('/form'); // Redirect regular users to form page
+      }
     } catch (error) {
         setError(error instanceof Error ? error.message : 'Login failed');
     } finally {
@@ -115,3 +147,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+

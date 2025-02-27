@@ -19,38 +19,6 @@ model SystemHistory {
   @@schema("log")
 }
 
-model ActivityLog {
-  id          String    @id @default(cuid())
-  userId      String
-  action      String    // LOGIN, LOGOUT, VIEW, CREATE, UPDATE, DELETE, etc.
-  module      String    // Which part of the system was accessed
-  description String?   // Additional details about the action
-  userAgent   String?   @db.VarChar(255)
-  ipAddress   String?   @db.VarChar(50)
-  createdAt   DateTime  @default(now())
-  
-  user        User      @relation(fields: [userId], references: [id])
 
-  @@index([userId])
-  @@index([createdAt])
-  @@schema("log")
-}
 
-model ErrorLog {
-  id          String    @id @default(cuid())
-  errorCode   String?
-  errorType   String    // e.g., ValidationError, ServerError, DatabaseError
-  message     String
-  stackTrace  String?   @db.Text
-  userId      String?   // Optional: who was using the system when the error occurred
-  path        String?   // URL or API endpoint where the error occurred
-  userAgent   String?   @db.VarChar(255)
-  ipAddress   String?   @db.VarChar(50)
-  createdAt   DateTime  @default(now())
-  
-  user        User?     @relation(fields: [userId], references: [id])
 
-  @@index([errorType])
-  @@index([createdAt])
-  @@schema("log")
-}

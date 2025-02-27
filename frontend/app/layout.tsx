@@ -3,8 +3,8 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from '../Navbar/Navbar';
 import { ThemeProvider } from '@/components/ThemeProvider/Theme';
-
-
+// import { AuthProvider } from '@/middleware/AuthContext';
+// import DashboardLayout from '../Navbar/layout';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -21,13 +21,15 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        
+
       <ThemeProvider>
         <Navbar />
-       
+      
+         
             {children}
-            </ThemeProvider>
            
+            </ThemeProvider>
+  
       </body>
     </html>
   );

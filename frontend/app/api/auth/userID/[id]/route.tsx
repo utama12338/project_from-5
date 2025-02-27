@@ -4,19 +4,19 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function GET(_req: NextRequest, context: { params: Promise<{ id: string }> }) {
-    const { id } = await context.params; // ใช้ await กับ params
+    const { id } = await context.params; 
 
   try {
     const user = await prisma.user.findUnique({
-      where: { id: String(id) },
-      select: {
-        viewHistory: true,
-        canCreateuser: true,
-        canCreate: true,
-        canEdit: true,
-        canDelete: true,
-        role: true,
-      },
+      where: { id: String(id) }
+      // select: {
+      //   viewHistory: true,swx
+      //   canCreateuser: true,
+      //   canCreate: true,
+      //   canEdit: true,
+      //   canDelete: true,
+      //   role: true,
+      // },
     });
 
     if (!user) {

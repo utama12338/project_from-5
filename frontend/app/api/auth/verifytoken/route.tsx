@@ -8,7 +8,7 @@ export async function GET() {
   try {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get('access_token');
-      console.log({'cookieStore':accessToken,'accessTokenddddd':cookieStore})
+      // console.log({'cookieStore':accessToken,'accessTokenddddd':cookieStore})
     if (!accessToken || !JWT_PUBLIC_KEY) {
       return NextResponse.json(
         { valid: false, message: 'No token provided' },
@@ -27,7 +27,12 @@ export async function GET() {
 
       return NextResponse.json({
         valid: true,
-        decoded: payload
+        decoded: payload,
+        user: {
+          id: payload.sub,
+          role: payload.role,
+          
+        },
       }, { status: 200 });
 
     } catch (verifyError) {

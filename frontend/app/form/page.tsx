@@ -13,7 +13,8 @@ import  { CheckboxItem } from '@/components/checkbox3d';
 import Button_v2 from '@/components/button/delete._v2';
 import { SystemData } from '../types/inputform';
 import DetailButton from '../components/button/detail'; // เพิ่ม import DetailButton
-
+import { PermissionGuard } from '@/middleware/PermissionGuard';
+import { AuthProvider } from '@/middleware/AuthContext';
 export default function SystemList() {
   const {
     systems,
@@ -72,12 +73,15 @@ export default function SystemList() {
   }
 
   return (
+    <AuthProvider>
     <div className="min-h-screen w-full" style={{ backgroundColor: colors.background.primary }}>
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
+          <PermissionGuard requiredPermissions={{ canCreate: true}} >
           <Link href="/inputform">
             <AddSystemButton />
           </Link>
+          </PermissionGuard>
           <h1 className="text-2xl font-bold" style={{ color: colors.text.primary }}>ระบบทั้งหมด</h1>
           <div className="flex space-x-3 items-center"> {/* เพิ่ม items-center */}
             {selectedItems.length === 0 ? (
@@ -104,6 +108,7 @@ export default function SystemList() {
             ) : (
               <>
               <span>เลือก{selectedItems.length}</span>
+              <PermissionGuard requiredPermissions={{ canDelete: true}}>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -117,6 +122,7 @@ export default function SystemList() {
                 >
                   ลบที่เลือก 
                 </motion.button>
+                </PermissionGuard>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -173,6 +179,8 @@ export default function SystemList() {
             ));
 
             return (
+
+              
               <motion.div
                 key={system.id}
                 whileHover={{ scale: 1.02 }}
@@ -187,10 +195,12 @@ export default function SystemList() {
                           checked={selectedItems.includes(system.id)}
                           onChangeAction={() => handleSelectItem(system.id)}
                         />
-                     
+                     <PermissionGuard requiredPermissions={{ canDelete: true}} >
                       <Button_v2 onClick={() => handleDelete(system.id)} />
+                      </PermissionGuard>
                     </div>
                   }
+
                   hasExpandableContent={envInfo.length > 1}
                   initialContent={initialContent}
                   expandableContent={expandableContent}
@@ -202,7 +212,9 @@ export default function SystemList() {
                   <div></div>
                 </FormBox>
               </motion.div>
+
             );
+
           })}
         </div>
 
@@ -264,5 +276,6 @@ export default function SystemList() {
         />
       )}
     </div>
+    </AuthProvider>
   );
 }

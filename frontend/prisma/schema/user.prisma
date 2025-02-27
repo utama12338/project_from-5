@@ -2,6 +2,8 @@ model User {
   id           String           @id @default(cuid())
   username      String          @unique
   password      String
+  viewtheme     String          @default("DARK")
+  viewfrom      String          @default("TABLE")
   loginCount    Int             @default(0)
   viewHistory   Boolean         @default(false)
   canCreateuser Boolean         @default(false)
@@ -14,8 +16,7 @@ model User {
   systems       SystemInfo[]
   systemHistory SystemHistory[]
   UserToken      UserToken[]
-  activities    ActivityLog[]
-  errors        ErrorLog[]
+
 
   @@schema("USER")
 }
@@ -23,9 +24,9 @@ model User {
 model UserToken {
   id            String      @id @default(cuid())
   userId        String
-  token         String      @unique
+
   refreshToken  String?     @unique
-  tokenType     TokenType   @default(ACCESS)
+
   isRevoked     Boolean     @default(false)
   deviceInfo    String?
   ipAddress     String?
@@ -36,7 +37,7 @@ model UserToken {
   
   user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([token])
+
   @@index([userId])
   @@schema("USER")
 }
@@ -49,11 +50,4 @@ enum Role {
   @@schema("USER")
 }
 
-enum TokenType {
-  ACCESS
-  REFRESH
-  RESET_PASSWORD
-  EMAIL_VERIFICATION
 
-  @@schema("USER")
-}

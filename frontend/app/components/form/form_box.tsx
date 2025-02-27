@@ -5,7 +5,7 @@ import { colors } from '@/styles/theme';
 import Link from 'next/link';
 import EditButton from '../button/edite';
 import DetailButton from '../button/detail';
-
+import { PermissionGuard } from '@/middleware/PermissionGuard';
 interface FormBoxProps {
   children?: React.ReactNode; // เพิ่มเครื่องหมาย ? เพื่อทำให้เป็น optional
   header?: string;
@@ -78,9 +78,11 @@ const FormBox: React.FC<FormBoxProps> = ({
           <div className="actions-container">
             <div className="left-actions">
               {editLink && (
+                <PermissionGuard requiredPermissions={{ canEdit: true}} >
                 <Link href={editLink}>
                   <EditButton />
                 </Link>
+                </PermissionGuard>
               )}
               {onDetailClick && (
                 <DetailButton 
